@@ -113,11 +113,13 @@ header, nav, footer {
     height: 34px;
     position: absolute;
     right: 12px;
+    top: 45px;
 }
 
 #modeicon{
     position: absolute;
-    right: 80px;
+    right: 74px;
+    top: 45px;
 }
 
 .switch input { 
