@@ -105,16 +105,18 @@ header, nav, footer {
     background-color: #333; /* Dark mode background color for header, nav, and footer */
 }
 
-#modediv{
-    position: absolute;
-    right: 12px;
-}
-
 .switch {
     position: relative;
     display: inline-block;
     width: 60px;
     height: 34px;
+    position: absolute;
+    right: 12px;
+}
+
+#modeicon{
+    position: absolute;
+    right: 80px;
 }
 
 .switch input { 
