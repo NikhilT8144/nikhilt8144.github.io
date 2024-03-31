@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nikhil Tiwari - Portfolio</title>
+    <!-- Add Font Awesome CSS without integrity attribute -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        nav {
+            background-color: #444;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        section {
+            display: none;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        .icon {
+            margin-right: 10px;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header style="text-align: center;">
+        <div style="display: inline-block;">
+            <i class="fas fa-user icon" style="margin-right: 5px;"></i>
+            <h1 style="display: inline-block; margin: 0;">Nikhil Tiwari</h1>
+        </div>
+        <br>
+        <div style="display: inline-block; margin-top: 10px;">
+            <i class="fas fa-briefcase icon" style="margin-right: 5px;"></i>
+            <p style="display: inline-block; margin: 0;">Portfolio</p>
+        </div>
+    </header>
+
+    <nav>
+        <a href="#about"><i class="fas fa-user"></i> About Me</a>
+        <a href="#projects"><i class="fas fa-project-diagram"></i> Projects</a>
+        <a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
+    </nav>
+
+    <section id="about">
+        <h2>About Me</h2>
+        <p>Hello there, I am Nikhil Tiwari, a student currently studying in Class 10th. I am a quick learner with a great interest in programming, particularly in Web Coding.</p>
+    </section>
+
+    <section id="projects">
+        <h2>Projects</h2>
+        <!-- Add your projects with descriptions and links here -->
+        <p>No projects added yet.</p>
+    </section>
+
+    <section id="contact">
+        <h2>Contact</h2>
+        <!-- Add contact form or contact information here -->
+        <p>Contact form or information will be added here.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Nikhil Tiwari. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Function to show/hide sections based on URL hash
+        function showSection() {
+            // Get the hash from the URL
+            var hash = window.location.hash;
+
+            // Hide all sections
+            var sections = document.querySelectorAll('section');
+            sections.forEach(function(section) {
+                section.style.display = 'none';
+            });
+
+            // Show the section corresponding to the hash
+            var targetSection = document.querySelector(hash);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
+        }
+
+        // Call the function on page load and when the hash changes
+        window.addEventListener('load', showSection);
+        window.addEventListener('hashchange', showSection);
+    </script>
+
+</body>
+
+</html>
