@@ -21,10 +21,45 @@ window.addEventListener('load', showSection);
 window.addEventListener('hashchange', showSection);
 
 // Function to toggle dark/light mode
-function toggledark() {
-  window.localStorage.set("","","");
+function savemode() {
+  var checkbox = document.getElementById('mode');
+  if (checkbox.checked) {
+    localStorage.setItem('viewmode', 'light');
+    document.body.classList.remove('dark');
+    document.getElementsByTagName('header').classList.remove('dark');
+    document.getElementsByTagName('nav').classList.remove('dark');
+    document.getElementsByTagName('footer').classList.remove('dark');
+  } else {
+    localStorage.setItem('viewmode', 'dark');
+    document.body.classList.add('dark');
+    document.getElementsByTagName('header').classList.add('dark');
+    document.getElementsByTagName('nav').classList.add('dark');
+    document.getElementsByTagName('footer').classList.add('dark');
+  }
 }
 
-function togglelight(){
-
+function getsavemode() {
+  var checkboxState = localStorage.getItem('viewmode');
+  if (checkboxState === 'checked') {
+    document.getElementById('mode').checked = true;
+    document.body.classList.remove('dark');
+    document.getElementsByTagName('header').classList.remove('dark');
+    document.getElementsByTagName('nav').classList.remove('dark');
+    document.getElementsByTagName('footer').classList.remove('dark');
+  } else {
+    document.getElementById('mode').checked = false;
+    document.body.classList.add('dark');
+    document.getElementsByTagName('header').classList.add('dark');
+    document.getElementsByTagName('nav').classList.add('dark');
+    document.getElementsByTagName('footer').classList.add('dark');
+  }
 }
+
+document.getElementById('myCheckbox').addEventListener('change', function() {
+  savemode();
+});
+
+window.onload = function() {
+  getsavemode();
+};
+
