@@ -68,3 +68,13 @@ document.getElementById('main').addEventListener('change', function() {
 setInterval(function (){
   document.getElementbyId('dateandtime').innerHTML = Date();
 }, 10)
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('https://raw.githubusercontent.com/NikhilT8144/jsservices/main/service-worker.js').then(function(registration) {
+                console.log('Service Worker registered with scope:', registration.scope);
+            }).catch(function(error) {
+                console.error('Service Worker registration failed:', error);
+            });
+        });
+    }
