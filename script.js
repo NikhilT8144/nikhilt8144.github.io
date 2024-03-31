@@ -55,7 +55,7 @@ function getsavemode() {
   }
 }
 
-document.getElementById('myCheckbox').addEventListener('change', function() {
+document.getElementById('main').addEventListener('change', function() {
   savemode();
 });
 
