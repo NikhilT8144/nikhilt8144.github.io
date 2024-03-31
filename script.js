@@ -31,9 +31,9 @@ document.addEventListener("DOMContentLoaded", function() {
         disableDarkMode();
     }
 
-    // Toggle dark mode when the toggle slider is clicked
-    var toggleSlider = document.querySelector('.toggle-slider');
-    toggleSlider.addEventListener('click', function() {
+    // Toggle dark mode when the toggle button is clicked
+    var toggleButton = document.querySelector('.toggle-button');
+    toggleButton.addEventListener('click', function() {
         if (document.body.classList.contains('dark-mode')) {
             disableDarkMode();
         } else {
@@ -44,14 +44,18 @@ document.addEventListener("DOMContentLoaded", function() {
     // Function to enable dark mode
     function enableDarkMode() {
         document.body.classList.add('dark-mode');
-        toggleSlider.style.transform = 'translateX(26px)';
+        toggleButton.classList.add('active');
+        document.querySelector('.fa-sun').style.display = 'none';
+        document.querySelector('.fa-moon').style.display = 'inline-block';
         localStorage.setItem('theme', 'dark');
     }
 
     // Function to disable dark mode
     function disableDarkMode() {
         document.body.classList.remove('dark-mode');
-        toggleSlider.style.transform = 'translateX(0)';
+        toggleButton.classList.remove('active');
+        document.querySelector('.fa-moon').style.display = 'none';
+        document.querySelector('.fa-sun').style.display = 'inline-block';
         localStorage.setItem('theme', 'light');
     }
 });
