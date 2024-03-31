@@ -63,3 +63,6 @@ window.onload = function() {
   getsavemode();
 };
 
+setInterval(function (){
+  document.getElementbyId('dateandtime').innerHTML = Date();
+}, 10)
