@@ -7,7 +7,8 @@ body {
 }
 
 .dark-mode body {
-    background-color: #111; /* Dark mode background color */
+    background-color: #111;
+    color:white;/* Dark mode background color */
 }
 
 header, nav, footer {
@@ -18,8 +19,6 @@ header, nav, footer {
     background-color: #333; /* Dark mode background color for header, nav, and footer */
 }
 
-/* Add your other CSS styles here */
-
 /* Toggle switch styling */
 .toggle-container {
     position: absolute;
@@ -27,19 +26,16 @@ header, nav, footer {
     right: 20px;
 }
 
-.toggle-label {
+.toggle-button {
     cursor: pointer;
-    margin-right: 10px;
+    background-color: transparent;
+    border: none;
     font-size: 20px;
     color: #fff;
 }
 
-.toggle-input {
-    display: none;
-}
-
-.toggle-input:checked + .toggle-slider:before {
-    transform: translateX(26px);
+.toggle-button:focus {
+    outline: none;
 }
 
 .toggle-slider {
@@ -70,4 +66,8 @@ header, nav, footer {
 
 .toggle-slider.round:before {
     border-radius: 50%;
+}
+
+.toggle-button.active + .toggle-slider:before {
+    transform: translateX(26px);
 }
