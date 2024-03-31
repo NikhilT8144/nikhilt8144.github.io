@@ -92,7 +92,7 @@ footer {
     }
 }
 
-.dark-mode body {
+.dark body {
     background-color: #111;
     color:white;/* Dark mode background color */
 }
@@ -101,7 +101,7 @@ header, nav, footer {
     transition: background-color 0.3s ease;
 }
 
-.dark-mode header, .dark-mode nav, .dark-mode footer {
+.dark header, .dark nav, .dark footer {
     background-color: #333; /* Dark mode background color for header, nav, and footer */
 }
 
