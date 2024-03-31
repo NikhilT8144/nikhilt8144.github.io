@@ -20,6 +20,8 @@ function showSection() {
 window.addEventListener('load', showSection);
 window.addEventListener('hashchange', showSection);
 
+document.addEventListener('DOMContentLoaded', function() {
+  
 // Function to toggle dark/light mode
 function savemode() {
   var checkbox = document.getElementById('mode');
@@ -58,10 +60,11 @@ function getsavemode() {
 document.getElementById('main').addEventListener('change', function() {
   savemode();
 });
-
-window.onload = function() {
+  
   getsavemode();
+
 };
+});
 
 setInterval(function (){
   document.getElementbyId('dateandtime').innerHTML = Date();
