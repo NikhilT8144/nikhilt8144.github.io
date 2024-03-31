@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    transition: background-color 0.3s ease;
+    transition: .5s;
     background-color: #fff; /* Default to light mode */
 }
 
@@ -13,6 +13,7 @@ header {
     padding: 20px 0;
     position: relative;
     z-index: 999;
+    transition: .5s;
 }
 
 nav {
@@ -20,14 +21,14 @@ nav {
     color: #fff;
     text-align: center;
     padding: 10px 0;
-    transition: background-color 0.3s ease;
+    transition: .5s;
 }
 
 nav a {
     color: #fff;
     text-decoration: none;
     padding: 10px 20px;
-    transition: background-color 0.3s ease;
+    transition: .5s;
 }
 
 nav a:hover {
@@ -64,7 +65,7 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-    transition: background-color 0.3s ease;
+    transition: .5s;
 }
 
 @media screen and (max-width: 768px) {
