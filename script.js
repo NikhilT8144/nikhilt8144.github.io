@@ -63,7 +63,6 @@ document.getElementById('main').addEventListener('change', function() {
   
   getsavemode();
 
-};
 });
 
 setInterval(function (){
