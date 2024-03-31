@@ -19,3 +19,12 @@ function showSection() {
 // Call the function on page load and when the hash changes
 window.addEventListener('load', showSection);
 window.addEventListener('hashchange', showSection);
+
+// Function to toggle dark/light mode
+function toggledark() {
+  window.localStorage.set("","","");
+}
+
+function togglelight(){
+
+}
