@@ -22,48 +22,29 @@ window.addEventListener('hashchange', showSection);
 
 document.addEventListener('DOMContentLoaded', function() {
   
-// Function to toggle dark/light mode
-function savemode() {
-  var checkbox = document.getElementById('mode');
-  if (checkbox.checked) {
-    localStorage.setItem('viewmode', 'light');
-    document.body.classList.remove('dark');
-    document.getElementsByTagName('header').classList.remove('dark');
-    document.getElementsByTagName('nav').classList.remove('dark');
-    document.getElementsByTagName('footer').classList.remove('dark');
-  } else {
-    localStorage.setItem('viewmode', 'dark');
-    document.body.classList.add('dark');
-    document.getElementsByTagName('header').classList.add('dark');
-    document.getElementsByTagName('nav').classList.add('dark');
-    document.getElementsByTagName('footer').classList.add('dark');
+var app = document.getElementsByTagName("BODY")[0];
+  if (localStorage.thememode == "dark") {
+    app.setAttribute("theme-mode", "dark");
   }
-}
-
-function getsavemode() {
-  var checkboxState = localStorage.getItem('viewmode');
-  if (checkboxState === 'checked') {
-    document.getElementById('mode').checked = true;
-    document.body.classList.remove('dark');
-    document.getElementsByTagName('header').classList.remove('dark');
-    document.getElementsByTagName('nav').classList.remove('dark');
-    document.getElementsByTagName('footer').classList.remove('dark');
-  } else {
-    document.getElementById('mode').checked = false;
-    document.body.classList.add('dark');
-    document.getElementsByTagName('header').classList.add('dark');
-    document.getElementsByTagName('nav').classList.add('dark');
-    document.getElementsByTagName('footer').classList.add('dark');
-  }
-}
-
-document.getElementById('main').addEventListener('change', function() {
-  savemode();
-});
   
-  getsavemode();
+function toggle_light_mode() {
+  var app = document.getElementsByTagName("BODY")[0];
+  if (localStorage.thememode == "dark") {
+    localStorage.thememode = "light";
+    app.setAttribute("theme-mode", "light");
+  } else {
+    localStorage.thememode = "dark";
+    app.setAttribute("theme-mode", "dark");
+  }       
+}
 
-});
+window.addEventListener("storage", function () {
+  if (localStorage.thememode == "dark") {
+    app.setAttribute("theme-mode", "dark");
+  } else {
+    app.setAttribute("theme-mode", "light");
+  }
+}, false);
 
 setInterval(function (){
   document.getElementById('dateandtime').innerHTML = Date();
