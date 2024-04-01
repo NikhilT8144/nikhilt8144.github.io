@@ -8,6 +8,17 @@
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('https://raw.githubusercontent.com/NikhilT8144/jsservices/main/service-worker.js').then(function(registration) {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                }).catch(function(error) {
+                    console.error('Service Worker registration failed:', error);
+                });
+            });
+        }
+    </script>
 </head>
 <body>
 
@@ -44,18 +55,26 @@
     <section id="projects">
         <h2>Projects</h2>
         <!-- Projects with descriptions and links here -->
+        <ul>
+            <li>Project 1 : </li>
+            <li>Project 2 : </li>
+            <li>Project 3 : </li>
+            <li>Project 4 : </li>
+        </ul>
         <p>No projects added yet.</p>
     </section>
 
     <section id="contact">
         <h2>Contact</h2>
         <!-- Contact form or contact information here -->
+        <p>Contact Us : <a style="text-decorations : none;" href="neptuneorganisations@gmail.com">Neptune Organisations</a></p>
+        <br>
         <p>Contact form or information will be added here.</p>
     </section>
 
     <footer>
-        <p style="position: absolute; left: 10px;">&copy; 2024 Nikhil Tiwari. All rights reserved.</p>
-        <p id="dateandtime" style="position: absolute; right: 10px;">Date and Time</p>
+        <p>&copy; 2024 Nikhil Tiwari. All rights reserved.</p>
+        <p id="dateandtime">Date and Time</p>
     </footer>
 
     <script src="script.js"></script>
