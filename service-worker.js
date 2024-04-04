@@ -5,7 +5,8 @@ const assetsToCache = [
     '/index.html',
     '/styles.css',
     '/script.js',
-    '/offline.html', // This is the offline page you want to display
+    '/offline.html',
+    'offline.png'// This is the offline page you want to display
     // Add paths to other assets you want to cache here
 ];
 
