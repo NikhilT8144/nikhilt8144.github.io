@@ -48,4 +48,34 @@ window.addEventListener("storage", function () {
 
 setInterval(function (){
   document.getElementById('dateandtime').innerHTML = Date();
-}, 10)
+}, 10);
+
+//notification
+let permission = Notification.permission;
+if(permission === "granted") {
+   showNotification();
+} else if(permission === "default"){
+   requestAndShowPermission();
+} else {
+  alert("Allow us to send you notifications to keep you updated.");
+}
+function showNotification() {
+   if(document.visibilityState === "visible) {
+       return;
+   }
+   var title = "Nikhil Tiwari - Portfolio";
+   icon = "icon.png"
+   var body = "Checking for new messages...";
+   var notification = new Notification('Title', { body, icon });
+   notification.onclick = () => { 
+          notification.close();
+          window.parent.focus();
+   }
+}
+function requestAndShowPermission() {
+   Notification.requestPermission(function (permission) {
+      if (permission === "granted") {
+            showNotification();
+      }
+   });
+}
