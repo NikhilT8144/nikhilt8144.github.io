@@ -11,7 +11,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('https://raw.githubusercontent.com/NikhilT8144/jsservices/main/service-worker.js').then(function(registration) {
+                navigator.serviceWorker.register('https://nikhilt8144.github.io/service-worker.js').then(function(registration) {
                     console.log('Service Worker registered with scope:', registration.scope);
                 }).catch(function(error) {
                     console.error('Service Worker registration failed:', error);
@@ -56,20 +56,19 @@
         <h2>Projects</h2>
         <!-- Projects with descriptions and links here -->
         <ul>
-            <li>Project 1 : </li>
-            <li>Project 2 : </li>
-            <li>Project 3 : </li>
-            <li>Project 4 : </li>
+            <li>Project 1: Chat Application in PHP, Site Status - Not Hosted</li>
+            <li>Project 2: Slides with descent styling using HTML, CSS, and JS, Site Status: Hosted <a href="/ppt">here</a></li>
+            <li>Project 3: Test Site using HTML, CSS, and JS, Site Status: Hosted <a href="/webpage">here</a></li>
         </ul>
-        <p>No projects added yet.</p>
+        <p style="display: none;">No projects added yet.</p>
     </section>
 
     <section id="contact">
         <h2>Contact</h2>
         <!-- Contact form or contact information here -->
-        <p>Contact Us : <a style="text-decorations : none;" href="neptuneorganisations@gmail.com">Neptune Organisations</a></p>
+        <p>Contact Us: <a style="text-decorations : none;" href="neptuneorganisations@gmail.com">Neptune Organisations</a></p>
         <br>
-        <p>Contact form or information will be added here.</p>
+        <p style="display: none;">Contact form or information will be added here.</p>
     </section>
 
     <footer>
