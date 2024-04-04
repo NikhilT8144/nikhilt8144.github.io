@@ -1,13 +1,9 @@
 // Define the cache name and assets to cache
 const cacheName = 'offline-cache';
 const assetsToCache = [
-    '/',
-    '/index.html',
-    '/styles.css',
-    '/script.js',
-    '/offline.html',
-    'offline.png'// This is the offline page you want to display
-    // Add paths to other assets you want to cache here
+    '/offline.html', // This is the offline page you want to display
+    '/offline.png',
+    '/icon.png'
 ];
 
 // Install the Service Worker
