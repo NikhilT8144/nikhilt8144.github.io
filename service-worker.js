@@ -1,7 +1,7 @@
 // Define the cache name and assets to cache
 const cacheName = 'offline-cache';
 const assetsToCache = [
-    '/offline.html', // This is the offline page you want to display
+    '/offline.html',
     '/offline.png',
     '/icon.png'
 ];
