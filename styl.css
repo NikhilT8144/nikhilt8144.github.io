@@ -1,0 +1,17 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    background-color: rgba(255, 255, 255, 0.9);
+}
