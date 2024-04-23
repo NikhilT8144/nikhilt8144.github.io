@@ -17,9 +17,45 @@
         .image-container {
             margin-bottom: 20px;
         }
+        @media only screen and (max-width: 600px) {
+            img {
+                width: 400px;
+                height: auto;
+            }
+        }
         .image-container img {
-            width: 200px;
+            width: 650px;
             height: auto;
+        }
+        button {
+            width: 60px;
+            height: 30px;
+            color: white;
+            font-size: 12px;
+            background-color: deepskyblue;
+            border: none;
+            cursor: pointer;
+            position: relative; /* Add position relative to the button */
+        }
+        button:hover {
+            transition: transform 1s ease;
+            background-color: white;
+            color: deepskyblue;
+            border: 2px solid deepskyblue;
+        }
+        button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: deepskyblue;
+            transition: width 0.5s ease; /* Add transition for smooth animation */
+        }
+        button:hover::after {
+            width: 100%; /* Expand the underline on hover */
         }
     </style>
 </head>
