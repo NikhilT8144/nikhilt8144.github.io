@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,96 +13,103 @@
     <link rel="stylesheet" href="styles.css">
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('https://nikhilt8144.github.io/service-worker.js').then(function(registration) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('https://nikhilt8144.github.io/service-worker.js').then(function (registration) {
                     console.log('Service Worker registered with scope:', registration.scope);
-                }).catch(function(error) {
+                }).catch(function (error) {
                     console.error('Service Worker registration failed:', error);
                 });
             });
         }
     </script>
 </head>
+
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand" href="#">Nikhil Tiwari</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="#about">About Me</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#projects">Projects</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#contact">Contact</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<section id="about" class="py-5">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8 offset-md-2 text-center">
-        <h2 class="display-4">About Me</h2>
-        <p class="lead">👨‍🎓 I am Nikhil Tiwari, a Class 10th student passionate about web development and science. I enjoy learning new technologies and building projects.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="projects" class="py-5 bg-light">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8 offset-md-2 text-center">
-        <h2 class="display-4">Projects</h2>
-        <p class="lead">Here are some of my projects:</p>
-        <!-- Add your projects with icons and details -->
-        <div class="card bg-transparent rounded border-0">
-          <div class="card-body">
-            <h5 class="card-title"><i class="fas fa-laptop-code"></i> Portfolio Website</h5>
-            <p class="card-text">A personal portfolio website created using HTML, CSS, and Bootstrap.</p>
-            <a href="#" class="btn btn-primary">View Project</a>
-          </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Nikhil Tiwari</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About Me</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="card bg-transparent rounded border-0 mt-3">
-          <div class="card-body">
-            <h5 class="card-title"><i class="fas fa-flask"></i> Science Fair Project</h5>
-            <p class="card-text">Developed a model demonstrating Newton's Laws of Motion.</p>
-            <a href="#" class="btn btn-primary">View Project</a>
-          </div>
+    </nav>
+
+    <section id="about" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 offset-md-2 text-center">
+                    <h2 class="display-4">About Me</h2>
+                    <p class="lead">👨‍🎓 I am Nikhil Tiwari, a Class 10th student passionate about web development and
+                        science. I enjoy learning new technologies and building projects.</p>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section id="contact" class="py-5">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8 offset-md-2 text-center">
-        <h2 class="display-4">Contact Me</h2>
-        <p class="lead">📧 Feel free to get in touch with me!</p>
-        <!-- Add contact form or details -->
-        <p>Email: <a>nikhiltiwari</a></p>
-        <p>Phone: +91 </p>
-      </div>
-    </div>
-  </div>
-</section>
+    <section id="projects" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 offset-md-2 text-center">
+                    <h2 class="display-4">Projects</h2>
+                    <p class="lead">Here are some of my projects:</p>
+                    <!-- Add your projects with icons and details -->
+                    <div class="card bg-transparent rounded border-0">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-laptop-code"></i> Portfolio Website</h5>
+                            <p class="card-text">A personal portfolio website created using HTML, CSS, and Bootstrap.
+                            </p>
+                            <a href="#" class="btn btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="card bg-transparent rounded border-0 mt-3">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-flask"></i> Science Fair Project</h5>
+                            <p class="card-text">Developed a model demonstrating Newton's Laws of Motion.</p>
+                            <a href="#" class="btn btn-primary">View Project</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.js"></script>
-<script src="script.js"></script>
-    
+    <section id="contact" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 offset-md-2 text-center">
+                    <h2 class="display-4">Contact Me</h2>
+                    <p class="lead">📧 Feel free to get in touch with me!</p>
+                    <!-- Add contact form or details -->
+                    <p>Email: <a>nikhiltiwari</a></p>
+                    <p>Phone: +91 </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.js"></script>
+    <script src="script.js"></script>
+
 </body>
+
 </html>
