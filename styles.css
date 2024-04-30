@@ -1,5 +1,5 @@
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', Arial, sans-serif;
 }
 
 .navbar-brand {
@@ -14,4 +14,46 @@ body {
 
 .card-body {
     background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Navigation styles */
+nav ul {
+  list-style-type: none;
+  display: flex;
+}
+
+nav ul li {
+  margin-right: 1.5rem;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease-in-out;
+  position: relative;
+}
+
+nav ul li a i {
+  margin-right: 0.5rem;
+}
+
+nav ul li a:hover {
+  color: #3e8eff;
+}
+
+nav ul li a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -0.2rem;
+  width: 100%;
+  height: 0.16rem;
+  background-color: #fff;
+  transform: scaleX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+nav ul li a:hover::after {
+  transform: scaleX(1);
 }
