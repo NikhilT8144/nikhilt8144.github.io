@@ -1,8 +1,12 @@
 // Define the cache name and assets to cache
 const cacheName = 'offline-cache';
+const offlinePage = '/offline.html';
+const offlineImage = '/offline.png';
+
+// Assets to cache
 const assetsToCache = [
-    '/offline.html',
-    '/offline.png',
+    offlinePage,
+    offlineImage,
     '/icon.png'
 ];
 
@@ -17,27 +21,10 @@ self.addEventListener('install', function(event) {
 
 // Intercept fetch requests
 self.addEventListener('fetch', function(event) {
-    event.respondWith(
-        // Try to fetch the request from the cache
-        caches.match(event.request).then(function(response) {
-            // If request is found in cache, return the cached response
-            if (response) {
-                return response;
-            }
+    const requestUrl = new URL(event.request.url);
 
-            // If request is not found in cache, fetch it from the network
-            return fetch(event.request)
-                .then(function(response) {
-                    // If request is successful, add the response to the cache
-                    return caches.open(cacheName).then(function(cache) {
-                        cache.put(event.request.url, response.clone());
-                        return response;
-                    });
-                })
-                .catch(function(error) {
-                    // If request fails (e.g., offline), serve the offline page
-                    return caches.match('/offline.html');
-                });
-        })
+    // Serve the offline page for all requests
+    event.respondWith(
+        caches.match(offlinePage)
     );
 });
