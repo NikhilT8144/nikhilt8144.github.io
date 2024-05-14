@@ -67,3 +67,15 @@ function topFunction() {
     behavior: 'smooth'
   });
 }
+
+// Listen for messages
+window.addEventListener('message', function(event) {
+    // Check if message requests to clear localStorage
+    if (event.data === 'clearLocalStorage') {
+        // Clear localStorage
+        localStorage.clear();
+        
+        // Respond back to the sender
+        event.source.postMessage('localStorageCleared', '*');
+    }
+});
