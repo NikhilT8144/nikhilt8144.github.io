@@ -1,6 +1,19 @@
-
 # Nikhil Tiwari's Portfolio
 
-> Hello there, welcome to my webpage, hosted on <a style="text-decoration: none;" href="https://pages.github.com">Github Pages</a>. I am Nikhil Tiwari as <a style="text-decoration: none;" href="https://github.com/NikhilT8144">NikhilT8144</a> on <a style="text-decoration: none;" href="https://www.github.com">Github</a>, I have done some programming in past, and I am very interested in programming, particularly in Web Programming. This page shows information about me, including my projects and more.
+👋 **Hello! Welcome to my webpage!**
+
+I'm <a href="https://github.com/NikhilT8144">Nikhil Tiwari</a>, a passionate student currently in the 10th standard. While I may not have extensive professional experience yet, I'm enthusiastic about programming and web development. Here's a glimpse of what I've been up to:
+
+## 🌐 Projects
+1. **Portfolio Website**
+   - Created a personal portfolio website using HTML, CSS, and Bootstrap.
+   - View Project
+
+2. **Science Fair Project**
+   - Developed a model demonstrating Newton's Laws of Motion.
+   - View Project
+
+## 📧 Contact Me
+Stay tuned for updates on how to get in touch with me! I'll be adding my contact information soon.
 
 ➡️ <a style="text-decoration: none;" href="https://nikhilt8144.github.io">Have a look!</a>
