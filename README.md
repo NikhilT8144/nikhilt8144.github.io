@@ -7,7 +7,7 @@ I'm <a href="https://github.com/NikhilT8144">Nikhil Tiwari</a>, a passionate stu
 ## 🌐 Projects
 1. **Portfolio Website**
    - Created a personal portfolio website using HTML, CSS, and Bootstrap.
-   - View Projecthttps://nikhilt8144.github.io
+   - <a href="https://nikhilt8144.github.io">View Project</a>
 
 2. **Science Fair Project**
    - Developed a model demonstrating Newton's Laws of Motion.
