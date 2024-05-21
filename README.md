@@ -11,7 +11,7 @@ I'm <a href="https://github.com/NikhilT8144">Nikhil Tiwari</a>, a passionate stu
 
 2. **Science Fair Project**
    - Developed a model demonstrating Newton's Laws of Motion.
-   - View Project
+   - <a href="https://nikhilt8144.github.io/physics/nlm">View Project</a>
 
 ## 📧 Contact Me
 Stay tuned for updates on how to get in touch with me! I'll be adding my contact information soon.
