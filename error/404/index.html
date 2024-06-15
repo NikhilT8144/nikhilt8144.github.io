@@ -44,14 +44,26 @@
             color: deepskyblue;
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s, transform 0.3s;
-            display: inline-flex;
-            align-items: center;
+            position: relative; /* Ensure the pseudo-element positions correctly */
+            transition: color 0.3s;
+            overflow: hidden; /* Hide overflow for pseudo-element */
         }
 
-        a:hover {
-            color: dodgerblue;
-            transform: scale(1.1);
+        a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: deepskyblue;
+            transition: width 0.3s ease-out, left 0.3s ease-out;
+            transform: translateX(-50%);
+        }
+
+        a:hover::before {
+            width: 100%;
+            left: 0%;
         }
 
         .fa-home {
@@ -73,7 +85,7 @@
     <div style="text-align: center;">
         <h1>404</h1>
         <h3>Maybe this page moved? Got deleted? Is hiding out in quarantine?<br> Never existed in the first place?
-            <br><br> Let's go to <a href="https://nikhilt8144.github.io"><i class="fas fa-home"> home</i></a> and try from there.
+            <br><br> Let's go to <a href="https://nikhilt8144.github.io"><i class="fas fa-home"> Home</i></a> and try from there.
         </h3>
         <h2>Page Not Found</h2>
     </div>
