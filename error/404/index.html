@@ -24,7 +24,7 @@
 
         h1 {
             font-weight: 400;
-            font-size: 120px;
+            font-size: 8rem;
             margin: 0;
             animation: fadeIn 1s ease-in-out;
         }
@@ -43,9 +43,7 @@
         a {
             color: #304cff;
             text-decoration: none;
-            font-weight: 600;
             position: relative; /* Ensure the pseudo-element positions correctly */
-            transition: color 0.3s;
             overflow: hidden; /* Hide overflow for pseudo-element */
         }
 
@@ -53,9 +51,9 @@
             content: '';
             position: absolute;
             width: 0;
-            height: 4px;
+            height: 0.16rem;
             background-color: #fff;
-            bottom: -5px;
+            bottom: -0.3rem;
             left: 50%;
             transition: all 0.3s ease; /* Added transition */
         }
@@ -63,10 +61,6 @@
         a:hover::before {
             width: 100%;
             left: 0;
-        }
-
-        a:hover {
-            
         }
 
         @keyframes fadeIn {
