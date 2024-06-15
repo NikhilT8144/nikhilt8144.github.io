@@ -39,24 +39,16 @@
             animation: fadeIn 3s ease-in-out;
         }
 
-        .home-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 18px;
-            font-weight: 500;
-            color: white;
-            background: deepskyblue;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        a {
+            color: deepskyblue;
             text-decoration: none;
-            transition: transform 0.3s, background 0.3s;
+            font-weight: 600;
+            transition: color 0.3s, transform 0.3s;
         }
 
-        .home-button:hover {
+        a:hover {
+            color: dodgerblue;
             transform: scale(1.1);
-            background: dodgerblue;
         }
 
         @keyframes fadeIn {
@@ -69,7 +61,7 @@
     <div style="text-align: center;">
         <h1>404</h1>
         <h3>Maybe this page moved? Got deleted? Is hiding out in quarantine?<br> Never existed in the first place?
-            <br><br> Let's go <a href="https://nikhilt8144.github.io" class="home-button">home</a> and try from there.
+            <br><br> Let's go <a href="https://nikhilt8144.github.io">home</a> and try from there.
         </h3>
         <h2>Page Not Found</h2>
     </div>
