@@ -26,22 +26,22 @@
             font-weight: 400;
             font-size: 120px;
             margin: 0;
-            animation: fadeIn 2s ease-in-out;
+            animation: fadeIn 1s ease-in-out;
         }
 
         h3 {
             font-weight: 400;
             color: lightgray;
-            animation: fadeIn 2.5s ease-in-out;
+            animation: fadeIn 1.5s ease-in-out;
         }
 
         h2 {
             font-weight: 400;
-            animation: fadeIn 3s ease-in-out;
+            animation: fadeIn 2s ease-in-out;
         }
 
         a {
-            color: deepskyblue;
+            color: #304cff;
             text-decoration: none;
             font-weight: 600;
             position: relative; /* Ensure the pseudo-element positions correctly */
@@ -52,18 +52,17 @@
         a::before {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 50%;
             width: 0;
             height: 2px;
-            background-color: deepskyblue;
-            transition: width 0.3s ease-out, left 0.3s ease-out;
-            transform: translateX(-50%);
+            background-color: #fff;
+            bottom: -5px;
+            left: 50%;
+            transition: all 0.3s ease; /* Added transition */
         }
 
         a:hover::before {
             width: 100%;
-            left: 0%;
+            left: 0;
         }
 
         .fa-home {
@@ -73,6 +72,10 @@
 
         a:hover .fa-home {
             transform: translateX(5px);
+        }
+
+        a:hover {
+            
         }
 
         @keyframes fadeIn {
