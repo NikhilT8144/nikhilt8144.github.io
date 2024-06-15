@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <title>Nikhil Tiwari</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -8,15 +8,70 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Herr+Von+Muellerhoff" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f06, #4a90e2);
+            color: white;
+            font-family: 'Poppins', Arial, sans-serif;
+            overflow: hidden;
+        }
 
-  </head>
-  <body>
+        h1 {
+            font-weight: 400;
+            font-size: 120px;
+            margin: 0;
+            animation: fadeIn 2s ease-in-out;
+        }
 
-  	<h1 style="text-align: center; width: 100%; margin: auto; font-weight: 400; font-size: 120px; font-family: 'Poppins', Arial, sans-serif; margin-top: 5%;">
-      404</h1>
-    <h3 style="text-align: center; width: 100%; margin: auto; font-weight: 400; font-family: 'Poppins', Arial, sans-serif; color: gray;">Maybe this page moved? Got deleted? Is hiding out in quarantine?<br> Never existed in the first place?
-      <br><br> Let's go <a href="https://nikhilt8144.github.io" style="color: deepskyblue; text-decoration: none;">home</a> and try from there.</h3>
-    <h2 style="text-align: center; width: 100%; margin: auto; font-weight: 400; font-family: 'Poppins', Arial, sans-serif;"><br> Page Not Found</h2>
-      
-  </body>
+        h3 {
+            font-weight: 400;
+            color: lightgray;
+            animation: fadeIn 2.5s ease-in-out;
+        }
+
+        h2 {
+            font-weight: 400;
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        .home-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: 500;
+            color: white;
+            background: deepskyblue;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .home-button:hover {
+            transform: scale(1.1);
+            background: dodgerblue;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align: center;">
+        <h1>404</h1>
+        <h3>Maybe this page moved? Got deleted? Is hiding out in quarantine?<br> Never existed in the first place?
+            <br><br> Let's go <a href="https://nikhilt8144.github.io" class="home-button">home</a> and try from there.
+        </h3>
+        <h2>Page Not Found</h2>
+    </div>
+</body>
 </html>
