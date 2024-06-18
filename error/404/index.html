@@ -36,14 +36,13 @@
             animation: fadeIn 2s ease-in-out;
         }
 
-        a {
+        button {
             color: #304cff;
-            text-decoration: none !important;
             position: relative;
             overflow: hidden;
         }
 
-        a::before {
+        button::before {
             content: '';
             position: absolute;
             width: 0;
@@ -54,7 +53,7 @@
             transition: all 0.3s ease;
         }
 
-        a:hover::before {
+        button:hover::before {
             width: 100%;
             left: 0;
         }
@@ -68,10 +67,14 @@
 <body>
     <div style="text-align: center;">
         <h1>404</h1>
-        <h3>Maybe this page moved? Got deleted? Is hiding out in quarantine?<br> Never existed in the first place?
-            <br><br> Let's go to <a href="https://nikhilt8144.github.io"><i class="fas fa-home"> Home</i></a> and try from there.
-        </h3>
         <h2>Page Not Found</h2>
+        <h3>Maybe this page moved? Got deleted? Is hiding out in quarantine?<br> Never existed in the first place?
+            <br><br> Let's go to <button onclick="home();"><i class="fas fa-home"> Home</i></button> and try from there.
+        </h3>
     </div>
+    <script>
+        function home(){
+            window.location.href = 'https://nikhilt8144.github.io';
+    </script>
 </body>
 </html>
