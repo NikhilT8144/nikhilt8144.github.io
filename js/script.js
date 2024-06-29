@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function scrollToSection(target) {
     window.scrollTo({
-      top: target.offsetTop - 2rem
+      top: target.offsetTop - 0,
       behavior: 'smooth'
     });
   }
