@@ -1,4 +1,4 @@
-# Nikhil Tiwari's Portfolio
+# Nikhil Tiwari
 
 👋 **Hello! Welcome to my webpage!**
 
