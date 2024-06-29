@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+    <meta name="description" content="Welcome to Physics page by Nikhil Tiwari, this page gives you brief information about Physics and introduces it to you. To know any topic in detail you shall click the `Know More!` link">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="physics, nikhil tiwari, information, study, nikhilt8144, science, space, optics, thermodynamics, classical mechanics, mechanics, modern physics, interesting, amazing, knowledge">
+    <meta name="author" content="Nikhil Tiwari">
+    <meta name="og:title" content="Exploring Physics">
+    <meta name="og:author" content="Nikhil Tiwari">
+    <meta name="og:description" content="Welcome to Physics page by Nikhil Tiwari, this page gives you brief information about Physics and introduces it to you. To know any topic in detail you shall click the `Know More!` link">
+    <title>Exploring Physics</title>
+    <link rel="shortcut icon" href="icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 1.1rem;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: deepskyblue;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+        header h1 {
+            text-align: center;
+            margin: 0;
+        }
+
+        /* Navigation Styles */
+        nav {
+            background-color: deepskyblue;
+            color: #fff;
+            text-align: center;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 4px;
+            margin: 0 20px;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Main Content Styles */
+        main {
+            padding: 20px 0;
+        }
+
+        section {
+            padding: 20px;
+            margin: 20px 0;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s ease;
+        }
+
+        .divx:hover {
+            transform: translateY(-3px);
+        }
+
+        .st {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            background-color: #f9f9f9;
+        }
+
+        .content {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .img-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 150px;
+            margin-left: auto;
+        }
+
+        .img-container img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        h2 {
+            color: black;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #333;
+        }
+
+        /* Scroll to top button */
+        #myBtn {
+            position: fixed;
+            text-align: center;
+            bottom: -4rem;
+            right: 2rem;
+            font-size: 2rem;
+            width: 3rem;
+            height: 3rem;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0;
+            transition: transform 0.5s;
+            z-index: 999;
+        }
+
+        @keyframes slideIn {
+            from {
+                bottom: -4rem;
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            to {
+                bottom: 2rem;
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #myBtn.hide {
+            animation: slideOut 0.5s forwards;
+        }
+
+        @keyframes slideOut {
+            from {
+                bottom: 2rem;
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            to {
+                bottom: -4rem;
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+
+        #myBtn.show {
+            animation: slideIn 0.5s forwards;
+        }
+
+        #myBtn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Social icon styles */
+        .social-icons {
+            font-size: 1.65rem;
+        }
+
+        .social-link {
+            color: #fff;
+            margin-right: 0.4rem;
+            text-decoration: none;
+            border: none;
+            box-shadow: none;
+            transition: font-size 1s ease, color 1s ease-in;
+        }
+
+        .social-link:hover .social-icons {
+            transform: scale(1.4rem);
+        }
+
+        /* Design for specific social icons */
+        .social-link:hover .fa-github {
+            color: #2a2d31;
+        }
+
+        .social-link:hover .fa-facebook-f {
+            color: #3b5998;
+        }
+
+        .social-link:hover .fa-twitter-x {
+            color: #1da1f2;
+        }
+
+        .social-link:hover .fa-instagram {
+            color: #c13584;
+        }
+
+        .social-link:hover .fa-linkedin-in {
+            color: #0077b5;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: deepskyblue;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        /* Responsive Adjustments for Differerent Devices */
+        @media (max-width: 768px) {
+            nav a {
+                display: block;
+                margin: 10px 0;
+            }
+
+            section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .img-container {
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <h1 class="animate__animated animate__fadeInDown">Exploring Physics </h1>
+        </div>
+        <br>
+        <nav class="nav-links animate__animated animate__fadeInDown">
+            <a href="#introduction">Introduction</a>
+            <a href="#mechanics">Mechanics</a>
+            <a href="#thermodynamics">Thermodynamics</a>
+            <a href="#electromagnetism">Electromagnetism</a>
+            <a href="#optics">Optics</a>
+            <a href="#modern-physics">Modern Physics</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <section id="introduction" class="animate__animated animate__fadeIn st">
+                <div class="content">
+                    <h2><i class="fas fa-flask"></i> Introduction to Physics</h2>
+                    <p>Welcome to our physics page!<br>Physics is the study of matter, energy, and the fundamental
+                        forces that govern the behavior of the universe. <a href="javascript:void(0);"
+                            onclick="window.open('https://w.wiki/3j78');">Know More!</a></p>
+                    <p>Explore various branches of physics by navigating through the links above.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Stylised_atom_with_three_Bohr_model_orbits_and_stylised_nucleus.svg/150px-Stylised_atom_with_three_Bohr_model_orbits_and_stylised_nucleus.svg.png"
+                        alt="physics">
+                </div>
+            </section>
+
+            <section id="mechanics" class="animate__animated animate__fadeIn divx">
+                <h2><i class="fas fa-cogs"></i> Mechanics</h2>
+                <p>Mechanics deals with the motion of objects and the forces that cause motion. Topics include
+                    kinematics, dynamics, and statics. <a href="javascript:void(0);"
+                        onclick="window.open('https://w.wiki/_sfTh');">Know More!</a></p>
+            </section>
+
+            <section id="thermodynamics" class="animate__animated animate__fadeIn divx">
+                <h2><i class="fas fa-thermometer-half"></i> Thermodynamics</h2>
+                <p>Thermodynamics focuses on the study of heat and temperature and their relation to energy and work.
+                    Laws of thermodynamics govern the behavior of energy. <a href="javascript:void(0);"
+                        onclick="window.open('https://w.wiki/ANaR');">Know More!</a></p>
+            </section>
+
+            <section id="electromagnetism" class="animate__animated animate__fadeIn divx">
+                <h2><i class="fas fa-bolt"></i> Electromagnetism</h2>
+                <p>Electromagnetism deals with the study of electric and magnetic fields and their interactions with
+                    charged particles. Maxwell's equations describe electromagnetic phenomena. <a
+                        href="javascript:void(0);" onclick="window.open('https://w.wiki/_sfTb');">Know More!</a></p>
+            </section>
+
+            <section id="optics" class="animate__animated animate__fadeIn divx">
+                <h2><i class="fas fa-eye"></i> Optics</h2>
+                <p>Optics explores the behavior and properties of light. Topics include reflection, refraction,
+                    diffraction, and polarization. <a href="javascript:void(0);"
+                        onclick="window.open('https://w.wiki/ANaT');">Know More!</a></p>
+            </section>
+
+            <section id="modern-physics" class="animate__animated animate__fadeIn divx">
+                <h2><i class="fas fa-rocket"></i> Modern Physics</h2>
+                <p>Modern physics encompasses the study of phenomena beyond classical physics, including relativity,
+                    quantum mechanics, and particle physics. <a href="javascript:void(0);"
+                        onclick="window.open('https://w.wiki/4LY9');">Know More!</a></p>
+            </section>
+        </div>
+
+        <button onclick="topFunction()" id="myBtn" title="Go to top"><i style="margin-top: 4px;" class="fas fa-chevron-up"></i></button>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="social-icons animate__animated animate__fadeIn">
+                <a href="#" class="social-link" title="Github"><i class="fab fa-github social-icon"></i></a>
+                <a href="#" class="social-link" title="Facebook"><i class="fab fa-facebook-f social-icon"></i></a>
+                <a href="#" class="social-link" title="X"><i class="fab fa-x-twitter social-icon"></i></a>
+                <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram social-icon"></i></a>
+                <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin-in social-icon"></i></a>
+            </div>
+            <p>&copy; 2024 Nikhil Tiwari. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const sections = document.querySelectorAll("section");
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.intersectionRatio > 0) {
+                        entry.target.classList.add("animate__animated", "animate__fadeIn");
+                    }
+                });
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Smooth scrolling for navigation links
+            const navLinks = document.querySelectorAll("nav a");
+            navLinks.forEach(link => {
+                link.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const targetId = this.getAttribute("href").substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start"
+                        });
+                    }
+                });
+            });
+        });
+
+        // Scroll to top button
+        window.onscroll = function () {
+            scrollFunction()
+        };
+
+        function scrollFunction() {
+            var mybutton = document.getElementById("myBtn");
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.classList.add("show");
+                mybutton.classList.remove("hide");
+            } else {
+                mybutton.classList.remove("show");
+                mybutton.classList.add("hide");
+            }
+        }
+
+        function topFunction() {
+            // Scroll to the top of the page smoothly
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+
+</html>
