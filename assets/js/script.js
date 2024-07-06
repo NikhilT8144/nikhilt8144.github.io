@@ -72,10 +72,10 @@ function home(){
   window.location.href = '/';
 }
 
-function open(url){
-  window.location.href = "https://nikhilt814.github.io" + url;
-}
-
 function reload(){
   window.location.reload();
+}
+
+function open(url){
+  window.location.href = 'https://nikhilt8144.github.io/' + url;
 }
