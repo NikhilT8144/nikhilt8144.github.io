@@ -25,8 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 console.error('Target section not found:', targetId);
             }
-            nav.classList.remove('active'); // Close the menu after clicking on a link
-            menuToggle.classList.remove('menu-open');
         });
     });
 
