@@ -1,16 +1,12 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const menuToggle = document.querySelector('.menu-toggle');
+document.addEventListener("DOMContentLoaded", function () {
+    const menuToggle = document.querySelector('.navbar-toggler');
     const nav = document.querySelector('nav ul');
     const navLinks = document.querySelectorAll('nav ul li a');
 
-    if (menuToggle) {
-        menuToggle.addEventListener('click', function() {
-            nav.classList.toggle('active');
-            menuToggle.classList.toggle('menu-open');
-        });
-    } else {
-        console.error('Menu toggle button not found!');
-    }
+    menuToggle.addEventListener('click', function () {
+        nav.classList.toggle('active');
+        menuToggle.classList.toggle('menu-open');
+    });
 
     function scrollToSection(target) {
         window.scrollTo({
@@ -20,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
             const targetSection = document.getElementById(targetId);
@@ -29,6 +25,8 @@ document.addEventListener("DOMContentLoaded", function() {
             } else {
                 console.error('Target section not found:', targetId);
             }
+            nav.classList.remove('active'); // Close the menu after clicking on a link
+            menuToggle.classList.remove('menu-open');
         });
     });
 
@@ -37,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
         window.scrollTo(0, scrollPosition);
     }
 
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function () {
         localStorage.setItem('scrollPosition', window.pageYOffset);
     });
 
@@ -53,20 +51,18 @@ document.addEventListener("DOMContentLoaded", function() {
     var uservisits = "Visits: " + visitCount;
 });
 
-window.onscroll = function() {
+window.onscroll = function () {
     scrollFunction();
 };
 
 function scrollFunction() {
     var mybutton = document.getElementById("myBtn");
-    if (mybutton) {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            mybutton.classList.add("show");
-            mybutton.classList.remove("hide");
-        } else {
-            mybutton.classList.remove("show");
-            mybutton.classList.add("hide");
-        }
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        mybutton.classList.add("show");
+        mybutton.classList.remove("hide");
+    } else {
+        mybutton.classList.remove("show");
+        mybutton.classList.add("hide");
     }
 }
 
