@@ -1,16 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const menuToggle = document.querySelector('.navbar-toggler');
-    const nav = document.querySelector('nav ul');
     const navLinks = document.querySelectorAll('nav ul li a');
-
-    menuToggle.addEventListener('click', function () {
-        nav.classList.toggle('active');
-        menuToggle.classList.toggle('menu-open');
-    });
-
+    
     function scrollToSection(target) {
+        const spaceAbove = 0.5 * parseFloat(getComputedStyle(document.documentElement).fontSize); // Converts 0.5rem to pixels
         window.scrollTo({
-            top: target.offsetTop - 0,
+            top: target.offsetTop - spaceAbove,
             behavior: 'smooth'
         });
     }
@@ -37,16 +31,11 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem('scrollPosition', window.pageYOffset);
     });
 
-    const visitCookie = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('visit='));
-    let visitCount = 0;
-    if (visitCookie) {
-        visitCount = parseInt(visitCookie.split('=')[1]) || 0;
-    }
+    let visitCount = parseInt(getCookieValue('visit')) || 0;
     visitCount++;
-    document.cookie = `visit=${visitCount}`;
-    var uservisits = "Visits: " + visitCount;
+    setCookie('visit', visitCount);
+
+    console.log("Visits:", visitCount);
 });
 
 window.onscroll = function () {
@@ -54,7 +43,7 @@ window.onscroll = function () {
 };
 
 function scrollFunction() {
-    var mybutton = document.getElementById("myBtn");
+    const mybutton = document.getElementById("myBtn");
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
         mybutton.classList.add("show");
         mybutton.classList.remove("hide");
@@ -71,14 +60,11 @@ function topFunction() {
     });
 }
 
-function home() {
-    window.location.href = '/';
+function getCookieValue(name) {
+    const cookie = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return cookie ? cookie.pop() : '';
 }
 
-function reload() {
-    window.location.reload();
-}
-
-function open(url) {
-    window.location.href = 'https://nikhilt8144.github.io' + url;
+function setCookie(name, value) {
+    document.cookie = name + '=' + value;
 }
