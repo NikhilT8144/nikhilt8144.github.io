@@ -68,3 +68,11 @@ function getCookieValue(name) {
 function setCookie(name, value) {
     document.cookie = name + '=' + value;
 }
+
+function reload(){
+    window.location.reload();
+}
+
+function open(page){
+    window.location.href = 'https://nikhilt8144.github.io/' + page;
+}
