@@ -162,24 +162,6 @@ p {
     background-color: #0056b3;
 }
 
-/* Social icon styles */
-.social-icons {
-    width: 2.5rem;
-}
-
-.social-link {
-    color: #fff;
-    margin-right: 0.4rem;
-    text-decoration: none;
-    border: none;
-    box-shadow: none;
-    transition: font-size 1s ease, color 1s ease-in;
-}
-
-.social-link:hover .social-icons {
-    transform: scale(1.4rem);
-}
-
 /* Footer Styles */
 footer {
     background-color: deepskyblue;
