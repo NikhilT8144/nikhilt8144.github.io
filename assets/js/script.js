@@ -67,3 +67,11 @@ function topFunction() {
     behavior: 'smooth'
   });
 }
+
+function home(){
+  window.location.href = '/';
+}
+
+function reload(){
+  window.location.reload();
+}
