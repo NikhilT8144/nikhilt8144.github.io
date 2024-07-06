@@ -36,10 +36,6 @@ nav ul li a {
     position: relative;
 }
 
-nav ul li a i {
-    margin-right: 0.5rem;
-}
-
 nav ul li a:hover {
     color: #3e8eff;
 }
@@ -48,7 +44,7 @@ nav ul li a::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: -0.2rem;
+    bottom: 0.2rem;
     width: 100%;
     height: 0.16rem;
     background-color: #fff;
@@ -115,40 +111,4 @@ nav ul li a:hover::after {
 
 #myBtn:hover {
     background-color: #0056b3;
-}
-
-/* Responsive styles */
-@media screen and (max-width: 940px) {
-    .menu-toggle {
-        display: block;
-    }
-
-    nav ul {
-        display: none;
-        flex-direction: column;
-        background-color: black;
-        position: absolute;
-        top: 4rem;
-        left: 0;
-        width: 100%;
-        text-align: center;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s;
-    }
-
-    nav ul.active {
-        display: flex;
-        opacity: 1;
-        pointer-events: auto;
-    }
-
-    nav ul li {
-        margin: 0;
-        padding: 1.3rem 0;
-    }
-
-    nav ul li:hover {
-        background-color: #495057;
-    }
 }
