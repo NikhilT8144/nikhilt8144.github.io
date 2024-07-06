@@ -77,5 +77,5 @@ function reload(){
 }
 
 function open(url){
-  window.location.href = 'https://nikhilt8144.github.io/' + url;
+  window.location.href = 'https://nikhilt8144.github.io' + url;
 }
