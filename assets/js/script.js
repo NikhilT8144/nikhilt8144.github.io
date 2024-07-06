@@ -73,6 +73,6 @@ function reload(){
     window.location.reload();
 }
 
-function open(page){
+function load(page){
     window.location.href = 'https://nikhilt8144.github.io/' + page;
 }
