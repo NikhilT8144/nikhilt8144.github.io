@@ -136,10 +136,6 @@ p {
     }
 }
 
-#myBtn.hide {
-    animation: slideOut 0.5s forwards;
-}
-
 @keyframes slideOut {
     from {
         bottom: 2rem;
@@ -156,6 +152,10 @@ p {
 
 #myBtn.show {
     animation: slideIn 0.5s forwards;
+}
+
+#myBtn.hide {
+    animation: slideOut 0.5s forwards;
 }
 
 #myBtn:hover {
