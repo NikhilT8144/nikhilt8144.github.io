@@ -1,35 +1,11 @@
 body {
-    background: linear-gradient(to right, #6a11cb, #2575fc);
-    color: #fff;
+    padding-top: 50px;
 }
 
-.card {
-    background: rgba(255, 255, 255, 0.85);
+.spinner-border {
+    display: none;
 }
 
-.card-title i {
-    animation: rotate 2s linear infinite;
-}
-
-#decodedResult {
-    font-size: 1.2rem;
-    animation: fadeIn 1s ease-in-out;
-}
-
-@keyframes rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+.results {
+    margin-top: 20px;
 }
