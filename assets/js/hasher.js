@@ -11,7 +11,7 @@ document.getElementById('hashForm').addEventListener('submit', function(e) {
     };
 
     // Fetch API endpoint with POST method to your PHP backend
-    fetch('https://your-backend-server.com/managehash/index.php', {
+    fetch('https://nikhilt8144.great-site.net/managehash/index.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
