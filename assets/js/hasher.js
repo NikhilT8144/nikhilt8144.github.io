@@ -10,8 +10,8 @@ document.getElementById('hashForm').addEventListener('submit', function(e) {
         hashType: hashType
     };
 
-    // Fetch API endpoint with POST method
-    fetch('https://nikhilt8144.great-site.net/managehash/index.php', {
+    // Fetch API endpoint with POST method to your PHP backend
+    fetch('https://your-backend-server.com/managehash/index.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -21,10 +21,10 @@ document.getElementById('hashForm').addEventListener('submit', function(e) {
     .then(response => response.json())
     .then(result => {
         // Update UI with success message or result if applicable
-        if (result.hashedResult) {
+        if (result.success) {
             document.getElementById('result').innerHTML = `<p class="animate__animated animate__fadeIn">Hashed Result: ${result.hashedResult}</p>`;
         } else {
-            document.getElementById('result').innerHTML = '<p class="animate__animated animate__fadeIn">Error: Hash result not available</p>';
+            document.getElementById('result').innerHTML = '<p class="animate__animated animate__fadeIn">Error: Unable to hash input</p>';
         }
     })
     .catch(error => {
