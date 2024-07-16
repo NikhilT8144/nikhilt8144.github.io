@@ -1,32 +1,27 @@
-document.getElementById('hashForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+document.getElementById('hashForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-    const hashInput = document.getElementById('hashInput').value.trim();
-    const resultsDiv = document.getElementById('results');
-    const loadingSpinner = document.getElementById('loadingSpinner');
+    const hashInput = document.getElementById('hashInput').value;
+    const hashType = document.getElementById('hashType').value;
+    let decodedResult = '';
 
-    if (!hashInput) {
-        resultsDiv.innerHTML = '<div class="alert alert-danger">Please enter a hash.</div>';
-        return;
+    try {
+        switch (hashType) {
+            case 'md5':
+                decodedResult = CryptoJS.MD5(hashInput).toString(CryptoJS.enc.Hex);
+                break;
+            case 'sha1':
+                decodedResult = CryptoJS.SHA1(hashInput).toString(CryptoJS.enc.Hex);
+                break;
+            case 'sha256':
+                decodedResult = CryptoJS.SHA256(hashInput).toString(CryptoJS.enc.Hex);
+                break;
+            default:
+                decodedResult = 'Unsupported hash type';
+        }
+    } catch (error) {
+        decodedResult = 'Error decoding hash';
     }
 
-    resultsDiv.innerHTML = '';
-    loadingSpinner.style.display = 'inline-block';
-
-    // Example known hashes (In a real scenario, this should come from a server or a larger database)
-    const knownHashes = {
-        '5d41402abc4b2a76b9719d911017c592': 'hello',
-        '098f6bcd4621d373cade4e832627b4f6': 'test',
-        'e99a18c428cb38d5f260853678922e03': 'abc123'
-    };
-
-    setTimeout(() => {
-        loadingSpinner.style.display = 'none';
-
-        if (knownHashes[hashInput]) {
-            resultsDiv.innerHTML = `<div class="alert alert-success">Hash matches with: <strong>${knownHashes[hashInput]}</strong></div>`;
-        } else {
-            resultsDiv.innerHTML = '<div class="alert alert-warning">No match found for the given hash.</div>';
-        }
-    }, 1000);
+    document.getElementById('result').innerHTML = `<p class="animate__animated animate__fadeIn">${decodedResult}</p>`;
 });
