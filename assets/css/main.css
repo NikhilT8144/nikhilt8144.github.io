@@ -76,12 +76,6 @@ body {
     transform: scale(1);
 }
 
-.github{
-    background-color: white;
-    border: none;
-    border-radius: 50%;
-}
-
 #myBtn:hover {
     background-color: #0056b3;
 }
