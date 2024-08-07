@@ -2,7 +2,7 @@
 
 👋 **Hello there, Welcome!**
 
-## • 🙍‍♂️ About Me
+## • 👤 About Me
 
 I'm <a href="https://github.com/NikhilT8144">Nikhil Tiwari</a>, a passionate student currently in the 10th standard. While I may not have extensive professional experience yet, I'm enthusiastic about programming and web development. 
 
