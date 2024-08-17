@@ -19,7 +19,8 @@ document.getElementById('hashForm').addEventListener('submit', function(e) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data),
-        credentials: 'include'  // Include credentials like cookies if needed
+        mode: 'cors' // Ensure CORS mode is set
+        // credentials: 'include' Include credentials like cookies if needed
     })
     .then(response => response.json())
     .then(result => {
