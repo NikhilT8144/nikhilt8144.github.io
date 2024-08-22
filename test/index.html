@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Key Authenticated Client</title>
+    <title>API Communication with Auth and CORS</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -29,7 +27,7 @@
 <body>
 
 <div class="container">
-    <h1 class="mb-4">Fetch Data from Authenticated API</h1>
+    <h1>Secure API Communication</h1>
     <button id="fetchDataBtn" class="btn btn-primary btn-lg">
         <i class="fas fa-download"></i> Fetch Data
     </button>
@@ -40,37 +38,33 @@
 </div>
 
 <script>
-    const fetchDataBtn = document.getElementById('fetchDataBtn');
-    const responseDiv = document.getElementById('response');
-    const spinner = document.querySelector('.spinner');
+    document.getElementById('fetchDataBtn').addEventListener('click', () => {
+        const spinner = document.querySelector('.spinner');
+        const responseDiv = document.getElementById('response');
 
-    fetchDataBtn.addEventListener('click', () => {
-        // Show the spinner while fetching data
-        spinner.style.display = 'block';
+        spinner.style.display = 'block'; // Show the spinner
         responseDiv.textContent = ''; // Clear previous response
 
         fetch('https://nikhilt8144.great-site.net/api.php', {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'X-API-Key': 'nikhilt8144' // Your API key
+                'Content-Type': 'application/json', // Set the content type
+                'X-API-Key': 'nikhilt8144' // API Key for authentication
             }
         })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Unauthorized or invalid request');
             }
-            return response.json();
+            return response.json(); // Parse JSON response
         })
         .then(data => {
-            // Hide the spinner after data is received
-            spinner.style.display = 'none';
-            // Display the response data
-            responseDiv.textContent = JSON.stringify(data, null, 4);
+            spinner.style.display = 'none'; // Hide the spinner
+            responseDiv.textContent = JSON.stringify(data, null, 4); // Display the formatted response
         })
         .catch(error => {
             spinner.style.display = 'none'; // Hide the spinner on error
-            responseDiv.textContent = `Error: ${error.message}`;
+            responseDiv.textContent = `Error: ${error.message}`; // Display the error message
         });
     });
 </script>
