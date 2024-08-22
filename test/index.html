@@ -17,57 +17,19 @@
         }
         .container {
             text-align: center;
-        }
-        .spinner {
-            display: none;
-            margin: 20px auto;
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>API Communication with Vanilla PHP</h1>
-    <button id="fetchDataBtn" class="btn btn-primary btn-lg">
-        <i class="fas fa-download"></i> Fetch Data
-    </button>
-    <div class="spinner-border text-primary spinner" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>
-    <pre id="response" class="mt-4"></pre>
 </div>
 
 <script>
-    const apiKey = 'nikhilt8144'; // Your API key
-
-    document.getElementById('fetchDataBtn').addEventListener('click', () => {
-        const spinner = document.querySelector('.spinner');
-        const responseDiv = document.getElementById('response');
-
-        spinner.style.display = 'block';
-        responseDiv.textContent = '';
-
-        fetch('https://nikhilt8144.great-site.net/api.php', {
-            method: 'GET',
-            headers: {
-                'X-API-Key': apiKey
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Unauthorized or invalid request');
-            }
-            return response.json();
-        })
-        .then(data => {
-            spinner.style.display = 'none';
-            responseDiv.textContent = JSON.stringify(data, null, 4);
-        })
-        .catch(error => {
-            spinner.style.display = 'none';
-            responseDiv.textContent = `Error: ${error.message}`;
-        });
-    });
+fetch('https://nikhilt8144.great-site.net/test.php')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error(error));
 </script>
 
 </body>
