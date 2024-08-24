@@ -1,110 +1,51 @@
 body {
-    background-color: #f0f2f5;
     font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
+    background: #f4f4f4;
+    color: #333;
 }
 
-.chat-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    max-width: 800px;
-    margin: 0 auto;
+header {
+    background: #007bff;
+}
+
+#chat-body {
+    background: #ffffff;
+    border: 1px solid #dedede;
     border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background: white;
-    border: 1px solid #e0e0e0;
-    position: relative;
-}
-
-.chat-header {
-    background-color: #007bff;
-    color: white;
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-    font-size: 1.25rem;
-    font-weight: bold;
-}
-
-.chat-body {
-    flex: 1;
-    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     overflow-y: auto;
-    border-bottom: 1px solid #ddd;
-    background-color: #f9f9f9;
+    padding: 20px;
 }
 
 .message {
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: flex-start;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 70%;
+    line-height: 1.5;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 .message.user {
-    justify-content: flex-end;
-}
-
-.message p {
-    margin: 0;
-    padding: 10px;
-    border-radius: 15px;
-    max-width: 75%;
-    word-wrap: break-word;
-}
-
-.message.user p {
     background-color: #007bff;
     color: white;
-    text-align: right;
+    margin-left: auto;
 }
 
-.message.bot p {
-    background-color: #e0e0e0;
-    color: black;
-    text-align: left;
+.message.bot {
+    background-color: #e9ecef;
+    color: #333;
 }
 
-.chat-input {
-    display: flex;
-    padding: 10px;
-    border-top: 1px solid #ddd;
-    background-color: white;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+textarea {
+    resize: none;
 }
 
-.chat-input input {
-    flex: 1;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    margin-right: 10px;
-}
-
-.chat-input button {
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-.reset-btn {
-    position: absolute;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #dc3545;
-    border: none;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
