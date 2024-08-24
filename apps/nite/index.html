@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nite Chatbot</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/nite.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Nite - Chatbot</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/nite.css">
 </head>
 <body>
+    <div class="container d-flex flex-column vh-100">
+        <header class="text-center py-4 bg-primary text-white">
+            <h1>Nite - Your AI Chatbot</h1>
+            <p>Made by Nikhil Tiwari, 15-year-old from India. This bot is made in India.</p>
+        </header>
 
-<div class="chat-container">
-    <div class="chat-header">
-        Nite - Your AI Assistant
+        <main class="flex-grow-1 d-flex flex-column">
+            <div id="chat-body" class="overflow-auto p-3 bg-light border rounded">
+                <!-- Chat messages will appear here -->
+            </div>
+            <div class="d-flex align-items-center p-2 bg-light border-top">
+                <textarea id="userMessage" class="form-control me-2" rows="1" placeholder="Type your message here..."></textarea>
+                <button id="sendButton" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Send</button>
+                <button id="resetButton" class="btn btn-danger ms-2"><i class="fa-solid fa-trash"></i> Reset</button>
+            </div>
+        </main>
     </div>
-    <div class="chat-body" id="chat-body">
-        <!-- Chat messages will appear here -->
-    </div>
-    <div class="chat-input">
-        <input type="text" id="userMessage" placeholder="Type your message here..." autocomplete="off">
-        <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
-    </div>
-</div>
 
-<button id="resetButton" class="reset-btn">Reset Chat</button>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/assets/js/nite.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/nite.js"></script>
 </body>
 </html>
