@@ -1,7 +1,7 @@
 Option Explicit
 
 ' ---------------------------------------------------------------------------------
-' Script Name: Nite Application
+' Script Name: Computer Manager
 ' Description: A utility script for system information and various commands
 ' Developer: Nikhil Tiwari
 ' Created on: 12-09-2021
@@ -101,7 +101,7 @@ Function GetOSProductKey()
 End Function
 
 Do
-    X = LCase(InputBox("Enter command (start with '$'):", "Nite Application"))
+    X = LCase(InputBox("Enter command (start with '$'):", "Computer Manager"))
 
     Select Case X
         Case "$pc"
@@ -125,35 +125,35 @@ Do
             MsgBox strMsg, vbInformation, "Nite - PC Check"
 
         Case "$dev"
-            MsgBox "The developer of this app is Nikhil Tiwari. \nDigital Signature: Nikhil Tiwari - Verified Developer.", vbInformation, "Nite"
+            MsgBox "The developer of this app is Nikhil Tiwari. Digital Signature: Nikhil Tiwari - Verified Developer.", vbInformation, "Computer Manager"
             
         Case "$info"
-            MsgBox "Info: This application is made in VBScript. Developer: Nikhil Tiwari. Created on 12-09-2021. \nDigital Signature: Nikhil Tiwari - Verified Developer.", vbInformation, "Nite"
+            MsgBox "Info: This application is made in VBScript. Developer: Nikhil Tiwari. Created on 12-09-2021. Digital Signature: Nikhil Tiwari - Verified Developer.", vbInformation, "Computer Manager"
             
         Case "$run"
-            appName = InputBox("Enter the common name of the application or script to run (e.g., 'notepad', 'calc'):", "Nite - Run Application")
+            appName = InputBox("Enter the common name of the application or script to run (e.g., 'notepad', 'calc'):", "Computer Manager - Run Application")
             
             ' Execute the command as if using the Run dialog
             cmdToRun = appName
             On Error Resume Next
             objShell.Run cmdToRun, 1, False
             If Err.Number <> 0 Then
-                MsgBox "Error: Unable to run the application or script. Please check the name and try again.", vbCritical, "Nite - Error"
+                MsgBox "Error: Unable to run the application or script. Please check the name and try again.", vbCritical, "Computer Manager - Error"
             End If
             On Error GoTo 0
 
         Case "$update"
-            MsgBox "Redirecting to the update page.", vbInformation, "Nite - Updater"
-            objShell.Run "https://nikhilt8144.github.io/apps/Nite.vbs"
+            MsgBox "Redirecting to the update page.", vbInformation, "Computer Manager - Updater"
+            objShell.Run "https://nikhilt8144.github.io/apps/cm/Computer-Manager.vbs"
             
         Case "$version"
-            MsgBox "The version of the application is v1.2", vbInformation, "Nite - Version"
+            MsgBox "The version of the application is v1.0", vbInformation, "Computer Manager - Version"
             
         Case "$time"
-            MsgBox "Current Time: " & Now, vbInformation, "Nite"
+            MsgBox "Current Time: " & Now, vbInformation, "Computer Manager"
             
         Case "$commands"
-            MsgBox "Commands: $pc, $dev, $info, $run, $update, $version, $time, $help, $exit", vbInformation, "Nite - Help"
+            MsgBox "Commands: $pc, $dev, $info, $run, $update, $version, $time, $help, $exit", vbInformation, "Computer Manager - Help"
             
         Case "$help"
             MsgBox "Help: Use the following commands to interact with the application: " & vbCrLf & _
@@ -166,14 +166,14 @@ Do
                    "$time - Show current time" & vbCrLf & _
                    "$commands - List all commands" & vbCrLf & _
                    "$help - Show this help message" & vbCrLf & _
-                   "$exit - Exit the application", vbInformation, "Nite - Help"
+                   "$exit - Exit the application", vbInformation, "Computer Manager - Help"
 
         Case "$exit"
-            MsgBox "App Terminated!", vbInformation, "Nite - System"
+            MsgBox "App Terminated!", vbInformation, "Computer Manager - System"
             Exit Do
             
         Case Else
-            MsgBox "Error: The command entered was invalid.", vbCritical, "Nite - Error"
+            MsgBox "Error: The command entered was invalid.", vbCritical, "Computer Manager - Error"
     End Select
 Loop
 
