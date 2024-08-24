@@ -6,7 +6,7 @@ $(document).ready(function() {
         if (message !== '') {
             displayMessage('user', message);
 
-            $.post('save_chat.php', { userMessage: message }, function(data) {
+            $.post('https://nikhilt8144.great-site.net/chatbot.php', { userMessage: message }, function(data) {
                 if (data.botResponse) {
                     displayMessage('bot', data.botResponse);
                     chatHistory.push({ user: message, bot: data.botResponse });
