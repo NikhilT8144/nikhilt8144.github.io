@@ -11,12 +11,17 @@ $(document).ready(function() {
 
             // Send to PHP for response
             $.post('https://nikhilt8144.great-site.net/chatbot.php', { userMessage: message }, function(data) {
-                displayMessage('bot', data.botResponse);
-                // Save the chat history locally
-                chatHistory.push({ user: message, bot: data.botResponse });
-                localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+                if (data.botResponse) {
+                    displayMessage('bot', data.botResponse);
+                    // Save the chat history locally
+                    chatHistory.push({ user: message, bot: data.botResponse });
+                    localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+                } else {
+                    displayMessage('bot', 'Sorry, there was an error generating the response.');
+                }
             }, 'json').fail(function(xhr, status, error) {
                 console.error('Error:', error);
+                displayMessage('bot', 'Sorry, there was an error communicating with the server.');
             });
 
             // Clear input
