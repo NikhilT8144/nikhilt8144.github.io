@@ -1,51 +1,43 @@
+$(document).ready(function() {
     // Store chat history locally
     let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
 
     // Function to send message
     function sendMessage() {
-        const message = document.getElementById('userMessage').value.trim();
+        const message = $('#userMessage').val().trim();
         if (message !== '') {
             // Display the user's message
-            displayMessage('You', message);
+            displayMessage('user', message);
 
             // Send to PHP for response
-            fetch('https://nikhilt8144.great-site.net/chatbot.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `userMessage=${encodeURIComponent(message)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                displayMessage('Nite', data.botResponse);
+            $.post('https://nikhilt8144.great-site.net/chatbot.php', { userMessage: message }, function(data) {
+                displayMessage('bot', data.botResponse);
                 // Save the chat history locally
                 chatHistory.push({ user: message, bot: data.botResponse });
                 localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
-            })
-            .catch(error => console.error('Error:', error));
+            }, 'json').fail(function(xhr, status, error) {
+                console.error('Error:', error);
+            });
 
             // Clear input
-            document.getElementById('userMessage').value = '';
+            $('#userMessage').val('');
         }
     }
 
     // Function to display message
     function displayMessage(sender, message) {
-        const chatBody = document.getElementById('chat-body');
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message');
-        messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
-        chatBody.appendChild(messageElement);
-        chatBody.scrollTop = chatBody.scrollHeight; // Auto-scroll
+        const messageElement = $('<div>').addClass('message').addClass(sender);
+        messageElement.html(`<p>${message}</p>`);
+        $('#chat-body').append(messageElement);
+        $('#chat-body').scrollTop($('#chat-body')[0].scrollHeight); // Auto-scroll
     }
 
     // Function to load chat history from local storage
     function loadChatHistory() {
         if (chatHistory.length > 0) {
             chatHistory.forEach(chat => {
-                displayMessage('You', chat.user);
-                displayMessage('Nite', chat.bot);
+                displayMessage('user', chat.user);
+                displayMessage('bot', chat.bot);
             });
         }
     }
@@ -54,9 +46,19 @@
     function resetChat() {
         localStorage.removeItem('chatHistory');
         chatHistory = [];
-        document.getElementById('chat-body').innerHTML = '';
+        $('#chat-body').empty();
     }
 
-    window.onload = function() {
-        loadChatHistory();
-    };
+    // Event listeners
+    $('#sendButton').click(sendMessage);
+    $('#userMessage').on('keypress', function(event) {
+        if (event.which === 13 && !event.shiftKey) { // Enter key without Shift
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+    $('#resetButton').click(resetChat);
+
+    // Load chat history on page load
+    loadChatHistory();
+});
