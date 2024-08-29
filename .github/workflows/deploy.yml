@@ -3,7 +3,7 @@ name: Build and Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # The branch you want to deploy from (e.g., main)
+      - main  # Ensure you're pushing to this branch
 
 jobs:
   build:
@@ -19,17 +19,10 @@ jobs:
           node-version: '14'
 
       - name: Inject Google Apps Script URL
-        run: |
-          echo "window.SCRIPT_URL = '${{ secrets.SCRIPT_URL }}';" > test/env.js
-
-      - name: Build static site
-        run: |
-          # If you have any build steps, include them here. For example:
-          # npm install && npm run build
-          echo "Build step (if needed)"
+        run: echo "window.SCRIPT_URL = '${{ secrets.SCRIPT_URL }}';" > test/env.js  # Ensure this creates the file
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./  # Your deployment directory (set to the root directory if your index.html is in the root)
+          publish_dir: ./test  # Deploy the test directory
