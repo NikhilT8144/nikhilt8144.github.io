@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Page</title>
-    <script src="env.js"></script> 
 </head>
 <body>
     <h1>Testing Proxy Setup</h1>
@@ -20,6 +19,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    document.getElementById('result').textContent = "Error fetching data.";
                 });
         });
     </script>
