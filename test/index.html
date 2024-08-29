@@ -1,26 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CORS Test</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proxy Test</title>
 </head>
 <body>
-    <h1>CORS Test</h1>
-    <button id="testButton">Test CORS Request</button>
-    <p id="result"></p>
+  <h1>Proxy Data Test</h1>
+  <p id="result">Fetching data...</p>
 
-    <script>
-        document.getElementById('testButton').addEventListener('click', function() {
-            fetch('https://script.google.com/macros/s/AKfycby_bHhdpNls5EdmJc4VjRWVkZ3xtka6lFD8l8CkUsyyDpb5q3mXCKOqaq7noQYflIlo/exec')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').textContent = "Response: " + data.message;
-            })
-            .catch(error => {
-                document.getElementById('result').textContent = "Error: " + error.message;
-            });
-        });
-    </script>
+  <script>
+    fetch('GSCRIPT_TEST_PROXY_URL')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('result').textContent = data;
+      })
+      .catch(error => {
+        document.getElementById('result').textContent = "Error fetching data";
+        console.error('Error:', error);
+      });
+  </script>
 </body>
 </html>
