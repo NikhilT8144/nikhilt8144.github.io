@@ -3,34 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Communication with Vanilla PHP</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f5f5f5;
-        }
-        .container {
-            text-align: center;
-    </style>
+    <title>CORS Test</title>
 </head>
 <body>
+    <h1>CORS Test</h1>
+    <button id="testButton">Test CORS Request</button>
+    <p id="result"></p>
 
-<div class="container">
-    <h1>API Communication with Vanilla PHP</h1>
-</div>
-
-<script>
-fetch('https://nikhilt8144.great-site.net/test.php')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error(error));
-</script>
-
+    <script>
+        document.getElementById('testButton').addEventListener('click', function() {
+            fetch('https://nikhilt8144.great-site.net/test.php')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = "Response: " + data.message;
+            })
+            .catch(error => {
+                document.getElementById('result').textContent = "Error: " + error.message;
+            });
+        });
+    </script>
 </body>
 </html>
