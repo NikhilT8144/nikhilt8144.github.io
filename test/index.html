@@ -9,8 +9,9 @@
   <h1>Proxy Data Test</h1>
   <p id="result">Fetching data...</p>
 
+  <script src="env.js"></script>
   <script>
-    fetch('GSCRIPT_TEST_PROXY_URL')
+    fetch(window.SCRIPT_URL)
       .then(response => response.text())
       .then(data => {
         document.getElementById('result').textContent = data;
