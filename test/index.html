@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proxy Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <script src="env.js"></script> 
 </head>
 <body>
-  <h1>Proxy Data Test</h1>
-  <p id="result">Fetching data...</p>
+    <h1>Testing Proxy Setup</h1>
+    <button id="fetchData">Fetch Data</button>
+    <div id="result"></div>
 
-  <script src="env.js"></script>
-  <script>
-    fetch(window.SCRIPT_URL)
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('result').textContent = data;
-      })
-      .catch(error => {
-        document.getElementById('result').textContent = "Error fetching data";
-        console.error('Error:', error);
-      });
-  </script>
+    <script>
+        document.getElementById('fetchData').addEventListener('click', () => {
+            fetch(window.SCRIPT_URL)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('result').textContent = data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
 </body>
 </html>
