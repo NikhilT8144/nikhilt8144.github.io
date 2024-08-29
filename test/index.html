@@ -13,7 +13,7 @@
 
     <script>
         document.getElementById('fetchData').addEventListener('click', () => {
-            fetch(window.SCRIPT_URL)
+            fetch('https://script.google.com/macros/s/AKfycby_bHhdpNls5EdmJc4VjRWVkZ3xtka6lFD8l8CkUsyyDpb5q3mXCKOqaq7noQYflIlo/exec')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('result').textContent = data;
