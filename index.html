@@ -1,110 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nikhil Tiwari</title>
-    <link rel="icon" href="/assets/img/icon.png">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/main.css">
-</head>
-
-<body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/"><img src="/assets/img/i_github.png" width="40" height="40" class="github" style="background-color: white;border: none;border-radius: 50%;"></img> Nikhil Tiwari</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About Me</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#projects">Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <section id="about" class="py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 offset-md-2 text-center">
-                    <h2 class="display-4"><img src="/assets/img/i_aboutme.png" width="60" height="60" style="margin-bottom: 12px;"></img> About Me</h2>
-                    <p class="lead">👨‍🎓 I am Nikhil Tiwari, a Class 10th student passionate about web development and
-                        science. I enjoy learning new technologies and building projects.</p>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nikhil Tiwari</title>
+        <!-- Icon -->
+        <link rel="icon" href="/assets/img/icon.png">
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <!-- Animate -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <!-- Clarity -->
+        <script type="text/javascript">
+            (function (c, l, a, r, i, t, y) {
+                c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+                t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+                y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+            })(window, document, "clarity", "script", "nurdjnsopq");
+        </script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/"><img src="/assets/img/i_github.png" width="40" height="40" class="github"
+                        style="background-color: white;border: none;border-radius: 50%;"></img> Nikhil Tiwari</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#about">About Me</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#projects">Projects</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#contact">Contact</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section id="projects" class="py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 offset-md-2 text-center">
-                    <h2 class="display-4"><img src="/assets/img/i_projects.png" width="60" height="60" style="margin-bottom: 12px;"></img> Projects</h2>
-                    <p class="lead">Here are some of my projects:</p>
-                    <!-- Add your projects with icons and details -->
-                    <div class="card bg-transparent rounded border-0">
-                        <div class="card-body">
-                            <h5 class="card-title"><img src="/assets/img/i_portfolio.png" width="50" height="50"></img> Portfolio Website</h5>
-                            <p class="card-text">A personal portfolio website created using HTML, CSS, JS, and
-                                Bootstrap.</p>
-                            <button onclick="reload();" class="btn btn-primary">View Project</button>
-                        </div>
-                    </div>
-                    <div class="card bg-transparent rounded border-0 mt-3">
-                        <div class="card-body">
-                            <h5 class="card-title"><img src="/assets/img/i_physics.png" width="50" height="50"></img> Physics Page</h5>
-                            <p class="card-text">Created a dedicated webpage providing an overview of key Physics
-                                principles and concepts.</p>
-                            <button onclick="load('physics');" class="btn btn-primary">View Project</button>
-                        </div>
-                    </div>
-                    <div class="card bg-transparent rounded border-0 mt-3">
-                        <div class="card-body">
-                            <h5 class="card-title"><img src="/assets/img/i_maths.png" width="50" height="50"></img> Mathematics Page</h5>
-                            <p class="card-text">Created a dedicated webpage providing an overview of key Mathematics
-                                principles and concepts.</p>
-                            <button onclick="load('maths');" class="btn btn-primary">View Project</button>
-                        </div>
+        </nav>
+        <section id="about" class="py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2 text-center">
+                        <h2 class="display-4"><img src="/assets/img/i_aboutme.png" width="60" height="60"
+                                style="margin-bottom: 12px;"></img> About Me</h2>
+                        <p class="lead">👨‍🎓 I am Nikhil Tiwari, a Class 10th student passionate about web development and
+                            science. I enjoy learning new technologies and building projects.</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section id="contact" class="py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 offset-md-2 text-center">
-                    <h2 class="display-4"><img src="/assets/img/i_contactme.png" width="60" height="60" style="margin-bottom: 12px;"></img> Contact Me</h2>
-                    <p class="lead"><img src="/assets/img/i_email.png" width="30" height="30"> Contact information is yet to be added!</p>
+        </section>
+        <section id="projects" class="py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2 text-center">
+                        <h2 class="display-4"><img src="/assets/img/i_projects.png" width="60" height="60"
+                                style="margin-bottom: 12px;"></img> Projects</h2>
+                        <p class="lead">Here are some of my projects:</p>
+                        <!-- Add your projects with icons and details -->
+                        <div class="card bg-transparent rounded border-0">
+                            <div class="card-body">
+                                <h5 class="card-title"><img src="/assets/img/i_portfolio.png" width="50" height="50"></img>
+                                    Portfolio Website</h5>
+                                <p class="card-text">A personal portfolio website created using HTML, CSS, JS, and
+                                    Bootstrap.</p>
+                                <button onclick="reload();" class="btn btn-primary">View Project</button>
+                            </div>
+                        </div>
+                        <div class="card bg-transparent rounded border-0 mt-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><img src="/assets/img/i_physics.png" width="50" height="50"></img>
+                                    Physics Page</h5>
+                                <p class="card-text">Created a dedicated webpage providing an overview of key Physics
+                                    principles and concepts.</p>
+                                <button onclick="load('physics');" class="btn btn-primary">View Project</button>
+                            </div>
+                        </div>
+                        <div class="card bg-transparent rounded border-0 mt-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><img src="/assets/img/i_maths.png" width="50" height="50"></img>
+                                    Mathematics Page</h5>
+                                <p class="card-text">Created a dedicated webpage providing an overview of key Mathematics
+                                    principles and concepts.</p>
+                                <button onclick="load('maths');" class="btn btn-primary">View Project</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-chevron-up"></i></button>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.js"></script>
-    <script src="/assets/js/main.js" defer></script>
-
-</body>
-
+        </section>
+        <section id="contact" class="py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2 text-center">
+                        <h2 class="display-4"><img src="/assets/img/i_contactme.png" width="60" height="60"
+                                style="margin-bottom: 12px;"></img> Contact Me</h2>
+                        <p class="lead"><img src="/assets/img/i_email.png" width="30" height="30"> Contact information is
+                            yet to be added!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-chevron-up"></i></button>
+        <!-- Jquery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- Popper -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <!-- Bootstrap -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <!-- Animate -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.js"></script>
+        <!-- Custom JS -->
+        <script src="/assets/js/main.js" defer></script>
+    </body>
 </html>
