@@ -3,66 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Page with AES Decryption</title>
-    <!-- Include CryptoJS from CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <title>Test Page with Proxy</title>
 </head>
 <body>
-    <h1>Testing Proxy Bypass with AES</h1>
+    <h1>Testing Proxy Setup</h1>
     <button id="fetchData">Fetch Data</button>
     <div id="result"></div>
 
     <script>
-        // Function to simulate AES decryption using CryptoJS
-        function decryptAES() {
-            // The values that InfinityFree sends (placeholders for the demo)
-            var a = CryptoJS.enc.Hex.parse("f655ba9d09a112d4968c63579db590b4"); // Key
-            var b = CryptoJS.enc.Hex.parse("98344c2eee86c3994890592585b49f80"); // IV
-            var c = CryptoJS.enc.Hex.parse("38e5207ba3a4814bf0fdc1d506b7f0cd"); // Encrypted text
-
-            // Decrypt using CryptoJS AES
-            var decrypted = CryptoJS.AES.decrypt(
-                { ciphertext: c }, 
-                a, 
-                { iv: b, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
-            );
-
-            // Convert decrypted data to hex
-            var decryptedHex = decrypted.toString(CryptoJS.enc.Hex);
-            return decryptedHex;
-        }
-
-        // Set the __test cookie with the decrypted value
-        function setCookie() {
-            var decryptedValue = decryptAES(); // Get the decrypted value
-            var cookieName = "__test";
-            var days = 365;
-
-            // Set the cookie
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            var expires = "; expires=" + date.toUTCString();
-            document.cookie = cookieName + "=" + decryptedValue + expires + "; path=/";
-        }
-
-        // Function to fetch the data from Google Apps Script proxy
-        async function fetchData() {
-            // Set the necessary cookie before fetching the data
-            setCookie();
-
-            // Now make the request to the proxy
-            try {
-                let response = await fetch('https://script.google.com/macros/s/AKfycbyJwXNyrsj2uVqXCWTKOWlwt0m1CCfppiHwBFP6_TkRmZ42FC1gu4YFZOyosNIR6ewc/exec');
-                let data = await response.text();
-                document.getElementById('result').textContent = data;
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                document.getElementById('result').textContent = "Error fetching data";
-            }
-        }
-
-        // Event listener for the button
-        document.getElementById('fetchData').addEventListener('click', fetchData);
+        document.getElementById('fetchData').addEventListener('click', () => {
+            fetch('https://script.google.com/macros/s/AKfycbyJwXNyrsj2uVqXCWTKOWlwt0m1CCfppiHwBFP6_TkRmZ42FC1gu4YFZOyosNIR6ewc/exec')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').textContent = data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
     </script>
 </body>
 </html>
