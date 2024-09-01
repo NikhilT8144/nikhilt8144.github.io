@@ -1,26 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Page with Proxy</title>
+    <title>Test Page</title>
 </head>
 <body>
-    <h1>Testing Proxy Setup</h1>
-    <button id="fetchData">Fetch Data</button>
-    <div id="result"></div>
-
+    <script type="text/javascript" src="/assets/js/aes.js"></script>
     <script>
-        document.getElementById('fetchData').addEventListener('click', () => {
-            fetch('https://nikhilt8144.great-site.net/?i=0%00%00%00')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('result').textContent = data;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+        function toNumbers(hexString) {
+            var result = [];
+            hexString.replace(/(..)/g, function (pair) {
+                result.push(parseInt(pair, 16));
+            });
+            return result;
+        }
+
+        function toHex(arr) {
+            var hexString = "";
+            for (var i = 0; i < arr.length; i++) {
+                hexString += (arr[i] < 16 ? "0" : "") + arr[i].toString(16);
+            }
+            return hexString.toLowerCase();
+        }
+
+        // Define encrypted values as arrays of numbers
+        var encryptedValue1 = toNumbers("f655ba9d09a112d4968c63579db590b4");
+        var encryptedValue2 = toNumbers("98344c2eee86c3994890592585b49f80");
+        var encryptedValue3 = toNumbers("11ef542659e8da1c13564c11fc693d66");
+
+        // Perform decryption
+        var decryptedValue = slowAES.decrypt(encryptedValue3, 2, encryptedValue1, encryptedValue2);
+
+        // Set cookie with cross-site access
+        document.cookie = "__test=" + toHex(decryptedValue) + "; expires=Thu, 31-Dec-37 23:55:55 GMT; path=/; SameSite=None; Secure";
+
+        // Fetch data from the final page
+        fetch("https://nikhilt8144.great-site.net/test.php?i=1", {
+            method: 'GET',
+            credentials: 'include', // Include cookies with the request
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Data fetched successfully:", data);
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
         });
+
+        // Optional redirection, if needed
+        // location.href = "https://nikhilt8144.great-site.net/test.php?i=1";
     </script>
+    <noscript>
+        This site requires Javascript to work, please enable Javascript in your browser or use a browser with Javascript support.
+    </noscript>
 </body>
 </html>
