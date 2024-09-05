@@ -1,59 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Test Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlify Proxy Test</title>
 </head>
 <body>
-    <script type="text/javascript" src="/assets/js/aes.js"></script>
+    <h1>Netlify Proxy Test</h1>
+    
+    <button onclick="testGet()">Test GET Request</button>
+    <button onclick="testPost()">Test POST Request</button>
+
+    <pre id="result"></pre>
+
     <script>
-        function toNumbers(hexString) {
-            var result = [];
-            hexString.replace(/(..)/g, function (pair) {
-                result.push(parseInt(pair, 16));
-            });
-            return result;
+        function testGet() {
+            fetch('/.netlify/functions/proxy?targetUrl=https://nikhilt8144.great-site.net/api')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
         }
 
-        function toHex(arr) {
-            var hexString = "";
-            for (var i = 0; i < arr.length; i++) {
-                hexString += (arr[i] < 16 ? "0" : "") + arr[i].toString(16);
-            }
-            return hexString.toLowerCase();
+        function testPost() {
+            fetch('/.netlify/functions/proxy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    targetUrl: 'https://nikhilt8144.great-site.net/api',
+                    body: { key: 'value', another_key: 'another_value' }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.error('Error:', error));
         }
-
-        // Define encrypted values as arrays of numbers
-        var encryptedValue1 = toNumbers("f655ba9d09a112d4968c63579db590b4");
-        var encryptedValue2 = toNumbers("98344c2eee86c3994890592585b49f80");
-        var encryptedValue3 = toNumbers("11ef542659e8da1c13564c11fc693d66");
-
-        // Perform decryption
-        var decryptedValue = slowAES.decrypt(encryptedValue3, 2, encryptedValue1, encryptedValue2);
-
-        // Set cookie with cross-site access
-        document.cookie = "__test=" + toHex(decryptedValue) + "; expires=Thu, 31-Dec-37 23:55:55 GMT; path=/; SameSite=None; Secure";
-
-        // Fetch data from the final page
-        fetch("https://nikhilt8144.great-site.net/test.php?i=1", {
-            method: 'GET',
-            credentials: 'include', // Include cookies with the request
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Data fetched successfully:", data);
-        })
-        .catch(error => {
-            console.error("Error fetching data:", error);
-        });
-
-        // Optional redirection, if needed
-        // location.href = "https://nikhilt8144.great-site.net/test.php?i=1";
     </script>
-    <noscript>
-        This site requires Javascript to work, please enable Javascript in your browser or use a browser with Javascript support.
-    </noscript>
 </body>
 </html>
