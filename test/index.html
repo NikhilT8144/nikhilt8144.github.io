@@ -15,7 +15,7 @@
 
     <script>
         function testGet() {
-            fetch('https://nikhilt8144.netlify.app/netlify/functions/proxy?targetUrl=https://nikhilt8144.great-site.net/api')
+            fetch('https://nikhilt8144.netlify.app/netlify/functions/proxy.js?targetUrl=https://nikhilt8144.great-site.net/api')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('result').textContent = JSON.stringify(data, null, 2);
@@ -24,7 +24,7 @@
         }
 
         function testPost() {
-            fetch('https://nikhilt8144.netlify.app/netlify/functions/proxy', {
+            fetch('https://nikhilt8144.netlify.app/netlify/functions/proxy.js', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
