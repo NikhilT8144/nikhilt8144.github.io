@@ -33,7 +33,7 @@ exports.handler = async function(event, context) {
     if (event.httpMethod === 'OPTIONS') {
         return {
             statusCode: 200,
-            headers,
+            headers, // Ensure CORS headers are present during preflight response
             body: JSON.stringify({ message: "CORS preflight success" }),
         };
     }
@@ -71,11 +71,21 @@ exports.handler = async function(event, context) {
             };
         }
 
-        const data = await response.json();
+        // Check if the response has a JSON content type
+        const contentType = response.headers.get('Content-Type');
+        let data;
+
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            // Handle non-JSON response or empty response
+            data = await response.text(); // Capture as text in case it's not JSON
+        }
+
         return {
             statusCode: 200,
             headers,
-            body: JSON.stringify(data),
+            body: JSON.stringify({ data }), // Return the data (could be JSON or plain text)
         };
     } catch (error) {
         return {
