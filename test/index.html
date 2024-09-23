@@ -3,43 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netlify Proxy Test</title>
+    <title>Serv00.com Proxy Test</title>
 </head>
 <body>
-    <h1>Netlify Proxy Test</h1>
-    
-    <button onclick="testGet()">Test GET Request</button>
-    <button onclick="testPost()">Test POST Request</button>
-
-    <pre id="result"></pre>
-
     <script>
-        function testGet() {
-            fetch('https://nikhilt8144.netlify.app/netlify/functions/proxy.js?targetUrl=https://nikhilt8144.great-site.net/api')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-                })
-                .catch(error => console.error('Error:', error));
-        }
+        fetch('https://nikhilt8144.serv00.net/proxy.php?url=https://nikhilt8144.serv00.net/text.txt')
+  .then(function(response) {
+    return response.text();
+  })
+  .then(function(data) {
+    console.log(data);
+  })
+  .catch(function(error) {
+    console.error('Error:', error);
+  });
 
-        function testPost() {
-            fetch('https://nikhilt8144.netlify.app/netlify/functions/proxy.js', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    targetUrl: 'https://nikhilt8144.great-site.net/api',
-                    body: { key: 'value', another_key: 'another_value' }
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-            })
-            .catch(error => console.error('Error:', error));
-        }
     </script>
 </body>
 </html>
