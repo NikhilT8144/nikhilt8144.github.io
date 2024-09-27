@@ -152,7 +152,7 @@ function convert() {
     result.textContent = "";
     error.textContent = "";
 
-    // Check for empty input
+    // Check for empty input or invalid input
     if (inputValue === "" || inputValue === "Enter value here") {
         error.textContent = "Error: Input cannot be empty!";
         return;
@@ -161,8 +161,8 @@ function convert() {
     // Try to parse the input as a float
     const value = parseFloat(inputValue);
     
-    if (isNaN(value)) {
-        error.textContent = "Error: Invalid number!";
+    if (isNaN(value) || value < 0) {
+        error.textContent = "Error: Invalid number or negative value!";
         return;
     }
 
