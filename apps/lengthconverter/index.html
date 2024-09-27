@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Length Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/lengthconverter.css">
+</head>
+<body>
+    <div class="container text-center mt-5 animate__animated animate__fadeIn">
+        <i class="fas fa-ruler-horizontal fa-3x mb-3"></i>
+        <h1 class="mb-4">Length Converter</h1>
+
+        <!-- Input field for the value -->
+        <label for="value-input" class="form-label">Enter value:</label>
+        <input type="text" class="form-control mx-auto" id="value-input" placeholder="Enter value here" onfocus="clearPlaceholder()" onblur="restorePlaceholder()" onkeydown="checkEnter(event)">
+        
+        <!-- Dropdown for initial unit selection -->
+        <label for="from-unit" class="form-label">From:</label>
+        <select id="from-unit" class="form-select">
+            <option value="mm">Millimeters (mm)</option>
+            <option value="cm">Centimeters (cm)</option>
+            <option value="dm">Decimeters (dm)</option>
+            <option value="m">Meters (m)</option>
+            <option value="dam">Decameters (dam)</option>
+            <option value="km">Kilometers (km)</option>
+            <option value="in">Inches (in)</option>
+            <option value="ft">Feet (ft)</option>
+            <option value="yd">Yards (yd)</option>
+            <option value="mi">Miles (mi)</option>
+        </select>
+
+        <!-- Dropdown for final unit selection -->
+        <label for="to-unit" class="form-label">To:</label>
+        <select id="to-unit" class="form-select">
+            <option value="mm">Millimeters (mm)</option>
+            <option value="cm">Centimeters (cm)</option>
+            <option value="dm">Decimeters (dm)</option>
+            <option value="m">Meters (m)</option>
+            <option value="dam">Decameters (dam)</option>
+            <option value="km">Kilometers (km)</option>
+            <option value="in">Inches (in)</option>
+            <option value="ft">Feet (ft)</option>
+            <option value="yd">Yards (yd)</option>
+            <option value="mi">Miles (mi)</option>
+        </select>
+
+        <!-- Button to trigger conversion -->
+        <button class="btn btn-primary mt-3" onclick="convert()">
+            <i class="fas fa-exchange-alt"></i> Convert
+        </button>
+
+        <!-- Result and error display -->
+        <p id="result" class="mt-4"></p>
+        <p id="error" class="mt-2 text-danger"></p>
+
+        <!-- Link to learn more about length units -->
+        <p class="mt-4">
+            <a href="https://en.wikipedia.org/wiki/Unit_of_length" target="_blank" class="text-info">Learn more about units of length</a>
+        </p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/lengthconverter.js"></script>
+</body>
+</html>
