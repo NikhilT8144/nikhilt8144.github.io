@@ -52,8 +52,9 @@ function convert() {
     result.classList.add('animate__animated', 'animate__fadeInUp');
 }
 
-// Function to exit the app (close or redirect)
-function exitApp() {
-    // Close the window or redirect to another page
-    window.close(); // Note: May not work in all browsers
+// Function to check if the Enter key is pressed
+function checkEnter(event) {
+    if (event.key === 'Enter') {
+        convert();
+    }
 }
