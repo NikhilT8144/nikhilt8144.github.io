@@ -1,0 +1,13 @@
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+input::placeholder {
+    color: gray;
+}
+
+#value-input {
+    width: 300px;
+    text-align: center;
+    color: gray;
+}
