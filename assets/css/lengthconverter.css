@@ -1,4 +1,4 @@
-body {
+/* body {
     font-family: 'Poppins', sans-serif;
     background-color: #f0f0f0;
 }
@@ -11,4 +11,71 @@ input::placeholder {
     width: 300px;
     text-align: center;
     color: gray;
+}
+*/
+
+/* Apply the Poppins font and make body responsive */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f0f0;
+    padding: 20px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 100%;
+}
+
+h1 {
+    font-weight: 600;
+    color: #007bff;
+}
+
+/* Custom input and button styles */
+input[type="text"] {
+    padding: 10px;
+    width: 100%;
+    max-width: 400px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin: 10px 0;
+    color: gray;
+    text-align: center;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Styling for the result and error messages */
+#result {
+    color: green;
+    font-size: 1.4em;
+    font-weight: 500;
+}
+
+#error {
+    color: red;
+    font-size: 1.2em;
 }
