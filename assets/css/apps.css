@@ -1,6 +1,6 @@
 body {
     background: #f0f2f5;
-    font-family: 'Roboto', sans-serif; /* Updated font */
+    font-family: 'Arial', sans-serif;
 }
 
 .container {
@@ -11,7 +11,7 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border-radius: 15px;
     transition: transform 0.3s;
-    min-height: 300px; /* Set minimum height for uniformity */
+    min-width: 300px;
 }
 
 .card:hover {
