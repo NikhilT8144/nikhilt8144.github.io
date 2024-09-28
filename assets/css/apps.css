@@ -1,16 +1,41 @@
-/* Custom styles for the applications home page */
+body {
+    background: #f0f2f5;
+    font-family: 'Arial', sans-serif;
+}
+
+.container {
+    margin-top: 50px;
+}
+
 .card {
-    transition: transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    transition: transform 0.3s;
 }
 
 .card:hover {
-    transform: scale(1.05);
+    transform: translateY(-10px);
 }
 
-.card-title {
-    font-size: 1.25rem;
+.icon {
+    font-size: 50px;
+    color: #007bff;
 }
 
-.card-text {
-    font-size: 1rem;
+.card-body {
+    text-align: center;
+}
+
+.btn {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+h1 {
+    font-weight: bold;
+    color: #333;
 }
