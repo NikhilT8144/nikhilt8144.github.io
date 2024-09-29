@@ -3,47 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Application</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="/assets/js/chat.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Chat App</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .chat-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 400px;
+        }
+        #messages {
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <div id="auth-section">
-            <div id="login-form" class="mb-3">
-                <h3>Login</h3>
-                <input type="text" id="login-username" placeholder="Username" class="form-control" required>
-                <input type="password" id="login-password" placeholder="Password" class="form-control" required>
-                <button id="login-btn" class="btn btn-primary">Login</button>
-                <p>Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
-            </div>
-            <div id="signup-form" class="d-none mb-3">
-                <h3>Sign Up</h3>
-                <input type="text" id="signup-username" placeholder="Username" class="form-control" required>
-                <input type="password" id="signup-password" placeholder="Password" class="form-control" required>
-                <button id="signup-btn" class="btn btn-success">Sign Up</button>
-                <p>Already have an account? <a href="#" id="show-login">Login</a></p>
-            </div>
-        </div>
 
-        <div id="chat-section" class="d-none">
-            <h3>Welcome, <span id="username"></span>!</h3>
-            <button id="logout-btn" class="btn btn-danger">Logout</button>
-            <div id="messages" class="border p-2" style="height: 300px; overflow-y: auto;"></div>
-            <div class="input-group mt-2">
-                <input type="text" id="message-input" class="form-control" placeholder="Type a message...">
-                <div class="input-group-append">
-                    <button id="send-message" class="btn btn-primary">Send</button>
-                </div>
+<div class="chat-container">
+    <div id="greet" class="text-center mb-4">
+        <h3>Welcome to the Chat Room!</h3>
+        <input type="text" id="username" placeholder="Enter your name" class="form-control mb-2">
+        <button id="joinChat" class="btn btn-primary">Join Chat</button>
+    </div>
+
+    <div id="chat" style="display:none;">
+        <div id="messages"></div>
+        <div class="input-group">
+            <input type="text" id="message" placeholder="Type a message" class="form-control">
+            <div class="input-group-append">
+                <button id="sendMessage" class="btn btn-success">Send</button>
             </div>
-            <hr>
-            <h4>Add/Remove Friends</h4>
-            <input type="text" id="friend-username" placeholder="Friend's Username" class="form-control mb-2">
-            <button id="add-friend-btn" class="btn btn-success">Add Friend</button>
-            <button id="remove-friend-btn" class="btn btn-danger">Remove Friend</button>
         </div>
     </div>
+</div>
+
+<script>
+    let username;
+
+    document.getElementById('joinChat').addEventListener('click', function() {
+        username = document.getElementById('username').value.trim();
+        if (username === "") {
+            alert("Please enter a valid name!");
+            return;
+        }
+        document.getElementById('greet').style.display = 'none';
+        document.getElementById('chat').style.display = 'block';
+        loadMessages();
+    });
+
+    document.getElementById('sendMessage').addEventListener('click', function() {
+        const messageInput = document.getElementById('message');
+        const message = messageInput.value.trim();
+        if (message === "") {
+            alert("Please enter a message!");
+            return;
+        }
+        sendMessage(username, message);
+        messageInput.value = ""; // Clear input
+    });
+
+    function loadMessages() {
+        fetch('https://yourserv00site.com/chat.php')
+            .then(response => response.json())
+            .then(data => {
+                const messagesDiv = document.getElementById('messages');
+                messagesDiv.innerHTML = '';
+                data.forEach(msg => {
+                    messagesDiv.innerHTML += `<div class="message"><strong>${msg.username}:</strong> ${msg.message}</div>`;
+                });
+                messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto scroll
+            });
+    }
+
+    function sendMessage(username, message) {
+        fetch('https://yourserv00site.com/chat.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, message }),
+        }).then(() => loadMessages());
+    }
+
+    // Load messages every 2 seconds
+    setInterval(loadMessages, 2000);
+</script>
+
 </body>
 </html>
