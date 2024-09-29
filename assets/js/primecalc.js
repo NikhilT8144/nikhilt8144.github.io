@@ -1,4 +1,3 @@
-
 // Check if a number is prime
 function isPrime(n) {
     if (n <= 1) return false;
@@ -8,51 +7,70 @@ function isPrime(n) {
     return true;
 }
 
+// Validate inputs and update button state
+function validateInputs() {
+    const lowerLimit = document.getElementById('lowerLimit').value;
+    const upperLimit = document.getElementById('upperLimit').value;
+    const calculateButton = document.getElementById('calculateButton');
+
+    // Enable button if both inputs are filled
+    calculateButton.disabled = !(lowerLimit && upperLimit);
+}
+
 // Calculate primes and display results dynamically
 function calculatePrimes() {
     const lowerLimit = parseInt(document.getElementById('lowerLimit').value);
     const upperLimit = parseInt(document.getElementById('upperLimit').value);
-    const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = '';
+    const errorContainer = document.getElementById('errorContainer');
+
+    errorContainer.innerHTML = ''; // Clear previous messages
 
     // Validate user input
     if (isNaN(lowerLimit) || isNaN(upperLimit)) {
-        resultDiv.innerHTML = '<div class="alert alert-danger">Please enter valid integers.</div>';
+        displayError('Please enter valid integers.');
         return;
     }
 
     if (lowerLimit < 0) {
-        resultDiv.innerHTML = '<div class="alert alert-danger">Lower limit must be greater than or equal to 0.</div>';
+        displayError('Lower limit must be greater than or equal to 0.');
         return;
     }
 
     if (upperLimit < lowerLimit) {
-        resultDiv.innerHTML = '<div class="alert alert-danger">Upper limit must be greater than or equal to lower limit.</div>';
+        displayError('Upper limit must be greater than or equal to lower limit.');
         return;
     }
 
     let primeCount = 0;
-    let index = 1;
+    let resultsHTML = ''; // Store results in a variable
 
     // Loop through the range to find primes
     for (let num = lowerLimit; num <= upperLimit; num++) {
         if (isPrime(num)) {
-            const primeItem = document.createElement('div');
-            primeItem.className = 'result-item animate__animated animate__fadeInLeft';
-            primeItem.innerHTML = `${index}. ${num}`;
-            resultDiv.appendChild(primeItem);
-            index++;
+            resultsHTML += `<div class="result-item animate__animated animate__fadeIn">${num}</div>`;
             primeCount++;
         }
     }
 
-    // Display message if no primes found
-    if (primeCount === 0) {
-        resultDiv.innerHTML = '<div class="alert alert-info">No prime numbers found in the given range.</div>';
+    // Display results inside errorContainer
+    if (resultsHTML) {
+        errorContainer.innerHTML += resultsHTML; // Append results to the container
     } else {
-        const countMsg = document.createElement('div');
-        countMsg.className = 'mt-3';
-        countMsg.innerHTML = `<strong>Total primes found: ${primeCount}</strong>`;
-        resultDiv.appendChild(countMsg);
+        errorContainer.innerHTML += '<div class="alert alert-info animate__animated animate__fadeIn"><i class="fas fa-info-circle"></i> No prime numbers found in the given range.</div>';
     }
+
+    // Display total prime count
+    const primeCountSpan = document.getElementById('primeCount');
+    primeCountSpan.innerHTML = `<i class="fas fa-hashtag"></i> Total Primes: ${primeCount}`;
 }
+
+// Display error message with red cross icon
+function displayError(message) {
+    const errorContainer = document.getElementById('errorContainer');
+    const errorMsg = `<div class="error-message animate__animated animate__fadeIn"><i class="fas fa-times-circle"></i> ${message}</div>`;
+    errorContainer.innerHTML += errorMsg; // Append error message
+}
+
+// Add event listeners for input changes
+document.getElementById('lowerLimit').addEventListener('input', validateInputs);
+document.getElementById('upperLimit').addEventListener('input', validateInputs);
