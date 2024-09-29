@@ -11,7 +11,6 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border-radius: 15px;
     transition: transform 0.3s;
-    min-width: 300px;
 }
 
 .card:hover {
@@ -39,4 +38,26 @@ body {
 h1 {
     font-weight: bold;
     color: #333;
+}
+
+/* Make cards responsive */
+@media (max-width: 767px) {
+    .card {
+        margin-bottom: 20px;
+        min-width: 100%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .card {
+        min-width: 48%;
+        margin-bottom: 20px;
+    }
+}
+
+@media (min-width: 992px) {
+    .card {
+        min-width: 30%;
+        margin-bottom: 20px;
+    }
 }
