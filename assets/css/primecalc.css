@@ -57,13 +57,13 @@ body {
 
 #result {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Responsive columns */
     gap: 10px;
 }
 
 .result-item {
     background-color: #e9ecef;
-    padding: 8px 12px;
+    padding: 20px; /* Increased padding for height */
     border-radius: 5px;
     animation-duration: 0.5s;
     animation-fill-mode: both;
@@ -72,6 +72,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 35px; /* Set fixed height for uniformity */
+    width: 85%; /* Full width of grid cell */
 }
 
 .error-message {
