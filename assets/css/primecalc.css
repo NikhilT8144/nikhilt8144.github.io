@@ -100,14 +100,6 @@ body {
     font-weight: bold;
 }
 
-/* Loading Indicator Styles */
-#loading {
-    font-size: 20px;
-    color: #007bff;
-    text-align: center;
-    margin-top: 10px;
-}
-
 /* Responsive Design */
 @media (max-width: 767px) {
     .main-box, #result-box {
