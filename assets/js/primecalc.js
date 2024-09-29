@@ -21,9 +21,12 @@ function validateInputs() {
 function calculatePrimes() {
     const lowerLimit = parseInt(document.getElementById('lowerLimit').value);
     const upperLimit = parseInt(document.getElementById('upperLimit').value);
+    const resultDiv = document.getElementById('result');
+    const primeCountSpan = document.getElementById('primeCount');
     const errorContainer = document.getElementById('errorContainer');
 
-    errorContainer.innerHTML = ''; // Clear previous messages
+    resultDiv.innerHTML = '';  // Clear previous results
+    errorContainer.innerHTML = ''; // Clear previous errors
 
     // Validate user input
     if (isNaN(lowerLimit) || isNaN(upperLimit)) {
@@ -42,26 +45,25 @@ function calculatePrimes() {
     }
 
     let primeCount = 0;
-    let resultsHTML = ''; // Store results in a variable
 
     // Loop through the range to find primes
     for (let num = lowerLimit; num <= upperLimit; num++) {
         if (isPrime(num)) {
-            resultsHTML += `<div class="result-item animate__animated animate__fadeIn">${num}</div>`;
+            const primeItem = document.createElement('div');
+            primeItem.className = 'result-item animate__animated animate__fadeIn';
+            primeItem.innerHTML = `${num}`;
+            resultDiv.appendChild(primeItem);
             primeCount++;
         }
     }
 
-    // Display results inside errorContainer
-    if (resultsHTML) {
-        errorContainer.innerHTML += resultsHTML; // Append results to the container
-    } else {
-        errorContainer.innerHTML += '<div class="alert alert-info animate__animated animate__fadeIn"><i class="fas fa-info-circle"></i> No prime numbers found in the given range.</div>';
-    }
-
-    // Display total prime count
-    const primeCountSpan = document.getElementById('primeCount');
+    // Display total prime count alongside "Results:"
     primeCountSpan.innerHTML = `<i class="fas fa-hashtag"></i> Total Primes: ${primeCount}`;
+
+    // Display message if no primes found
+    if (primeCount === 0) {
+        errorContainer.innerHTML = '<div class="alert alert-info animate__animated animate__fadeIn"><i class="fas fa-info-circle"></i> No prime numbers found in the given range.</div>';
+    }
 }
 
 // Display error message with red cross icon
