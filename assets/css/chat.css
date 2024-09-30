@@ -1,11 +1,21 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    background-color: #e9ecef; /* Lighter background for contrast */
+}
+
+h2 {
+    color: #495057; /* Darker text color for headings */
 }
 
 #chat-box {
-    border: 1px solid #ddd;
+    background: white;
     border-radius: 8px;
+    border: 1px solid #ced4da; /* Light border for the chat box */
+    transition: box-shadow 0.3s ease; /* Transition for shadow effect */
+}
+
+#chat-box:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Shadow effect on hover */
 }
 
 #messages {
@@ -14,19 +24,19 @@ body {
 }
 
 .message {
-    padding: 5px;
+    padding: 8px;
     margin: 5px 0;
-    border-radius: 5px;
+    border-radius: 8px;
     transition: all 0.3s ease;
 }
 
 .message.user {
-    background-color: #d1e7dd;
+    background-color: #d1e7dd; /* User message background */
     align-self: flex-end;
 }
 
 .message.other {
-    background-color: #f8d7da;
+    background-color: #f8d7da; /* Other messages background */
     align-self: flex-start;
 }
 
