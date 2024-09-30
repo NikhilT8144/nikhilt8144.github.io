@@ -1,58 +1,23 @@
-/* General styles */
 body {
-    background-color: #f4f4f9;
-    color: #333;
-    font-family: 'Roboto', sans-serif;
-}
-
-.navbar {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.chat-room {
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-}
-
-.chat-card {
-    height: 500px;
+    background-color: #f8f9fa;
 }
 
 .chat-body {
     height: 400px;
-    overflow-y: scroll;
-    background-color: #f8f9fa;
-}
-
-#chatMessages {
-    padding: 10px;
-}
-
-.message {
+    overflow-y: auto;
     margin-bottom: 10px;
-}
-
-.message .text {
-    background-color: #f1f1f1;
-    border-radius: 15px;
+    border: 1px solid #ccc;
     padding: 10px;
-    display: inline-block;
 }
 
-.message.user .text {
-    background-color: #007bff;
-    color: white;
+.chat-body .message {
+    margin: 10px 0;
 }
 
-#messageInput {
-    border-radius: 25px;
+.chat-body .message.sent {
+    text-align: right;
 }
 
-.btn-primary {
-    border-radius: 25px;
-}
-
-.animated {
-    animation-duration: 1s;
+.chat-body .message.received {
+    text-align: left;
 }
