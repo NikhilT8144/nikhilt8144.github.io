@@ -134,11 +134,4 @@ document.addEventListener("DOMContentLoaded", () => {
     // Load messages every 2 seconds
     setInterval(loadMessages, 2000);
 
-    // Clear messages at midnight
-    setInterval(() => {
-        const now = new Date();
-        if (now.getHours() === 0 && now.getMinutes() === 0) {
-            fetch('https://nikhilt8144.serv00.net/server.php', { method: 'DELETE' });
-        }
-    }, 60000); // Check every minute
 });
