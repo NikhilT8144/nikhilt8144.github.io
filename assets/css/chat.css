@@ -1,6 +1,7 @@
 body {
     font-family: 'Arial', sans-serif;
     background-color: #e9ecef; /* Lighter background for contrast */
+    margin: 0; /* Remove default body margin */
 }
 
 h2 {
@@ -12,6 +13,7 @@ h2 {
     border-radius: 8px;
     border: 1px solid #ced4da; /* Light border for the chat box */
     transition: box-shadow 0.3s ease; /* Transition for shadow effect */
+    height: 80%; /* Set height to 80% of the container */
 }
 
 #chat-box:hover {
