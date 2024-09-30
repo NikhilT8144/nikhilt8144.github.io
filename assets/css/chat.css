@@ -1,23 +1,35 @@
 body {
-    background-color: #f8f9fa;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
 }
 
-.chat-body {
-    height: 400px;
-    overflow-y: auto;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    padding: 10px;
+#chat-box {
+    border: 1px solid #ddd;
+    border-radius: 8px;
 }
 
-.chat-body .message {
-    margin: 10px 0;
+#messages {
+    display: flex;
+    flex-direction: column;
 }
 
-.chat-body .message.sent {
-    text-align: right;
+.message {
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 5px;
+    transition: all 0.3s ease;
 }
 
-.chat-body .message.received {
-    text-align: left;
+.message.user {
+    background-color: #d1e7dd;
+    align-self: flex-end;
+}
+
+.message.other {
+    background-color: #f8d7da;
+    align-self: flex-start;
+}
+
+.input-group {
+    margin-top: 10px;
 }
