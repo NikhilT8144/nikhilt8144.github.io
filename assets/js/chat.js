@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let userName = '';
     const takenUsernames = new Set(); // Set to track taken usernames
+    let firstLoad = true; // Flag to check if it's the first load
 
     // Function to ask for a unique username
     function requestUsername() {
@@ -68,10 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify(message)
             }).then(response => {
                 if (response.ok) {
-                messageInput.value = '';
-                loadMessages();
+                    messageInput.value = '';
+                    loadMessages();
                 } else {
-                showAlert('Error sending message. Please try again.', 'danger');
+                    showAlert('Error sending message. Please try again.', 'danger');
                 }
             });
         } else {
@@ -81,7 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to load messages
     function loadMessages() {
-        loadingDiv.classList.remove('d-none'); // Show loading animation
+        if (firstLoad) {
+            loadingDiv.classList.remove('d-none'); // Show loading animation
+        }
         fetch('https://nikhilt8144.serv00.net/server.php')
             .then(response => response.json())
             .then(data => {
@@ -107,7 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     messagesDiv.appendChild(messageDiv);
                 });
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                loadingDiv.classList.add('d-none'); // Hide loading animation
+                loadingDiv.classList.add('d-none'); // Hide loading animation after first load
+                firstLoad = false; // Set the flag to false after the first load
             })
             .catch(error => {
                 showAlert('Error loading messages. Please try again.', 'danger');
@@ -131,7 +135,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Load messages every 2 seconds
-    setInterval(loadMessages, 2000);
-
+    // Load messages every 2 seconds after the first load
+    setInterval(() => {
+        if (!firstLoad) {
+            loadMessages();
+        }
+    }, 2000);
 });
