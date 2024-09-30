@@ -3,58 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickChat</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/chat.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>QuickChat</title>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Chat App</a>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="profile.html">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="logoutBtn">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Chat Room -->
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="list-group" id="roomList">
-                    <a href="#" class="list-group-item list-group-item-action active">Public Room</a>
-                    <!-- Additional Rooms -->
-                </div>
+    <div class="container mt-5">
+        <div class="alert alert-info" id="alert" style="display: none;"></div>
+        <div class="card">
+            <div class="card-header bg-primary text-white text-center">
+                <h4>QuickChat</h4>
             </div>
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <span id="roomTitle">Public Room</span>
+            <div class="card-body">
+                <div class="chat-body" id="chatMessages"></div>
+                <form id="messageForm">
+                    <div class="input-group mb-3">
+                        <input type="text" id="messageInput" class="form-control" placeholder="Type your message..." required>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit"><i class="fas fa-paper-plane"></i></button>
+                        </div>
                     </div>
-                    <div class="card-body chat-body" id="chatMessages"></div>
-                    <div class="card-footer">
-                        <form id="messageForm">
-                            <div class="input-group">
-                                <input type="text" id="messageInput" class="form-control" placeholder="Type a message...">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="submit"><i class="fas fa-paper-plane"></i></button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                </form>
+                <div class="text-center">
+                    <a href="https://nikhilt8144.serv00.net/logout.php" class="btn btn-danger">Logout</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="/assets/js/chat.js"></script>
 </body>
