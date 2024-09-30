@@ -1,43 +1,94 @@
-$(document).ready(function() {
-    const backendURL = "https://nikhilt8144.serv00.net";
-    
-    // Load chat messages
-    function loadMessages() {
-        $.get(`${backendURL}/get_messages.php`, function(data) {
-            $('#chatMessages').html('');
-            data.forEach(message => {
-                const messageClass = message.username === localStorage.getItem('username') ? 'sent' : 'received';
-                $('#chatMessages').append(`<div class="message ${messageClass}"><strong>${message.username}:</strong> ${message.text}</div>`);
-            });
-        });
+document.addEventListener("DOMContentLoaded", () => {
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-btn');
+    const messagesDiv = document.getElementById('messages');
+    const alertArea = document.getElementById('alert-area');
+
+    // Get or set user name
+    let userName = localStorage.getItem('userName');
+    if (!userName) {
+        userName = prompt("Please enter your name:");
+        if (userName) {
+            localStorage.setItem('userName', userName);
+            showAlert(`Welcome, ${userName}!`, 'success');
+        } else {
+            showAlert('Name is required to use the chat.', 'danger');
+            return;
+        }
     }
 
-    // Send a message
-    $('#messageForm').submit(function(e) {
-        e.preventDefault();
-        const messageText = $('#messageInput').val();
+    // Function to send message
+    function sendMessage() {
+        const messageText = messageInput.value.trim();
+        if (messageText) {
+            const message = {
+                name: userName,
+                text: messageText,
+                time: new Date().toISOString()
+            };
 
-        $.post(`${backendURL}/send_message.php`, { text: messageText }, function(response) {
-            if (response.success) {
-                loadMessages(); // Reload messages after sending
-                $('#messageInput').val(''); // Clear input
-            } else {
-                showAlert(response.message, 'danger');
-            }
-        }, 'json');
+            fetch('https://nikhilt8144.serv00.net/server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(message)
+            }).then(response => {
+                if (response.ok) {
+                    messageInput.value = '';
+                    loadMessages();
+                } else {
+                    showAlert('Error sending message. Please try again.', 'danger');
+                }
+            });
+        } else {
+            showAlert('Message cannot be empty.', 'warning');
+        }
+    }
+
+    // Function to load messages
+    function loadMessages() {
+        fetch('https://nikhilt8144.serv00.net/server.php')
+            .then(response => response.json())
+            .then(data => {
+                messagesDiv.innerHTML = '';
+                data.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${msg.name === userName ? 'user' : 'other'} animate__animated animate__fadeIn`;
+                    messageDiv.textContent = `${msg.name}: ${msg.text}`;
+                    messagesDiv.appendChild(messageDiv);
+                });
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            })
+            .catch(error => {
+                showAlert('Error loading messages. Please try again.', 'danger');
+            });
+    }
+
+    // Function to show alerts
+    function showAlert(message, type) {
+        alertArea.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+    }
+
+    // Event listeners
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
     });
 
-    // Load messages on page load
-    loadMessages();
+    // Load messages every 2 seconds
+    setInterval(loadMessages, 2000);
 
-    // Poll for new messages
-    setInterval(loadMessages, 3000); // Refresh messages every 3 seconds
-
-    // Show alert function
-    function showAlert(message, type) {
-        const alertBox = $('#alert');
-        alertBox.removeClass('alert-info alert-success alert-danger').addClass(`alert-${type}`);
-        alertBox.text(message).show();
-        setTimeout(() => alertBox.hide(), 3000); // Hide after 3 seconds
-    }
+    // Clear messages at midnight
+    setInterval(() => {
+        const now = new Date();
+        if (now.getHours() === 0 && now.getMinutes() === 0) {
+            fetch('https://nikhilt8144.serv00.net/server.php', { method: 'DELETE' });
+        }
+    }, 60000); // Check every minute
 });
