@@ -1,56 +1,43 @@
-// script.js
-
-const backendURL = "https://nikhilt8144.serv00.net"; // Backend URL (PHP hosted on Serv00)
-
-// Handle message sending
-document.addEventListener('DOMContentLoaded', function() {
-    const messageForm = document.getElementById('messageForm');
-    const messageInput = document.getElementById('messageInput');
-    const chatMessages = document.getElementById('chatMessages');
-
-    // Send message on form submit
-    messageForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const messageText = messageInput.value.trim();
-        if (messageText) {
-            // Send message to backend
-            $.post(`${backendURL}/send_message.php`, { message: messageText }, function(response) {
-                // Add message to chat window on success
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message', 'user', 'animated', 'fadeInUp');
-                messageElement.innerHTML = `<div class="text">${messageText}</div>`;
-                chatMessages.appendChild(messageElement);
-
-                // Scroll to bottom
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-
-                // Clear message input
-                messageInput.value = '';
-            });
-        }
-    });
-
-    // Load messages from the backend
+$(document).ready(function() {
+    const backendURL = "https://nikhilt8144.serv00.net";
+    
+    // Load chat messages
     function loadMessages() {
-        $.get(`${backendURL}/load_messages.php`, function(messages) {
-            chatMessages.innerHTML = '';
-            messages.forEach(msg => {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message', 'animated', 'fadeInUp');
-                messageElement.innerHTML = `<div class="text">${msg.message}</div>`;
-                chatMessages.appendChild(messageElement);
+        $.get(`${backendURL}/get_messages.php`, function(data) {
+            $('#chatMessages').html('');
+            data.forEach(message => {
+                const messageClass = message.username === localStorage.getItem('username') ? 'sent' : 'received';
+                $('#chatMessages').append(`<div class="message ${messageClass}"><strong>${message.username}:</strong> ${message.text}</div>`);
             });
         });
     }
 
-    // Refresh messages every 2 seconds
-    setInterval(loadMessages, 2000);
+    // Send a message
+    $('#messageForm').submit(function(e) {
+        e.preventDefault();
+        const messageText = $('#messageInput').val();
 
-    // Logout functionality
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-        $.get(`${backendURL}/logout.php`, function() {
-            window.location.href = 'login.html'; // Redirect to login page after logout
-        });
+        $.post(`${backendURL}/send_message.php`, { text: messageText }, function(response) {
+            if (response.success) {
+                loadMessages(); // Reload messages after sending
+                $('#messageInput').val(''); // Clear input
+            } else {
+                showAlert(response.message, 'danger');
+            }
+        }, 'json');
     });
+
+    // Load messages on page load
+    loadMessages();
+
+    // Poll for new messages
+    setInterval(loadMessages, 3000); // Refresh messages every 3 seconds
+
+    // Show alert function
+    function showAlert(message, type) {
+        const alertBox = $('#alert');
+        alertBox.removeClass('alert-info alert-success alert-danger').addClass(`alert-${type}`);
+        alertBox.text(message).show();
+        setTimeout(() => alertBox.hide(), 3000); // Hide after 3 seconds
+    }
 });
