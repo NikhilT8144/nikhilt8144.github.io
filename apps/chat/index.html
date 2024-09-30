@@ -13,11 +13,8 @@
     <div class="container d-flex flex-column align-items-center vh-100">
         <h2 class="text-center mt-4">QuickChat</h2>
         <div id="alert-area" class="mb-3"></div>
-        <div id="chat-box" class="rounded shadow p-3 bg-light text-dark flex-grow-1 d-flex flex-column" style="max-width: 600px; width: 100%;">
-            <div id="messages" class="overflow-auto" style="flex: 1;"></div>
-            <div id="loading" class="text-center d-none">
-                <i class="fas fa-spinner fa-spin fa-2x"></i>
-            </div>
+        <div id="chat-box" class="rounded shadow p-3 bg-light text-dark d-flex flex-column" style="max-width: 600px; width: 100%; height: 80%;">
+            <div id="messages" class="overflow-auto" style="flex: 1; padding: 10px;"></div>
         </div>
         <div class="input-group mt-3" style="width: 100%; max-width: 600px;">
             <input type="text" id="message-input" class="form-control" placeholder="Type your message..." aria-label="Message input">
