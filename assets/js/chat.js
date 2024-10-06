@@ -1,144 +1,107 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const messageInput = document.getElementById('message-input');
-    const sendButton = document.getElementById('send-btn');
-    const messagesDiv = document.getElementById('messages');
-    const alertArea = document.getElementById('alert-area');
-    const loadingDiv = document.getElementById('loading');
+$(document).ready(function () {
+    // Initialize lastMessageId to track the latest message
+    let lastMessageId = 0;
 
-    let userName = '';
-    const takenUsernames = new Set(); // Set to track taken usernames
-    let firstLoad = true; // Flag to check if it's the first load
+    // Fetch messages initially
+    fetchMessages();
 
-    // Function to ask for a unique username
-    function requestUsername() {
-        const namePrompt = document.createElement('div');
-        namePrompt.className = 'input-group mb-3';
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.className = 'form-control';
-        input.placeholder = 'Enter your username...';
-        const submitButton = document.createElement('button');
-        submitButton.className = 'btn btn-primary';
-        submitButton.textContent = 'Submit';
-
-        submitButton.addEventListener('click', () => {
-            const enteredName = input.value.trim();
-            if (enteredName && !takenUsernames.has(enteredName)) {
-                userName = enteredName;
-                takenUsernames.add(userName);
-                localStorage.setItem('userName', userName);
-                showAlert(`Welcome, ${userName}!`, 'success');
-                namePrompt.remove(); // Remove the prompt
-                loadMessages();
-            } else if (takenUsernames.has(enteredName)) {
-                showAlert('Username already taken. Please choose another.', 'danger');
-            } else {
-                showAlert('Please enter a valid username.', 'warning');
-            }
-        });
-
-        namePrompt.appendChild(input);
-        namePrompt.appendChild(submitButton);
-        document.body.insertBefore(namePrompt, document.body.firstChild);
-    }
-
-    // Check if username is already stored
-    userName = localStorage.getItem('userName');
-    if (!userName) {
-        requestUsername();
-    } else {
-        takenUsernames.add(userName); // Mark the existing user name as taken
-        showAlert(`Welcome back, ${userName}!`, 'success');
-    }
-
-    // Function to send message
-    function sendMessage() {
-        const messageText = messageInput.value.trim();
-        if (messageText) {
-            const message = {
-                name: userName,
-                text: messageText,
-                time: new Date().toISOString()
-            };
-
-            fetch('https://nikhilt8144.serv00.net/server.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(message)
-            }).then(response => {
-                if (response.ok) {
-                    messageInput.value = '';
-                    loadMessages();
-                } else {
-                    showAlert('Error sending message. Please try again.', 'danger');
-                }
-            });
+    // Handle Enter Chat Button
+    $('#enterChatBtn').click(function () {
+        let name = $('#nameInput').val().trim();
+        if (name !== "") {
+            $('.name-input-section').hide();
+            $('.chat-section').show();
+            // Store user's name
+            sessionStorage.setItem('username', name);
+            $('.chat-header h3').html(`<i class="fas fa-comments"></i> Welcome, ${name}`);
         } else {
-            showAlert('Message cannot be empty.', 'warning');
-        }
-    }
-
-    // Function to load messages
-    function loadMessages() {
-        if (firstLoad) {
-            loadingDiv.classList.remove('d-none'); // Show loading animation
-        }
-        fetch('https://nikhilt8144.serv00.net/server.php')
-            .then(response => response.json())
-            .then(data => {
-                messagesDiv.innerHTML = '';
-                data.forEach(msg => {
-                    const messageDiv = document.createElement('div');
-                    messageDiv.className = `message ${msg.name === userName ? 'user' : 'other'} animate__animated animate__fadeIn`;
-                    
-                    const nameSpan = document.createElement('span');
-                    nameSpan.textContent = `${msg.name}`;
-                    
-                    // Check for verified users
-                    if (['Admin', 'Nikhil', 'System', 'NikhilT8144'].includes(msg.name)) {
-                        nameSpan.classList.add('verified');
-                        nameSpan.innerHTML += ' <i class="fas fa-check-circle"></i>'; // Add check mark icon
-                    }
-
-                    const textSpan = document.createElement('span');
-                    textSpan.textContent = `: ${msg.text}`;
-
-                    messageDiv.appendChild(nameSpan);
-                    messageDiv.appendChild(textSpan);
-                    messagesDiv.appendChild(messageDiv);
-                });
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                loadingDiv.classList.add('d-none'); // Hide loading animation after first load
-                firstLoad = false; // Set the flag to false after the first load
-            })
-            .catch(error => {
-                showAlert('Error loading messages. Please try again.', 'danger');
-                loadingDiv.classList.add('d-none'); // Hide loading animation
-            });
-    }
-
-    // Function to show alerts
-    function showAlert(message, type) {
-        alertArea.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>`;
-    }
-
-    // Event listeners
-    sendButton.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            sendMessage();
+            alert("Please enter your name!");
         }
     });
 
-    // Load messages every 2 seconds after the first load
-    setInterval(() => {
-        if (!firstLoad) {
-            loadMessages();
+    // Handle Send Message Button
+    $('#sendBtn').click(function () {
+        sendMessage();
+    });
+
+    // Send message on Enter key press
+    $('#messageInput').keypress(function (e) {
+        if (e.which === 13) { // Enter key
+            sendMessage();
+            return false; // Prevent default form submission
         }
-    }, 2000);
+    });
+
+    // Fetch messages every 2 seconds
+    setInterval(fetchMessages, 2000);
+
+    // Function to fetch messages from the server
+    function fetchMessages() {
+        $.ajax({
+            url: 'https://nikhilt8144.serv00.net/fetch_messages.php',
+            type: 'GET',
+            dataType: 'json',  // Expect JSON response
+            success: function (data) {
+                console.log(data);  // Debugging
+
+                if (Array.isArray(data)) {
+                    // Clear the chat body
+                    $('#chatBody').html('');
+
+                    // Loop through each message and display it
+                    data.forEach(function (msg) {
+                        let messageClass = msg.username === sessionStorage.getItem('username') ? 'user-message' : 'other-message';
+                        let messageDiv = $('<div>').addClass('message ' + messageClass);
+                        let messageBubble = $('<div>').addClass('message-bubble').text(msg.message);
+                        messageDiv.append(messageBubble);
+                        $('#chatBody').append(messageDiv);
+                    });
+
+                    // Scroll to the bottom of the chat body
+                    $('#chatBody').scrollTop($('#chatBody')[0].scrollHeight);
+                } else if (data.status === 'empty') {
+                    console.log("No messages yet.");
+                } else {
+                    console.error("Unexpected response format:", data);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching messages:", {
+                    xhr: xhr,
+                    status: status,
+                    error: error,
+                    responseText: xhr.responseText  // Log the response text for further debugging
+                });
+            }
+        });
+    }
+
+    // Function to send a message to the server
+    function sendMessage() {
+        let message = $('#messageInput').val().trim();
+        if (message !== "") {
+            let username = sessionStorage.getItem('username');
+
+            $.ajax({
+                url: 'https://nikhilt8144.serv00.net/send_message.php',
+                type: 'POST',
+                data: {
+                    username: username,
+                    message: message
+                },
+                success: function (response) {
+                    $('#messageInput').val(''); // Clear the input field
+                    fetchMessages(); // Fetch messages again to update the chat
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error sending message:", {
+                        xhr: xhr,
+                        status: status,
+                        error: error,
+                        responseText: xhr.responseText  // Log the response text for further debugging
+                    });
+                }
+            });
+        }
+    }
 });
