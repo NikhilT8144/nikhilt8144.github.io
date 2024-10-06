@@ -1,76 +1,98 @@
-$(document).ready(function() {
-    // Function to fetch messages
-    function fetchMessages() {
-        $.ajax({
-            type: 'GET',
-            url: 'https://nikhilt8144.serv00.net/fetch_messages.php',
-            dataType: 'json',
-            success: function(data) {
-                if (Array.isArray(data)) {
-                    $('#messages-container').empty(); // Clear existing messages
-                    data.forEach(function(message) {
-                        const messageDiv = $('<div class="message"></div>');
-                        messageDiv.append('<strong>' + message.username + ':</strong> ' + message.message);
-                        messageDiv.append('<span class="timestamp">' + new Date(message.timestamp).toLocaleString() + '</span>');
-                        $('#messages-container').append(messageDiv);
-                    });
-                } else if (data.status === "empty") {
-                    $('#messages-container').empty(); // Clear existing messages
-                } else {
-                    console.error("Error fetching messages:", data.error);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error fetching messages:", xhr.responseText);
-            }
-        });
-    }
+$(document).ready(function () {
+    let lastMessageId = 0;
 
-    // Function to send a message
-    function sendMessage() {
-        var username = $('#username-input').val();
-        var message = $('#message-input').val();
-
-        if (username === "" || message === "") {
-            alert("Username and message cannot be empty!");
-            return; // Prevent sending if fields are empty
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: 'https://nikhilt8144.serv00.net/send_message.php',
-            data: { username: username, message: message },
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === "success") {
-                    $('#message-input').val(''); // Clear the message input
-                    fetchMessages(); // Fetch messages again to update the chat
-                } else if (response.error) {
-                    console.error("Error sending message:", response.error);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX Error:", error);
-            }
-        });
-    }
-
-    // Handle Enter key to send messages
-    $('#message-input').keypress(function(event) {
-        if (event.which === 13) { // Check for Enter key (key code 13)
-            event.preventDefault(); // Prevent the default action (newline in textarea)
-            sendMessage(); // Call the sendMessage function
-        }
-    });
-
-    // Handle send button click
-    $('#send-button').click(function() {
-        sendMessage(); // Call the sendMessage function
-    });
-
-    // Fetch messages on page load
+    // Fetch messages initially
     fetchMessages();
 
-    // Optionally, you can set an interval to fetch messages periodically
-    setInterval(fetchMessages, 3000); // Fetch messages every 3 seconds
+    // Handle Enter Chat Button
+    $('#enterChatBtn').click(function () {
+        let name = $('#nameInput').val().trim();
+        if (name !== "") {
+            $('.name-input-section').hide();
+            $('.chat-section').show();
+            // Store user's name
+            sessionStorage.setItem('username', name);
+            $('.chat-header h3').html(`<i class="fas fa-comments"></i> Welcome, ${name}`);
+        } else {
+            alert("Please enter your name!");
+        }
+    });
+
+    // Handle Send Message Button
+    $('#sendBtn').click(function () {
+        sendMessage();
+    });
+
+    // Send message on Enter key press
+    $('#messageInput').keypress(function (e) {
+        if (e.which === 13) { // Enter key
+            sendMessage();
+            return false; // Prevent default form submission
+        }
+    });
+
+    // Fetch messages every 2 seconds
+    setInterval(fetchMessages, 2000);
+  
+function fetchMessages() {
+    $.ajax({
+        url: 'https://nikhilt8144.serv00.net/fetch_messages.php',
+        type: 'GET',
+        success: function (data) {
+            console.log(data); // Check the response
+            if (Array.isArray(data)) {
+                $('#chatBody').html('');
+                data.forEach(function (msg) {
+                    let messageClass = msg.username === sessionStorage.getItem('username') ? 'user-message' : 'other-message';
+                    let messageDiv = $('<div>').addClass('message ' + messageClass);
+                    let messageBubble = $('<div>').addClass('message-bubble').text(msg.message);
+                    messageDiv.append(messageBubble);
+                    $('#chatBody').append(messageDiv);
+                });
+                $('#chatBody').scrollTop($('#chatBody')[0].scrollHeight);
+            } else if (data.status === 'empty') {
+                console.log("No messages yet.");
+            } else {
+                console.error("Unexpected response format:", data);
+            }
+        },
+        error: function (error) {
+            console.error("Error fetching messages:", error);
+        }
+    });
+}
+
+    function sendMessage() {
+        let message = $('#messageInput').val().trim();
+        if (message !== "") {
+            let username = sessionStorage.getItem('username');
+
+            $.ajax({
+                url: 'https://nikhilt8144.serv00.net/send_message.php',
+                type: 'POST',
+                data: {
+                    username: username,
+                    message: message
+                },
+                success: function (response) {
+                    $('#messageInput').val('');
+                    fetchMessages();
+                },
+                error: function (error) {
+                    console.error("Error sending message:", error);
+                }
+            });
+        }
+    }
+
+    function addMessage(content, type, animate = true) {
+        let messageDiv = $('<div>').addClass('message ' + type);
+        let messageBubble = $('<div>').addClass('message-bubble').text(content);
+        if (animate) {
+            messageBubble.addClass('animate__animated animate__fadeInUp');
+        }
+        messageDiv.append(messageBubble);
+        $('#chatBody').append(messageDiv);
+        $('#chatBody').scrollTop($('#chatBody')[0].scrollHeight);
+    }
 });
