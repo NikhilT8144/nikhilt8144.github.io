@@ -38,18 +38,20 @@ function fetchMessages() {
     $.ajax({
         url: 'https://nikhilt8144.serv00.net/fetch_messages.php',
         type: 'GET',
+        dataType: 'json', // Specify that you're expecting a JSON response
         success: function (data) {
             console.log(data); // Check the response
             if (Array.isArray(data)) {
-                $('#chatBody').html('');
+                $('#chatBody').html(''); // Clear existing messages
                 data.forEach(function (msg) {
                     let messageClass = msg.username === sessionStorage.getItem('username') ? 'user-message' : 'other-message';
                     let messageDiv = $('<div>').addClass('message ' + messageClass);
-                    let messageBubble = $('<div>').addClass('message-bubble').text(msg.message);
+                    // Include username in the message bubble
+                    let messageBubble = $('<div>').addClass('message-bubble').html(`<strong>${msg.username}:</strong> ${msg.message}`);
                     messageDiv.append(messageBubble);
                     $('#chatBody').append(messageDiv);
                 });
-                $('#chatBody').scrollTop($('#chatBody')[0].scrollHeight);
+                $('#chatBody').scrollTop($('#chatBody')[0].scrollHeight); // Auto-scroll to the bottom
             } else if (data.status === 'empty') {
                 console.log("No messages yet.");
             } else {
@@ -61,6 +63,7 @@ function fetchMessages() {
         }
     });
 }
+
 
     function sendMessage() {
         let message = $('#messageInput').val().trim();
@@ -75,8 +78,8 @@ function fetchMessages() {
                     message: message
                 },
                 success: function (response) {
-                    $('#messageInput').val('');
-                    fetchMessages();
+                    $('#messageInput').val(''); // Clear input field
+                    fetchMessages(); // Refresh message list
                 },
                 error: function (error) {
                     console.error("Error sending message:", error);
