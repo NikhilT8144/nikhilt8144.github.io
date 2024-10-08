@@ -1,5 +1,3 @@
-// /assets/js/hasher.js
-
 document.getElementById('hashForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -15,13 +13,14 @@ document.getElementById('hashForm').addEventListener('submit', function(e) {
         hashType: hashType
     };
 
-    fetch('https://nikhilt8144.great-site.net/hash/index.php', {
+    // Send input data to the backend PHP script for hashing and storing in the database
+    fetch('https://nikhilt8144.serv00.net/encode', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data),
-        credentials: 'include'  // Include credentials like cookies if needed
+        credentials: 'include'
     })
     .then(response => response.json())
     .then(result => {
