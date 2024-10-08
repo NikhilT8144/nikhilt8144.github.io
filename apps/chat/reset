@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Chat</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #ff9966, #ff5e62);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .reset-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        .reset-btn {
+            margin-top: 20px;
+        }
+        .response-msg {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        /* In-page prompt styling */
+        #promptBox {
+            display: none;
+            position: fixed;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .prompt-content {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+        }
+        .prompt-content button {
+            margin: 10px;
+            padding: 10px 20px;
+        }
+        @media (max-width: 768px) {
+            .reset-container {
+                padding: 20px;
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom In-Page Prompt -->
+    <div id="promptBox">
+        <div class="prompt-content animate__animated animate__zoomIn">
+            <p>Are you sure you want to reset the chat?</p>
+            <button id="yesBtn" class="btn btn-success">Yes</button>
+            <button id="noBtn" class="btn btn-danger">No</button>
+        </div>
+    </div>
+
+    <div class="reset-container animate__animated animate__fadeIn">
+        <h2 class="mb-3 animate__animated animate__zoomIn"><i class="fas fa-comments"></i> Reset Chat</h2>
+        <p class="animate__animated animate__fadeIn">Click the button below to reset the chat.</p>
+        <button id="resetBtn" class="btn btn-danger reset-btn">
+            <i class="fas fa-redo"></i> Reset Chat
+        </button>
+
+        <!-- Placeholder for outcome message -->
+        <div id="responseMsg" class="response-msg"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var resetConfirmed = false;
+
+            // Show the custom in-page prompt when reset button is clicked
+            $('#resetBtn').click(function() {
+                $('#promptBox').fadeIn();  // Make the prompt visible
+            });
+
+            // Handle the Yes button in the prompt
+            $('#yesBtn').click(function() {
+                resetConfirmed = true;
+                $('#promptBox').fadeOut();  // Hide the prompt
+
+                if (resetConfirmed) {
+                    // Make AJAX request to PHP backend after confirmation
+                    $.ajax({
+                        url: 'https://your-serv00-server.com/resetchat.php', // Your actual backend URL
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { reset: true }, // Sending reset trigger
+                        beforeSend: function() {
+                            // Show a loading message
+                            $('#responseMsg').html('<span class="text-info">Processing reset...</span>');
+                        },
+                        success: function(response) {
+                            // Check if reset was successful or if an error occurred
+                            if (response.status === 'success') {
+                                $('#responseMsg').html('<span class="text-success">' + response.message + '</span>');
+                            } else {
+                                $('#responseMsg').html('<span class="text-danger">' + response.message + '</span>');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            $('#responseMsg').html('<span class="text-danger">Error communicating with the server: ' + error + '</span>');
+                        }
+                    });
+                }
+            });
+
+            // Handle the No button in the prompt
+            $('#noBtn').click(function() {
+                $('#promptBox').fadeOut();  // Close the prompt without taking any action
+            });
+        });
+    </script>
+</body>
+</html>
