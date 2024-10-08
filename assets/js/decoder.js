@@ -1,5 +1,3 @@
-// /assets/js/decoder.js
-
 document.getElementById('hashForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -16,7 +14,7 @@ document.getElementById('hashForm').addEventListener('submit', function(e) {
     };
 
     // Send the hash to the backend for verification and decoding from the database
-    fetch('https://nikhilt8144.serv00.net/decode/', {
+    fetch('https://nikhilt8144.serv00.net/decoder', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
