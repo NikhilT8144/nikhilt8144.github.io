@@ -14,7 +14,7 @@ document.getElementById('hashForm').addEventListener('submit', function(e) {
     };
 
     // Send the hash to the backend for verification and decoding from the database
-    fetch('https://nikhilt8144.serv00.net/decoder', {
+    fetch('https://nikhilt8144.serv00.net/decode', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
