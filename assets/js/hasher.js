@@ -14,7 +14,7 @@ document.getElementById('hashForm').addEventListener('submit', function(e) {
     };
 
     // Send input data to the backend PHP script for hashing and storing in the database
-    fetch('https://nikhilt8144.serv00.net/encode', {
+    fetch('https://nikhilt8144.serv00.net/encode/index.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
