@@ -22,7 +22,12 @@ document.getElementById('hashForm').addEventListener('submit', function(e) {
         body: JSON.stringify(data),
         credentials: 'include'
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(result => {
         if (result.success) {
             document.getElementById('result').innerHTML = `<p class="animate__animated animate__fadeIn">Decoded Result: ${result.decodedResult}</p>`;
