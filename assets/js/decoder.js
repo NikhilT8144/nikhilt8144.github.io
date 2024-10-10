@@ -1,5 +1,5 @@
 document.getElementById('hashForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+    e.preventDefault();  // Prevent form from submitting and reloading the page
 
     const hashInput = document.getElementById('hashInput').value;
     const hashType = document.getElementById('hashType').value;
@@ -31,7 +31,7 @@ document.getElementById('hashForm').addEventListener('submit', function(e) {
     .then(result => {
         if (result.success) {
             document.getElementById('result').innerHTML = `<p class="animate__animated animate__fadeIn">Decoded Result: ${result.decodedResult}</p>`;
-            document.getElementById('hashInput').value = '';  // Clear the input field
+            // Do not clear the input field unless you want to manually
         } else {
             document.getElementById('result').innerHTML = `<p class="animate__animated animate__fadeIn">Error: ${result.error}</p>`;
         }
