@@ -61,7 +61,7 @@ const features = [
     {
         icon: "auto_awesome",
         title: "Animations",
-        description: "Fluid animations powered by GSAP",
+        description: "Amazing fluid animations powered by GSAP",
         color: "#FFE66D"
     }
 ];
