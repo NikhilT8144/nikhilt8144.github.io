@@ -115,3 +115,20 @@ body {
         0 0 0 10px #24ecff22,
         0 0 0 15px #24ecff11;
 }
+
+.container p {
+    position: absolute;
+    color: black;
+    font-size: 1.5em;
+    bottom: -100px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    letter-spacing: 0.15em;
+}
+
+.theme {
+    top: 1rem;
+    right: 1rem;
+    width: 4rem;
+    border: deepskyblue;
+    border-radius: 5rem;
+}
