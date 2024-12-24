@@ -1,0 +1,69 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    min-width: 100vw;
+    min-height: 100vh;
+    color: white;
+}
+
+svg {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    animation: rotate 2s linear infinite;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(180deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+svg circle {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke-width: 10;
+    stroke: white;
+    stroke-linecap: round;
+    transform: translate(5px, 5px);
+    stroke-dasharray: 315;
+    stroke-dashoffset: 315;
+    animation: animate 4s linear infinite;
+}
+
+@keyframes animate {
+
+    0%,
+    100% {
+        stroke-dashoffset: 315;
+    }
+
+    50% {
+        stroke-dashoffset: 0;
+    }
+
+    50.01% {
+        stroke-dashoffset: 630;
+    }
+}
