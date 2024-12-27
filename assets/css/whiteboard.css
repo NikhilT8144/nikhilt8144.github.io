@@ -1,0 +1,188 @@
+:root {
+    --toolbar-bg: rgba(255, 255, 255, 0.95);
+    --toolbar-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    --btn-hover-bg: rgba(0, 123, 255, 0.1);
+    --btn-active-bg: #007bff;
+    --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+}
+
+#whiteboard {
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.toolbar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--toolbar-bg);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: var(--toolbar-shadow);
+    z-index: 1000;
+    display: flex;
+    gap: 20px;
+    transition: all 0.3s var(--transition-timing);
+}
+
+.toolbar-group {
+    display: flex;
+    gap: 10px;
+    padding: 0 10px;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.toolbar-group:last-child {
+    border-right: none;
+}
+
+.btn-tool {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s var(--transition-timing);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-tool:hover {
+    transform: translateY(-2px);
+    background: var(--btn-hover-bg);
+}
+
+.btn-tool.active {
+    background: var(--btn-active-bg);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.tool-options {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--toolbar-bg);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: var(--toolbar-shadow);
+    z-index: 1000;
+    min-width: 250px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s var(--transition-timing);
+}
+
+.tool-options.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.option-group {
+    margin-bottom: 15px;
+}
+
+.option-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-range {
+    width: 100%;
+}
+
+.size-preview {
+    width: 100%;
+    height: 40px;
+    margin-top: 10px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#eraser-preview {
+    position: absolute;
+    border: 2px dotted black; /* Dotted border for visibility */
+    pointer-events: none; /* So it does not block canvas interactions */
+    display: none; /* Start as hidden */
+    border-radius: 10px; /* Rounded corners */
+}
+
+.size-preview::after {
+    content: '';
+    border-radius: 50%;
+    background: #000;
+    transition: all 0.2s var(--transition-timing);
+}
+
+#penSizePreview::after {
+    background: var(--pen-color, #000);
+}
+
+#eraserSizePreview::after {
+    background: #ddd;
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: var(--toolbar-bg);
+    border-radius: 8px;
+    box-shadow: var(--toolbar-shadow);
+    transform: translateX(150%);
+    transition: transform 0.3s var(--transition-timing);
+    z-index: 1100;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+    .toolbar {
+        bottom: 10px;
+        padding: 10px;
+    }
+
+    .btn-tool {
+        width: 40px;
+        height: 40px;
+    }
+
+    .tool-options {
+        bottom: 80px;
+        min-width: 200px;
+    }
+}
+ 
