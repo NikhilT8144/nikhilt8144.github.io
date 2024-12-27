@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whiteboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="/assets/css/whiteboard.css" rel="stylesheet">
+</head>
+<body>
+    <div id="canvas-container">
+        <canvas id="whiteboard"></canvas>
+    </div>
+
+    <div class="toolbar">
+        <div class="toolbar-group">
+            <button class="btn-tool active" data-tool="pen" title="Pen (P)">
+                <i class="fas fa-pen"></i>
+            </button>
+            <button class="btn-tool" data-tool="eraser" title="Eraser (E)">
+                <i class="fas fa-eraser"></i>
+            </button>
+        </div>
+
+        <div class="toolbar-group">
+            <button class="btn-tool" data-action="undo" title="Undo (Ctrl+Z)">
+                <i class="fas fa-undo"></i>
+            </button>
+            <button class="btn-tool" data-action="redo" title="Redo (Ctrl+Y)">
+                <i class="fas fa-redo"></i>
+            </button>
+        </div>
+
+        <div class="toolbar-group">
+            <button class="btn-tool" data-action="clear" title="Clear Canvas">
+                <i class="fas fa-trash"></i>
+            </button>
+            <button class="btn-tool" data-action="save" title="Save (Ctrl+S)">
+                <i class="fas fa-save"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="pen-options" class="tool-options show">
+        <div class="option-group">
+            <label class="form-label">Pen Size</label>
+            <input type="range" class="form-range" id="penSize" min="1" max="50" value="5">
+            <div class="size-preview" id="penSizePreview"></div>
+        </div>
+        <div class="option-group">
+            <label class="form-label">Pen Color</label>
+            <input type="color" class="form-control form-control-color" id="penColor" value="#000000">
+        </div>
+    </div>
+
+    <div id="eraser-options" class="tool-options">
+        <div class="option-group">
+            <label class="form-label">Eraser Size</label>
+            <input type="range" class="form-range" id="eraserSize" min="10" max="100" value="50">
+            <div class="size-preview" id="eraserSizePreview"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmAction">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <div id="eraser-preview" style="display: none;"></div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="/assets/js/whiteboard.js"></script>
+</body>
+</html>
