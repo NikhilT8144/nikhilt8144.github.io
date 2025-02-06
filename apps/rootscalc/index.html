@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root & Power Calculator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/assets/css/rootscalc.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="calculator animate-pop">
+            <h1 class="title">
+                <i class="fas fa-calculator me-2"></i>
+                Root & Power Calculator
+            </h1>
+            
+            <div class="result mb-4">
+                <p class="result-text" id="result">Enter a number and select an operation</p>
+            </div>
+
+            <div class="mb-4">
+                <input type="number" class="form-control input-number" id="inputNumber" placeholder="Enter a number">
+            </div>
+
+            <div class="row g-3">
+                <div class="col-6">
+                    <button class="btn btn-operation w-100" onclick="calculate('square')">
+                        <i class="fas fa-superscript me-2"></i>
+                        Square (x²)
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-operation w-100" onclick="calculate('squareRoot')">
+                        <i class="fas fa-square-root-alt me-2"></i>
+                        Square Root (√x)
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-operation w-100" onclick="calculate('cube')">
+                        <i class="fas fa-cube me-2"></i>
+                        Cube (x³)
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-operation w-100" onclick="calculate('cubeRoot')">
+                        <i class="material-icons me-2" style="font-size: 1rem;">architecture</i>
+                        Cube Root (∛x)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/rootscalc.js"></script>
+</body>
+</html>
