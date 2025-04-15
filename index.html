@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nikhil Tiwari</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Google Material Icons -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <link href="/assets/css/main.css" rel="stylesheet"/>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script defer>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              poppins: ["Poppins", "sans-serif"],
+              inter: ["Inter", "sans-serif"],
+            },
+            colors: {
+              primary: "#0ea5e9", // sky-500
+              secondary: "#7c3aed", // violet-600
+              dark: "#1e293b", // slate-800
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+  </head>
+
+  <body class="font-poppins bg-slate-50 text-slate-800">
+    <!-- Page Transition Element -->
+    <div class="page-transition"></div>
+
+    <!-- Header -->
+    <header
+      class="fixed w-full top-0 bg-white backdrop-blur-md shadow-sm z-50"
+    >
+      <nav
+        class="container mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <a
+          href="/"
+          class="flex items-center gap-2 text-xl font-bold text-slate-800"
+        >
+          <i data-lucide="code" class="w-8 h-8 text-primary"></i>
+          <span>Nikhil Tiwari</span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-8">
+          <a
+            href="#about"
+            class="nav-link relative text-slate-700 hover:text-primary transition-colors"
+            >About</a
+          >
+          <a
+            href="#projects"
+            class="nav-link relative text-slate-700 hover:text-primary transition-colors"
+            >Projects</a
+          >
+          <a
+            href="#skills"
+            class="nav-link relative text-slate-700 hover:text-primary transition-colors"
+            >Skills</a
+          >
+          <a
+            href="#contact"
+            class="nav-link relative text-slate-700 hover:text-primary transition-colors"
+            >Contact</a
+          >
+        </div>
+
+        <button id="menu-btn" class="md:hidden text-slate-800">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </nav>
+
+      <!-- Mobile menu -->
+      <div
+        id="mobile-menu"
+        class="md:hidden fixed inset-0 bg-white z-50 transform translate-x-full transition-transform duration-300 ease-in-out"
+      >
+        <div class="flex justify-end p-4">
+          <button id="close-menu" class="text-slate-800">
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
+        </div>
+        <div class="flex flex-col bg-white items-center gap-8 pb-6">
+          <a
+            href="#about"
+            class="mobile-nav-link text-xl font-medium text-slate-800 hover:text-primary transition-colors"
+            >About</a
+          >
+          <a
+            href="#projects"
+            class="mobile-nav-link text-xl font-medium text-slate-800 hover:text-primary transition-colors"
+            >Projects</a
+          >
+          <a
+            href="#skills"
+            class="mobile-nav-link text-xl font-medium text-slate-800 hover:text-primary transition-colors"
+            >Skills</a
+          >
+          <a
+            href="#contact"
+            class="mobile-nav-link text-xl font-medium text-slate-800 hover:text-primary transition-colors"
+            >Contact</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="h-screen flex items-center pt-16">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row items-center gap-12">
+          <div class="w-full md:w-1/2 space-y-6">
+            <h1 class="hero-title text-4xl md:text-6xl font-bold leading-tight">
+              <span class="block">Hello, I'm</span>
+              <span class="text-primary">Nikhil Tiwari</span>
+            </h1>
+            <p class="hero-subtitle text-lg md:text-xl text-slate-600">
+              A passionate student developer focused on creating elegant web
+              solutions.
+            </p>
+            <div class="hero-buttons flex gap-4 pt-4">
+              <a
+                href="#projects"
+                class="btn-primary bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2"
+              >
+                <span>View Projects</span>
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+              </a>
+              <a
+                href="#contact"
+                class="btn-secondary border-2 border-primary text-primary hover:bg-primary/10 px-6 py-3 rounded-lg font-medium transition-all"
+                >Contact Me</a
+              >
+            </div>
+          </div>
+          <div class="w-full md:w-1/2 flex justify-center">
+            <div class="hero-image relative w-64 h-64 md:w-80 md:h-80">
+              <div
+                class="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-full opacity-20 blur-xl"
+              ></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <i data-lucide="code" class="w-32 h-32 text-primary"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="section-title mb-16 text-center">
+          <span class="inline-block text-primary font-semibold mb-2"
+            >ABOUT ME</span
+          >
+          <h2 class="text-3xl md:text-4xl font-bold">Who Am I?</h2>
+        </div>
+        <div class="flex flex-col md:flex-row items-center gap-12">
+          <div class="w-full md:w-1/2">
+            <div
+              class="about-image relative rounded-xl overflow-hidden aspect-square max-w-md mx-auto"
+            >
+              <div
+                class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20"
+              ></div>
+              <i
+                data-lucide="user"
+                class="absolute inset-0 m-auto w-32 h-32 text-primary"
+              ></i>
+            </div>
+          </div>
+          <div class="w-full md:w-1/2 space-y-6">
+            <h3 class="text-2xl font-bold">I'm Nikhil Tiwari</h3>
+            <p class="text-slate-600">
+              A Class 10th student with a strong passion for web development and
+              science. I enjoy learning new technologies and building projects
+              that solve real-world problems.
+            </p>
+            <p class="text-slate-600">
+              I believe in continuous learning and am constantly exploring new
+              skills and concepts in programming and science.
+            </p>
+            <div class="flex flex-wrap gap-3 pt-4">
+              <span
+                class="bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium"
+                >Web Development</span
+              >
+              <span
+                class="bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium"
+                >Science</span
+              >
+              <span
+                class="bg-green-100 text-green-600 px-4 py-2 rounded-full text-sm font-medium"
+                >Learning</span
+              >
+              <span
+                class="bg-amber-100 text-amber-600 px-4 py-2 rounded-full text-sm font-medium"
+                >Problem Solving</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-24 bg-slate-50">
+      <div class="container mx-auto px-4">
+        <div class="section-title mb-16 text-center">
+          <span class="inline-block text-primary font-semibold mb-2"
+            >MY WORK</span
+          >
+          <h2 class="text-3xl md:text-4xl font-bold">Recent Projects</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Project 1 -->
+          <div
+            class="project-card bg-white rounded-xl shadow-lg overflow-hidden"
+          >
+            <div
+              class="aspect-video bg-slate-100 flex items-center justify-center"
+            >
+              <i
+                data-lucide="layout-dashboard"
+                class="w-16 h-16 text-primary"
+              ></i>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold mb-2">Portfolio Website</h3>
+              <p class="text-slate-600 mb-4">
+                A personal portfolio website created using HTML, CSS, JS, and
+                modern web frameworks.
+              </p>
+              <div class="flex gap-2 mb-6">
+                <span
+                  class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs"
+                  >HTML</span
+                >
+                <span
+                  class="bg-pink-100 text-pink-600 px-2 py-1 rounded text-xs"
+                  >CSS</span
+                >
+                <span
+                  class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs"
+                  >JavaScript</span
+                >
+              </div>
+              <button
+                onclick="reload();"
+                class="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
+              >
+                <span>View Project</span>
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Project 2 -->
+          <div
+            class="project-card bg-white rounded-xl shadow-lg overflow-hidden"
+          >
+            <div
+              class="aspect-video bg-slate-100 flex items-center justify-center"
+            >
+              <i data-lucide="atom" class="w-16 h-16 text-secondary"></i>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold mb-2">Physics Page</h3>
+              <p class="text-slate-600 mb-4">
+                Created a dedicated webpage providing an overview of key Physics
+                principles and concepts.
+              </p>
+              <div class="flex gap-2 mb-6">
+                <span
+                  class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs"
+                  >HTML</span
+                >
+                <span
+                  class="bg-pink-100 text-pink-600 px-2 py-1 rounded text-xs"
+                  >CSS</span
+                >
+                <span
+                  class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs"
+                  >JavaScript</span
+                >
+              </div>
+              <button
+                onclick="load('physics');"
+                class="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
+              >
+                <span>View Project</span>
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Project 3 -->
+          <div
+            class="project-card bg-white rounded-xl shadow-lg overflow-hidden"
+          >
+            <div
+              class="aspect-video bg-slate-100 flex items-center justify-center"
+            >
+              <i data-lucide="pie-chart" class="w-16 h-16 text-primary"></i>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold mb-2">Mathematics Page</h3>
+              <p class="text-slate-600 mb-4">
+                Created a dedicated webpage providing an overview of key
+                Mathematics principles and concepts.
+              </p>
+              <div class="flex gap-2 mb-6">
+                <span
+                  class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs"
+                  >HTML</span
+                >
+                <span
+                  class="bg-pink-100 text-pink-600 px-2 py-1 rounded text-xs"
+                  >CSS</span
+                >
+                <span
+                  class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs"
+                  >JavaScript</span
+                >
+              </div>
+              <button
+                onclick="load('maths');"
+                class="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
+              >
+                <span>View Project</span>
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section (New) -->
+    <section id="skills" class="py-24 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="section-title mb-16 text-center">
+          <span class="inline-block text-primary font-semibold mb-2"
+            >MY ABILITIES</span
+          >
+          <h2 class="text-3xl md:text-4xl font-bold">Skills & Expertise</h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <!-- Skill 1 -->
+          <div
+            class="skill-card bg-white border border-slate-100 rounded-xl p-6 text-center hover:border-primary/20 hover:shadow-md transition-all"
+          >
+            <div
+              class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4"
+            >
+              <i data-lucide="code" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">HTML</h3>
+            <p class="text-slate-600 text-sm">Structure and markup</p>
+          </div>
+
+          <!-- Skill 2 -->
+          <div
+            class="skill-card bg-white border border-slate-100 rounded-xl p-6 text-center hover:border-primary/20 hover:shadow-md transition-all"
+          >
+            <div
+              class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4"
+            >
+              <i data-lucide="palette" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">CSS</h3>
+            <p class="text-slate-600 text-sm">Styling and design</p>
+          </div>
+
+          <!-- Skill 3 -->
+          <div
+            class="skill-card bg-white border border-slate-100 rounded-xl p-6 text-center hover:border-primary/20 hover:shadow-md transition-all"
+          >
+            <div
+              class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4"
+            >
+              <i data-lucide="code-2" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">JavaScript</h3>
+            <p class="text-slate-600 text-sm">Interactivity and logic</p>
+          </div>
+
+          <!-- Skill 4 -->
+          <div
+            class="skill-card bg-white border border-slate-100 rounded-xl p-6 text-center hover:border-primary/20 hover:shadow-md transition-all"
+          >
+            <div
+              class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4"
+            >
+              <i data-lucide="layout" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Bootstrap</h3>
+            <p class="text-slate-600 text-sm">Responsive frameworks</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 bg-slate-50">
+      <div class="container mx-auto px-4">
+        <div class="section-title mb-16 text-center">
+          <span class="inline-block text-primary font-semibold mb-2"
+            >GET IN TOUCH</span
+          >
+          <h2 class="text-3xl md:text-4xl font-bold">Contact Me</h2>
+        </div>
+        <div
+          class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden"
+        >
+          <div class="p-8">
+            <div class="mb-8 text-center">
+              <div
+                class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4"
+              >
+                <i data-lucide="mail" class="w-8 h-8"></i>
+              </div>
+              <h3 class="text-xl font-bold">Send Me a Message</h3>
+              <p class="text-slate-600">
+                Fill out the form below and I'll respond as soon as possible.
+              </p>
+            </div>
+            <form id="contactForm" class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    for="name"
+                    class="block text-sm font-medium text-slate-700 mb-1"
+                    >Name</label
+                  >
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Your name"
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="email"
+                    class="block text-sm font-medium text-slate-700 mb-1"
+                    >Email</label
+                  >
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Your email"
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                  />
+                </div>
+              </div>
+              <div>
+                <label
+                  for="subject"
+                  class="block text-sm font-medium text-slate-700 mb-1"
+                  >Subject</label
+                >
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  placeholder="Subject"
+                  class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                />
+              </div>
+              <div>
+                <label
+                  for="message"
+                  class="block text-sm font-medium text-slate-700 mb-1"
+                  >Message</label
+                >
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="4"
+                  placeholder="Your message"
+                  class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                class="w-full bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
+              >
+                <span>Send Message</span>
+                <i data-lucide="send" class="w-5 h-5"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <a
+              href="/"
+              class="flex items-center gap-2 text-xl font-bold text-white mb-4"
+            >
+              <i data-lucide="code" class="w-6 h-6 text-primary"></i>
+              <span>Nikhil Tiwari</span>
+            </a>
+            <p class="text-slate-400">
+              A passionate student developer focused on creating elegant web
+              solutions.
+            </p>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="#about"
+                  class="text-slate-400 hover:text-primary transition-colors"
+                  >About</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#projects"
+                  class="text-slate-400 hover:text-primary transition-colors"
+                  >Projects</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#skills"
+                  class="text-slate-400 hover:text-primary transition-colors"
+                  >Skills</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#contact"
+                  class="text-slate-400 hover:text-primary transition-colors"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Connect</h3>
+            <div class="flex gap-4">
+              <a
+                href="#"
+                class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all"
+              >
+                <i data-lucide="github" class="w-5 h-5"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all"
+              >
+                <i data-lucide="linkedin" class="w-5 h-5"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all"
+              >
+                <i data-lucide="twitter" class="w-5 h-5"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all"
+              >
+                <i data-lucide="instagram" class="w-5 h-5"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div
+          class="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400"
+        >
+          <p>&copy; 2025 Nikhil Tiwari. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Back to top button -->
+    <button
+      id="back-to-top"
+      class="fixed bottom-8 right-8 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform translate-y-20 opacity-0 transition-all duration-300"
+    >
+      <i data-lucide="chevron-up" class="w-6 h-6"></i>
+    </button>
+
+    <!-- Initialize Lucide Icons -->
+    <script defer>
+      lucide.createIcons();
+    </script>
+
+    <!-- Main JavaScript -->
+    <script src="/assets/js/main.js"></script>
+  </body>
+</html>
