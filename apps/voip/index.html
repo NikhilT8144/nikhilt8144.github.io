@@ -138,6 +138,7 @@
       signupForm.classList.add('hidden');
       loginForm.classList.remove('hidden');
       clearErrors();
+      currentUsernameSpan.textContent = '';
     }
 
     // Show app, hide auth
@@ -145,21 +146,17 @@
       authSection.style.display = 'none';
       appSection.style.display = 'block';
 
-      // Get username from session (using contacts API as proxy)
       try {
         const contactsData = await apiFetch('https://nikhilt8144.serv00.net/api/voip/contacts.php', { method: 'GET' });
         currentUsernameSpan.textContent = 'Loading...';
-        await fetchCurrentUsername();
+
+        // Since no session API, set username from session stored in JS during login/signup (already done)
+        // So just load contacts here
         loadContacts(contactsData.contacts);
+
       } catch {
         showAuth();
       }
-    }
-
-    async function fetchCurrentUsername() {
-      // A simple API endpoint can be created to return username, but since none,
-      // we will just display from session in PHP or after login (simplified).
-      // For now, just keep username on login/signup stored in JS.
     }
 
     // Register new user
@@ -176,6 +173,7 @@
         if (res.success) {
           currentUsernameSpan.textContent = res.username;
           showApp();
+          startPeer(res.username); // <-- Fix: start peer after signup/login
         }
       } catch (err) {
         signupError.textContent = err.error || 'Registration failed';
@@ -196,6 +194,7 @@
         if (res.success) {
           currentUsernameSpan.textContent = res.username;
           showApp();
+          startPeer(res.username); // <-- Fix: start peer after signup/login
         }
       } catch (err) {
         loginError.textContent = err.error || 'Login failed';
@@ -204,151 +203,161 @@
 
     // Logout user
     logoutBtn.onclick = async () => {
-      await apiFetch('https://nikhilt8144.serv00.net/api/voip/logout.php', { method: 'POST' });
-      showAuth();
+      try {
+        await apiFetch('https://nikhilt8144.serv00.net/api/voip/logout.php', { method: 'POST' });
+      } catch { }
+      currentUsernameSpan.textContent = '';
+      peer && peer.destroy();
+      peer = null;
+      authSection.style.display = 'block';
+      appSection.style.display = 'none';
+      signupForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
     };
 
-    // Load contacts into lists
+    // Contacts handling
     function loadContacts(contacts) {
       contactsList.innerHTML = '';
       callContactsList.innerHTML = '';
-
-      contacts.forEach(c => {
+      contacts.forEach(contact => {
         const li = document.createElement('li');
-        li.textContent = c;
-        li.className = 'bg-gray-700 p-2 rounded flex justify-between items-center';
+        li.textContent = contact;
+        contactsList.appendChild(li);
 
-        // Add call button
+        const callLi = document.createElement('li');
         const callBtn = document.createElement('button');
         callBtn.textContent = 'Call';
         callBtn.className = 'bg-blue-600 px-3 py-1 rounded hover:bg-blue-700';
-        callBtn.onclick = () => startCall(c);
-
-        li.appendChild(callBtn);
-        contactsList.appendChild(li);
-
-        // Also add to call contacts list for quick call
-        const li2 = li.cloneNode(true);
-        li2.querySelector('button').onclick = () => startCall(c);
-        callContactsList.appendChild(li2);
+        callBtn.onclick = () => initiateCall(contact);
+        callLi.textContent = contact + ' ';
+        callLi.appendChild(callBtn);
+        callContactsList.appendChild(callLi);
       });
     }
 
-    // Add new contact
+    // Add contact
     document.getElementById('add-contact-form').onsubmit = async (e) => {
       e.preventDefault();
       addContactError.textContent = '';
-      const newContact = newContactInput.value.trim();
-      if (!newContact) return;
+      const contact = newContactInput.value.trim();
+      if (!contact) return;
+      if (contact === currentUsernameSpan.textContent) {
+        addContactError.textContent = "You can't add yourself as a contact.";
+        return;
+      }
       try {
         const res = await apiFetch('https://nikhilt8144.serv00.net/api/voip/contacts.php', {
           method: 'POST',
-          body: { contact_username: newContact }
+          body: { contact }
         });
         if (res.success) {
-          loadContacts(await fetchContacts());
           newContactInput.value = '';
+          loadContacts(res.contacts);
         }
       } catch (err) {
         addContactError.textContent = err.error || 'Failed to add contact';
       }
     };
 
-    async function fetchContacts() {
-      const data = await apiFetch('https://nikhilt8144.serv00.net/api/voip/contacts.php', { method: 'GET' });
-      return data.contacts;
-    }
-
-    // PeerJS and WebRTC Setup
-
+    // PeerJS related variables
     let peer = null;
     let currentCall = null;
 
+    // Start PeerJS connection with your username
     function startPeer(username) {
-      if (peer) peer.destroy();
+      if (peer) {
+        peer.destroy();
+        peer = null;
+      }
 
       peer = new Peer(username, {
-        host: 'peerjs.com', // or your own PeerJS server
-        secure: true,
-        port: 443,
         config: {
-          'iceServers': [
-            { url: 'stun:stun.l.google.com:19302' },
-            { url: 'turn:turnserver.example.org', username: 'user', credential: 'pass' }
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            {
+              urls: 'turn:eu-turn4.xirsys.com:80?transport=udp',
+              username: 'a664e34e-9e53-11ed-91cc-0242ac120003',
+              credential: 'cd6e86fa-4c04-11ed-b4d4-0242ac120003'
+            }
           ]
         }
       });
 
+      peer.on('open', (id) => {
+        callStatus.textContent = `PeerJS connected with ID: ${id}`;
+      });
+
+      peer.on('call', (call) => {
+        // Incoming call
+        callStatus.textContent = `Incoming call from ${call.peer}`;
+        navigator.mediaDevices.getUserMedia({ audio: true })
+          .then(stream => {
+            call.answer(stream);
+            setupCallEvents(call, stream);
+          })
+          .catch(err => {
+            callStatus.textContent = 'Failed to get microphone permission';
+          });
+      });
+
       peer.on('error', (err) => {
-        callStatus.textContent = 'PeerJS error: ' + err;
+        callStatus.textContent = 'Peer error: ' + err.type;
       });
-
-      peer.on('call', call => {
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-          call.answer(stream);
-          setupCallHandlers(call);
-        }).catch(() => {
-          callStatus.textContent = 'Microphone access denied';
-        });
-      });
-
-      callStatus.textContent = 'Ready to make calls';
     }
 
-    function setupCallHandlers(call) {
+    // Initiate call to a contact
+    function initiateCall(contact) {
+      if (!peer) {
+        callStatus.textContent = 'Peer connection not ready.';
+        return;
+      }
       if (currentCall) {
         currentCall.close();
+        currentCall = null;
       }
-      currentCall = call;
+      callStatus.textContent = `Calling ${contact}...`;
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          const call = peer.call(contact, stream);
+          if (!call) {
+            callStatus.textContent = 'Call failed to start';
+            return;
+          }
+          currentCall = call;
+          setupCallEvents(call, stream);
+        })
+        .catch(() => {
+          callStatus.textContent = 'Microphone permission denied.';
+        });
+    }
 
-      callStatus.textContent = 'Calling ' + call.peer + '...';
-
+    // Setup call event listeners
+    function setupCallEvents(call, localStream) {
       call.on('stream', remoteStream => {
         const audio = new Audio();
         audio.srcObject = remoteStream;
-        audio.play();
+        audio.autoplay = true;
+        audio.play().catch(() => {
+          callStatus.textContent = 'Autoplay blocked. Tap anywhere to enable audio.';
+          document.body.addEventListener('click', () => audio.play(), { once: true });
+        });
       });
 
       call.on('close', () => {
-        callStatus.textContent = 'Call ended';
+        callStatus.textContent = 'Call ended.';
         currentCall = null;
       });
 
-      call.on('error', err => {
+      call.on('error', (err) => {
         callStatus.textContent = 'Call error: ' + err;
         currentCall = null;
       });
     }
 
-    async function startCall(peerId) {
-      if (!peer) {
-        callStatus.textContent = 'Initializing connection...';
-        return;
-      }
-      if (currentCall) {
-        currentCall.close();
-      }
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const call = peer.call(peerId, stream);
-        setupCallHandlers(call);
-      } catch {
-        callStatus.textContent = 'Microphone permission required';
-      }
-    }
+    // On page load
+    checkSession();
 
-    // Initialize app logic
-
-    (async () => {
-      await checkSession();
-
-      // Initialize peer with username after login
-      if (currentUsernameSpan.textContent) {
-        startPeer(currentUsernameSpan.textContent);
-      }
-    })();
   </script>
 </body>
 
 </html>
-
