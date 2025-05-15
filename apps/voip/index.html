@@ -1,1 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VoIP Calling App</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peerjs.min.js"></script>
+</head>
+
+<body class="bg-gray-900 text-white font-sans flex flex-col items-center min-h-screen p-4">
+  <h1 class="text-3xl font-bold mb-6">VoIP Calling App</h1>
+
+  <div id="auth-section" class="w-full max-w-md">
+    <!-- Signup Form -->
+    <form id="signup-form" class="mb-6 space-y-4 bg-gray-800 p-6 rounded hidden">
+      <h2 class="text-xl font-semibold">Sign Up</h2>
+      <input id="signup-username" type="text" placeholder="Username" required
+        class="w-full p-2 rounded bg-gray-700 text-white" minlength="3" maxlength="15" pattern="[a-zA-Z0-9_]+" />
+      <input id="signup-password" type="password" placeholder="Password" required
+        class="w-full p-2 rounded bg-gray-700 text-white" minlength="6" />
+      <button type="submit" class="w-full bg-green-600 p-2 rounded hover:bg-green-700">Register</button>
+      <p class="text-sm text-gray-400">Already have an account? <a href="#" id="show-login"
+          class="text-cyan-400 hover:underline cursor-pointer">Login</a></p>
+      <div id="signup-error" class="text-red-500 mt-1"></div>
+    </form>
+
+    <!-- Login Form -->
+    <form id="login-form" class="mb-6 space-y-4 bg-gray-800 p-6 rounded">
+      <h2 class="text-xl font-semibold">Login</h2>
+      <input id="login-username" type="text" placeholder="Username" required
+        class="w-full p-2 rounded bg-gray-700 text-white" minlength="3" maxlength="15" pattern="[a-zA-Z0-9_]+" />
+      <input id="login-password" type="password" placeholder="Password" required
+        class="w-full p-2 rounded bg-gray-700 text-white" minlength="6" />
+      <button type="submit" class="w-full bg-blue-600 p-2 rounded hover:bg-blue-700">Login</button>
+      <p class="text-sm text-gray-400">Don't have an account? <a href="#" id="show-signup"
+          class="text-cyan-400 hover:underline cursor-pointer">Sign Up</a></p>
+      <div id="login-error" class="text-red-500 mt-1"></div>
+    </form>
+  </div>
+
+  <div id="app-section" class="hidden w-full max-w-md bg-gray-800 p-6 rounded">
+    <div class="flex justify-between items-center mb-4">
+      <div><strong>Logged in as:</strong> <span id="current-username"></span></div>
+      <button id="logout-btn" class="bg-red-600 p-2 rounded hover:bg-red-700">Logout</button>
+    </div>
+
+    <div class="mb-4">
+      <h2 class="text-xl font-semibold mb-2">Contacts</h2>
+      <ul id="contacts-list" class="space-y-2 max-h-48 overflow-y-auto"></ul>
+    </div>
+
+    <form id="add-contact-form" class="flex space-x-2 mb-6">
+      <input id="new-contact-username" type="text" placeholder="Add contact username" required
+        class="flex-grow p-2 rounded bg-gray-700 text-white" minlength="3" maxlength="15" pattern="[a-zA-Z0-9_]+" />
+      <button type="submit" class="bg-green-600 px-4 rounded hover:bg-green-700">Add</button>
+    </form>
+    <div id="add-contact-error" class="text-red-500 mb-4"></div>
+
+    <h2 class="text-xl font-semibold mb-2">Call a Contact</h2>
+    <ul id="call-contacts-list" class="space-y-2 max-h-48 overflow-y-auto"></ul>
+
+    <div id="call-status" class="mt-4 font-semibold"></div>
+  </div>
+
+  <script>
+    const signupForm = document.getElementById('signup-form');
+    const loginForm = document.getElementById('login-form');
+    const authSection = document.getElementById('auth-section');
+    const appSection = document.getElementById('app-section');
+
+    const signupError = document.getElementById('signup-error');
+    const loginError = document.getElementById('login-error');
+    const addContactError = document.getElementById('add-contact-error');
+
+    const currentUsernameSpan = document.getElementById('current-username');
+    const contactsList = document.getElementById('contacts-list');
+    const callContactsList = document.getElementById('call-contacts-list');
+    const callStatus = document.getElementById('call-status');
+
+    const newContactInput = document.getElementById('new-contact-username');
+
+    const logoutBtn = document.getElementById('logout-btn');
+
+    // Show/hide forms
+    document.getElementById('show-signup').onclick = (e) => {
+      e.preventDefault();
+      loginForm.classList.add('hidden');
+      signupForm.classList.remove('hidden');
+      clearErrors();
+    };
+    document.getElementById('show-login').onclick = (e) => {
+      e.preventDefault();
+      signupForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+      clearErrors();
+    };
+
+    function clearErrors() {
+      signupError.textContent = '';
+      loginError.textContent = '';
+      addContactError.textContent = '';
+    }
+
+    // Fetch wrapper with session credentials
+    async function apiFetch(url, options = {}) {
+      options.credentials = 'include'; // important for PHP session cookie
+      if (!options.headers) options.headers = {};
+      if (!options.headers['Content-Type']) options.headers['Content-Type'] = 'application/json';
+      if (options.body && typeof options.body !== 'string') {
+        options.body = JSON.stringify(options.body);
+      }
+      const res = await fetch(url, options);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Unknown error' }));
+        throw err;
+      }
+      return await res.json();
+    }
+
+    // Check if logged in on page load
+    async function checkSession() {
+      try {
+        // This is a hack: call contacts API to check auth.
+        await apiFetch('https://nikhilt8144.serv00.net/api/voip/contacts.php', { method: 'GET' });
+        // If no error, session active
+        showApp();
+      } catch {
+        showAuth();
+      }
+    }
+
+    // Show auth forms, hide app
+    function showAuth() {
+      authSection.style.display = 'block';
+      appSection.style.display = 'none';
+      signupForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+      clearErrors();
+    }
+
+    // Show app, hide auth
+    async function showApp() {
+      authSection.style.display = 'none';
+      appSection.style.display = 'block';
+
+      // Get username from session (using contacts API as proxy)
+      try {
+        const contactsData = await apiFetch('https://nikhilt8144.serv00.net/api/voip/contacts.php', { method: 'GET' });
+        currentUsernameSpan.textContent = 'Loading...';
+        await fetchCurrentUsername();
+        loadContacts(contactsData.contacts);
+      } catch {
+        showAuth();
+      }
+    }
+
+    async function fetchCurrentUsername() {
+      // A simple API endpoint can be created to return username, but since none,
+      // we will just display from session in PHP or after login (simplified).
+      // For now, just keep username on login/signup stored in JS.
+    }
+
+    // Register new user
+    signupForm.onsubmit = async (e) => {
+      e.preventDefault();
+      clearErrors();
+      const username = signupForm['signup-username'].value.trim();
+      const password = signupForm['signup-password'].value;
+      try {
+        const res = await apiFetch('https://nikhilt8144.serv00.net/api/voip/register.php', {
+          method: 'POST',
+          body: { username, password }
+        });
+        if (res.success) {
+          currentUsernameSpan.textContent = res.username;
+          showApp();
+        }
+      } catch (err) {
+        signupError.textContent = err.error || 'Registration failed';
+      }
+    };
+
+    // Login user
+    loginForm.onsubmit = async (e) => {
+      e.preventDefault();
+      clearErrors();
+      const username = loginForm['login-username'].value.trim();
+      const password = loginForm['login-password'].value;
+      try {
+        const res = await apiFetch('https://nikhilt8144.serv00.net/api/voip/login.php', {
+          method: 'POST',
+          body: { username, password }
+        });
+        if (res.success) {
+          currentUsernameSpan.textContent = res.username;
+          showApp();
+        }
+      } catch (err) {
+        loginError.textContent = err.error || 'Login failed';
+      }
+    };
+
+    // Logout user
+    logoutBtn.onclick = async () => {
+      await apiFetch('https://nikhilt8144.serv00.net/api/voip/logout.php', { method: 'POST' });
+      showAuth();
+    };
+
+    // Load contacts into lists
+    function loadContacts(contacts) {
+      contactsList.innerHTML = '';
+      callContactsList.innerHTML = '';
+
+      contacts.forEach(c => {
+        const li = document.createElement('li');
+        li.textContent = c;
+        li.className = 'bg-gray-700 p-2 rounded flex justify-between items-center';
+
+        // Add call button
+        const callBtn = document.createElement('button');
+        callBtn.textContent = 'Call';
+        callBtn.className = 'bg-blue-600 px-3 py-1 rounded hover:bg-blue-700';
+        callBtn.onclick = () => startCall(c);
+
+        li.appendChild(callBtn);
+        contactsList.appendChild(li);
+
+        // Also add to call contacts list for quick call
+        const li2 = li.cloneNode(true);
+        li2.querySelector('button').onclick = () => startCall(c);
+        callContactsList.appendChild(li2);
+      });
+    }
+
+    // Add new contact
+    document.getElementById('add-contact-form').onsubmit = async (e) => {
+      e.preventDefault();
+      addContactError.textContent = '';
+      const newContact = newContactInput.value.trim();
+      if (!newContact) return;
+      try {
+        const res = await apiFetch('https://nikhilt8144.serv00.net/api/voip/contacts.php', {
+          method: 'POST',
+          body: { contact_username: newContact }
+        });
+        if (res.success) {
+          loadContacts(await fetchContacts());
+          newContactInput.value = '';
+        }
+      } catch (err) {
+        addContactError.textContent = err.error || 'Failed to add contact';
+      }
+    };
+
+    async function fetchContacts() {
+      const data = await apiFetch('https://nikhilt8144.serv00.net/api/voip/contacts.php', { method: 'GET' });
+      return data.contacts;
+    }
+
+    // PeerJS and WebRTC Setup
+
+    let peer = null;
+    let currentCall = null;
+
+    function startPeer(username) {
+      if (peer) peer.destroy();
+
+      peer = new Peer(username, {
+        host: 'peerjs.com', // or your own PeerJS server
+        secure: true,
+        port: 443,
+        config: {
+          'iceServers': [
+            { url: 'stun:stun.l.google.com:19302' },
+            { url: 'turn:turnserver.example.org', username: 'user', credential: 'pass' }
+          ]
+        }
+      });
+
+      peer.on('error', (err) => {
+        callStatus.textContent = 'PeerJS error: ' + err;
+      });
+
+      peer.on('call', call => {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+          call.answer(stream);
+          setupCallHandlers(call);
+        }).catch(() => {
+          callStatus.textContent = 'Microphone access denied';
+        });
+      });
+
+      callStatus.textContent = 'Ready to make calls';
+    }
+
+    function setupCallHandlers(call) {
+      if (currentCall) {
+        currentCall.close();
+      }
+      currentCall = call;
+
+      callStatus.textContent = 'Calling ' + call.peer + '...';
+
+      call.on('stream', remoteStream => {
+        const audio = new Audio();
+        audio.srcObject = remoteStream;
+        audio.play();
+      });
+
+      call.on('close', () => {
+        callStatus.textContent = 'Call ended';
+        currentCall = null;
+      });
+
+      call.on('error', err => {
+        callStatus.textContent = 'Call error: ' + err;
+        currentCall = null;
+      });
+    }
+
+    async function startCall(peerId) {
+      if (!peer) {
+        callStatus.textContent = 'Initializing connection...';
+        return;
+      }
+      if (currentCall) {
+        currentCall.close();
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const call = peer.call(peerId, stream);
+        setupCallHandlers(call);
+      } catch {
+        callStatus.textContent = 'Microphone permission required';
+      }
+    }
+
+    // Initialize app logic
+
+    (async () => {
+      await checkSession();
+
+      // Initialize peer with username after login
+      if (currentUsernameSpan.textContent) {
+        startPeer(currentUsernameSpan.textContent);
+      }
+    })();
+  </script>
+</body>
+
+</html>
 
