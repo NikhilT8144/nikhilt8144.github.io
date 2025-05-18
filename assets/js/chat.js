@@ -36,7 +36,7 @@ $(document).ready(function () {
   
 function fetchMessages() {
     $.ajax({
-        url: 'https://nikhilt8144.serv00.net/fetch_messages.php',
+        url: 'https://nikhilt8144.serv00.net/api/quickchat/fetch.php',
         type: 'GET',
         dataType: 'json', // Specify that you're expecting a JSON response
         success: function (data) {
@@ -71,7 +71,7 @@ function fetchMessages() {
             let username = sessionStorage.getItem('username');
 
             $.ajax({
-                url: 'https://nikhilt8144.serv00.net/send_message.php',
+                url: 'https://nikhilt8144.serv00.net/api/quickchat/send.php',
                 type: 'POST',
                 data: {
                     username: username,
