@@ -1,0 +1,43 @@
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button.active {
+            color: #6d28d9; /* purple-600 */
+        }
+        
+        /* Base size for Lucide icons */
+        .lucide {
+            width: 1.125rem; /* 18px */
+            height: 1.125rem;
+        }
+        .lucide-sm {
+            width: 1rem; /* 16px */
+            height: 1rem;
+        }
+        .lucide-lg {
+             width: 3rem; /* 48px */
+            height: 3rem;
+        }
+
+        /* Spinning animation for loader */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .loader-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Ensure high-res canvas AND SVG scale down to fit container */
+        #qr-container canvas, 
+        #qr-container svg {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100%;
+        }
