@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    
+    <!-- 1. Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. Google Font (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 3. QR Code Styling Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@latest/lib/qr-code-styling.min.js" defer></script> <!-- Using your provided CDN Link + defer -->
+    
+    <!-- 4. Animation Library (GSAP) - For hardware-accelerated animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    
+    <!-- 5. Icon Library (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    
+    <!-- 6. Custom Styles -->
+    <link rel="stylesheet" href="/assets/css/qr.css">
+</head>
+<!-- CRITICAL FIX: Removed 'overflow-hidden' to allow scrolling on all devices -->
+<body class="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 p-4">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl mb-4 shadow-lg shadow-purple-500/30">
+                <!-- Lucide Icon -->
+                <i data-lucide="qr-code" class="w-8 h-8 text-white"></i>
+            </div>
+            <!-- RESPONSIVE FIX: Smaller text on mobile -->
+            <h1 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2" data-tkey="appTitle">
+                QR Code Generator
+            </h1>
+            <p class="text-slate-600 text-lg" data-tkey="appDescription">
+                Generate QR codes for URLs, text, and contact information
+            </p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="bg-white rounded-3xl shadow-xl shadow-blue-500/10 overflow-hidden">
+            <!-- Tab Navigation -->
+            <div class="border-b border-slate-200">
+                <!-- We add relative positioning here to contain the absolute glider -->
+                <nav class="flex relative">
+                    <!-- FIX: Replaced 'transition-all' with 'transition-colors' to prevent z-index bug -->
+                    <button id="tab-url" class="tab-button flex-1 flex items-center justify-center gap-2 px-6 py-4 text-sm font-medium transition-colors duration-200 z-10 text-slate-500 hover:text-slate-700">
+                        <!-- Lucide Icon -->
+                        <i data-lucide="link" class="lucide"></i>
+                        <span data-tkey="urlTab">URL</span>
+                    </button>
+                    <button id="tab-text" class="tab-button flex-1 flex items-center justify-center gap-2 px-6 py-4 text-sm font-medium transition-colors duration-200 z-10 text-slate-500 hover:text-slate-700">
+                        <!-- Lucide Icon -->
+                        <i data-lucide="message-square" class="lucide"></i>
+                        <span data-tkey="textTab">Text</span>
+                    </button>
+                    <button id="tab-contact" class="tab-button flex-1 flex items-center justify-center gap-2 px-6 py-4 text-sm font-medium transition-colors duration-200 z-10 text-slate-500 hover:text-slate-700">
+                        <!-- Lucide Icon -->
+                        <i data-lucide="user" class="lucide"></i>
+                        <span data-tkey="contactTab">Contact</span>
+                    </button>
+                    
+                    <!-- Add the animated "glider" element -->
+                    <!-- FIX: Removed CSS transition classes to let GSAP handle all animation -->
+                    <div id="tab-glider" class="absolute left-0 bottom-0 h-full p-1 z-0" style="width: 33.3333%">
+                         <div class="w-full h-full bg-purple-50 rounded-t-lg border-b-2 border-purple-600"></div>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Content Area -->
+            <!-- RESPONSIVE FIX: Reduced padding on mobile (p-4) -->
+            <div class="p-4 sm:p-8">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Input Section -->
+                    <div class="space-y-6">
+                        <h2 id="input-heading" class="text-2xl font-semibold text-slate-800 mb-4" data-tkey="enterUrl">
+                            Enter URL
+                        </h2>
+
+                        <!-- URL Input -->
+                        <div id="content-url" class="tab-content">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2" data-tkey="websiteUrl">
+                                    Website URL
+                                </label>
+                                <input type="url" id="url-input" data-tkey-placeholder="urlPlaceholder" placeholder="example.com or https://example.com" class="qr-input w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                                <p class="text-xs text-slate-500 mt-1" data-tkey="urlHelp">
+                                    Enter a website URL. If you don't include http://, we'll add https:// automatically.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Text Input -->
+                        <div id="content-text" class="tab-content">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2" data-tkey="textContent">
+                                    Text Content
+                                </label>
+                                <textarea id="text-input" data-tkey-placeholder="textPlaceholder" placeholder="Enter any text to generate QR code..." rows="4" class="qr-input w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 resize-none"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Contact Input -->
+                        <div id="content-contact" class="tab-content">
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2" data-tkey="firstName">First Name</label>
+                                        <input type="text" id="contact-firstName" data-tkey-placeholder="firstNamePlaceholder" placeholder="John" class="qr-input w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2" data-tkey="lastName">Last Name</label>
+                                        <input type="text" id="contact-lastName" data-tkey-placeholder="lastNamePlaceholder" placeholder="Doe" class="qr-input w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2" data-tkey="phoneNumber">Phone Number</label>
+                                    <input type="tel" id="contact-phone" data-tkey-placeholder="phonePlaceholder" placeholder="+1 (555) 123-4567" class="qr-input w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2" data-tkey="emailAddress">Email Address</label>
+                                    <input type="email" id="contact-email" data-tkey-placeholder="emailPlaceholder" placeholder="john.doe@example.com" class="qr-input w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2" data-tkey="organization">Organization</label>
+                                    <input type="text" id="contact-organization" data-tkey-placeholder="organizationPlaceholder" placeholder="Company Name" class="qr-input w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2" data-tkey="website">Website</label>
+                                    <input type="url" id="contact-url" data-tkey-placeholder="websitePlaceholder" placeholder="https://example.com" class="qr-input w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Clear Button -->
+                        <!-- FIX: Replaced 'transition-all' with 'transition-colors' -->
+                        <button id="clear-btn" class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-colors duration-200 font-medium focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-none">
+                            <i data-lucide="trash-2" class="lucide lucide-sm"></i>
+                            <span data-tkey="clearAllFields">Clear All Fields</span>
+                        </button>
+                    </div>
+
+                    <!-- QR Code Display Section -->
+                    <div class="flex flex-col items-center space-y-6">
+                        <h2 class="text-2xl font-semibold text-slate-800" data-tkey="generatedQrCode">Generated QR Code</h2>
+                        
+                        <!-- Added min-h and flex to prevent layout shift during loading -->
+                        <div class="bg-slate-50 rounded-2xl p-8 w-full max-w-sm min-h-[350px] flex items-center justify-center">
+                            <!-- QR Placeholder -->
+                            <div id="qr-placeholder" class="text-center py-16">
+                                <!-- Lucide Icon -->
+                                <i data-lucide="qr-code" class="w-16 h-16 text-slate-300 mx-auto mb-4"></i>
+                                <p class="text-slate-500" data-tkey="fillFormPrompt">
+                                    Fill in the form to generate your QR code
+                                </p>
+                            </div>
+
+                            <!-- NEW: QR Loader -->
+                            <div id="qr-loader" class="hidden text-center py-16">
+                                <i data-lucide="loader-2" class="lucide lucide-lg loader-spin text-indigo-500 mx-auto"></i>
+                                <p class="text-slate-500 mt-4 animate-pulse">Generating...</p>
+                            </div>
+                            
+                            <!-- QR Code Container -->
+                            <div id="qr-container-wrapper" class="hidden text-center">
+                                <div id="qr-container" class="flex justify-center">
+                                    <!-- QR code will be dynamically inserted here -->
+                                </div>
+                                <p class="text-sm text-slate-600 mt-4" data-tkey="scanQrCode">
+                                    Scan this QR code with your device
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div id="action-buttons" class="hidden flex gap-4 w-full max-w-sm">
+                            <!-- FIX: Replaced 'transition-all' with 'transition-colors' -->
+                            <button id="download-btn" class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 transition-colors duration-200 font-medium shadow-lg focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none">
+                                <!-- Lucide Icon -->
+                                <i data-lucide="download" class="lucide lucide-sm"></i>
+                                <span data-tkey="download">Download</span>
+                            </button>
+                            
+                            <!-- FIX: Replaced 'transition-all' with 'transition-colors' -->
+                            <button id="copy-btn" class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-colors duration-200 font-medium focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-none">
+                                <span id="copy-btn-icon">
+                                    <!-- Lucide Icon -->
+                                    <i data-lucide="copy" class="lucide lucide-sm"></i>
+                                </span>
+                                <span id="copy-btn-text" data-tkey="copyData">Copy Data</span>
+                            </button>
+                        </div>
+                        
+                        <!-- QR Data Display -->
+                        <div id="qr-data-container" class="hidden w-full max-w-sm">
+                            <h3 class="text-sm font-medium text-slate-700 mb-2" data-tkey="qrCodeData">QR Code Data:</h3>
+                            <div class="bg-slate-100 rounded-lg p-3 text-xs text-slate-600 max-h-32 overflow-y-auto">
+                                <pre id="qr-data-display" class="whitespace-pre-wrap break-words"></pre>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="text-center mt-8 text-slate-500 text-sm flex items-center justify-center gap-1.5">
+             <i data-lucide="zap" class="lucide lucide-sm text-slate-400"></i>
+            <p data-tkey="footerText">Generate QR codes instantly • No data stored • Free to use</p>
+        </div>
+    </div>
+
+    <!-- Main Application Logic -->
+    <script src="/assets/js/qr.js" defer></script>
+</body>
+</html>
