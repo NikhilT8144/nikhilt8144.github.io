@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Todo & Analytics</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/assets/css/todo.css">
+</head>
+<body class="bg-[#050505] text-zinc-100 min-h-screen flex items-center justify-center p-4 selection:bg-cyan-500/30">
+
+    <!-- Container increased to max-w-xl for better screen utilization -->
+    <div class="w-full max-w-xl transition-all duration-500">
+        <!-- Main Card -->
+        <div class="relative bg-zinc-900/60 backdrop-blur-3xl border border-white/5 rounded-[32px] p-6 sm:p-10 shadow-2xl ring-1 ring-white/5 overflow-hidden">
+            
+            <!-- Ambient Glows -->
+            <div class="absolute -top-[20%] -left-[20%] w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="absolute -bottom-[20%] -right-[20%] w-[500px] h-[500px] bg-violet-600/5 rounded-full blur-[120px] pointer-events-none"></div>
+            <!-- Header Glow -->
+            <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent"></div>
+            
+            <div class="relative z-10">
+                <!-- Header Section -->
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center gap-5">
+                        <div class="relative w-14 h-14 rounded-2xl bg-zinc-800/50 border border-white/5 flex items-center justify-center shadow-inner overflow-hidden group">
+                            <div class="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <svg class="w-7 h-7 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold tracking-tight text-white/90">My Tasks</h1>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span id="connection-status" class="flex h-2 w-2 relative">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-500 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-zinc-600"></span>
+                                </span>
+                                <p class="text-[11px] font-medium text-zinc-500 uppercase tracking-wider" id="connection-text">Offline</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Toggle Button -->
+                    <button id="view-toggle-btn" class="group flex items-center justify-center w-10 h-10 rounded-xl bg-zinc-800/40 border border-white/5 hover:bg-zinc-800 hover:border-white/10 transition-all active:scale-95">
+                        <svg id="icon-chart" class="w-5 h-5 text-zinc-400 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <svg id="icon-list" class="w-5 h-5 text-zinc-400 group-hover:text-purple-400 hidden transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- MAIN VIEW: Tasks -->
+                <div id="view-todos" class="transition-all duration-300">
+                    <!-- Modern Input Area -->
+                    <form id="add-task-form" class="mb-8 relative group z-30">
+                        <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-2xl blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                        <div class="relative flex gap-2">
+                            <div class="relative flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-xl flex items-center focus-within:border-zinc-700 focus-within:ring-1 focus-within:ring-zinc-700/50 transition-all">
+                                <input
+                                    type="text"
+                                    id="new-task-input"
+                                    placeholder="What needs to be done?"
+                                    class="w-full bg-transparent pl-5 pr-28 py-4 text-base text-white placeholder:text-zinc-600 focus:outline-none"
+                                    autocomplete="off"
+                                />
+                                
+                                <!-- Priority Selector -->
+                                <div class="absolute right-1.5 flex items-center">
+                                    <button type="button" id="priority-trigger" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-zinc-800 transition-colors">
+                                        <div class="flex flex-col items-end">
+                                            <span class="text-[10px] text-zinc-500 font-medium uppercase tracking-wider leading-none">Priority</span>
+                                            <span id="priority-label-text" class="text-xs text-white font-medium leading-tight">Low</span>
+                                        </div>
+                                        <div id="priority-dot" class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]"></div>
+                                    </button>
+                                </div>
+
+                                <!-- Dropdown Menu -->
+                                <div id="priority-menu" class="hidden absolute right-0 top-[110%] w-36 bg-[#121214] border border-zinc-800 rounded-xl shadow-2xl p-1.5 z-50 dropdown-enter">
+                                    <button type="button" class="priority-option w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-zinc-800 transition-colors group" data-value="low">
+                                        <span class="w-2 h-2 rounded-full bg-cyan-400 group-hover:shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all"></span>
+                                        <span class="text-sm text-zinc-300">Low</span>
+                                    </button>
+                                    <button type="button" class="priority-option w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-zinc-800 transition-colors group" data-value="medium">
+                                        <span class="w-2 h-2 rounded-full bg-amber-400 group-hover:shadow-[0_0_8px_rgba(251,191,36,0.8)] transition-all"></span>
+                                        <span class="text-sm text-zinc-300">Medium</span>
+                                    </button>
+                                    <button type="button" class="priority-option w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-zinc-800 transition-colors group" data-value="high">
+                                        <span class="w-2 h-2 rounded-full bg-rose-500 group-hover:shadow-[0_0_8px_rgba(244,63,94,0.8)] transition-all"></span>
+                                        <span class="text-sm text-zinc-300">High</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button
+                                type="submit"
+                                class="w-14 bg-zinc-100 hover:bg-white text-black rounded-2xl flex items-center justify-center font-bold shadow-lg shadow-white/5 hover:scale-105 active:scale-95 transition-all duration-200"
+                            >
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Toolbar -->
+                    <div class="flex items-center justify-between mb-4 pl-1 pr-1">
+                        <div class="flex gap-1 bg-zinc-900/50 p-1 rounded-lg border border-white/5">
+                            <button class="filter-btn px-4 py-1.5 rounded-md text-xs font-medium text-white bg-zinc-800 shadow-sm transition-all" data-filter="all">All</button>
+                            <button class="filter-btn px-4 py-1.5 rounded-md text-xs font-medium text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-all" data-filter="pending">Active</button>
+                            <button class="filter-btn px-4 py-1.5 rounded-md text-xs font-medium text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-all" data-filter="high">High</button>
+                        </div>
+                        <button onclick="clearCompleted()" class="text-[10px] font-medium text-zinc-500 hover:text-rose-400 uppercase tracking-wide transition-colors px-2">
+                            Clear Done
+                        </button>
+                    </div>
+
+                    <!-- Task List -->
+                    <div id="task-list" class="space-y-3 h-[420px] overflow-y-auto pr-1 custom-scrollbar pb-2">
+                        <!-- Loading State -->
+                        <div class="flex flex-col items-center justify-center h-full text-zinc-700">
+                            <div class="animate-spin rounded-full h-5 w-5 border-2 border-zinc-800 border-t-cyan-500/50 mb-3"></div>
+                            <p class="text-xs font-medium tracking-widest uppercase">Syncing</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ANALYTICS VIEW -->
+                <div id="view-stats" class="hidden opacity-0 transition-opacity duration-300">
+                    <h2 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4 pl-1">Overview</h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <!-- Completion Card -->
+                        <div class="bg-zinc-900/40 p-6 rounded-2xl border border-white/5 relative overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <p class="text-sm font-medium text-zinc-300">Completion Rate</p>
+                                <span id="percent-text" class="text-2xl font-bold text-white tracking-tight">0%</span>
+                            </div>
+                            <div class="h-40 relative">
+                                <canvas id="chart-completion"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Priority Card -->
+                        <div class="bg-zinc-900/40 p-6 rounded-2xl border border-white/5 relative flex flex-col justify-center">
+                            <p class="text-sm font-medium text-zinc-300 mb-4">Task Priority</p>
+                            <div class="h-40 w-full relative">
+                                <canvas id="chart-priority"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Row -->
+                    <div class="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                        <div class="grid grid-cols-3 divide-x divide-zinc-800">
+                            <div class="px-4 text-center">
+                                <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Total Tasks</p>
+                                <p id="stat-total" class="text-2xl font-bold text-white">0</p>
+                            </div>
+                            <div class="px-4 text-center">
+                                <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Pending</p>
+                                <p id="stat-pending" class="text-2xl font-bold text-amber-500">0</p>
+                            </div>
+                            <div class="px-4 text-center">
+                                <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Completed</p>
+                                <p id="stat-completed" class="text-2xl font-bold text-emerald-500">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <p class="text-center text-zinc-700 text-[10px] font-medium tracking-widest uppercase mt-6 opacity-40">
+            Realtime Sync Active
+        </p>
+    </div>
+
+    <!-- Firebase Logic -->
+    <script type="module" src="/assets/js/todo.js"></script>
+</body>
+</html>
