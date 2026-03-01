@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>禅の庭 — Zen Garden</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { overflow: hidden; background: #0a0a0a; font-family: 'Georgia', serif; }
+    #canvas { display: block; width: 100vw; height: 100vh; }
+
+    /* ── Start Screen ─────────────────────────────────── */
+    #start-screen {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(ellipse at center, #1a0a0a 0%, #000000 70%);
+      z-index: 100;
+      transition: opacity 0.8s ease;
+    }
+    #start-screen.fade-out { opacity: 0; pointer-events: none; }
+
+    .start-card {
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,200,100,0.25);
+      backdrop-filter: blur(12px);
+      padding: 52px 64px;
+      border-radius: 4px;
+      text-align: center;
+      box-shadow: 0 0 80px rgba(200,50,0,0.15), inset 0 0 40px rgba(0,0,0,0.4);
+    }
+    .start-card h1 {
+      font-size: 4rem; color: #e8c070; letter-spacing: 0.2em;
+      text-shadow: 0 0 30px rgba(220,120,0,0.6); line-height: 1;
+    }
+    .start-card .subtitle {
+      font-size: 0.9rem; color: rgba(200,180,140,0.6);
+      letter-spacing: 0.5em; text-transform: uppercase;
+    }
+    .start-card .divider {
+      width: 120px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(220,160,60,0.5), transparent);
+    }
+    .start-card input {
+      width: 280px; padding: 12px 20px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(220,160,60,0.35); border-radius: 2px;
+      color: #f0e8d0; font-size: 1rem; font-family: inherit;
+      letter-spacing: 0.05em; outline: none; transition: border-color 0.3s;
+    }
+    .start-card input::placeholder { color: rgba(200,180,140,0.3); }
+    .start-card input:focus { border-color: rgba(220,160,60,0.7); }
+    .start-card button {
+      padding: 13px 44px;
+      background: linear-gradient(135deg, #c8380a, #8b1a00);
+      border: none; border-radius: 2px; color: #f0e0c0;
+      font-family: inherit; font-size: 0.95rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.25s;
+      box-shadow: 0 4px 20px rgba(200,50,0,0.3);
+    }
+    .start-card button:hover {
+      background: linear-gradient(135deg, #e04010, #a02000);
+      box-shadow: 0 6px 28px rgba(200,50,0,0.5); transform: translateY(-1px);
+    }
+
+    /* ── HUD ──────────────────────────────────────────── */
+    #hud { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+    #controls-hud {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      background: rgba(0,0,0,0.45); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 10px 22px; border-radius: 40px;
+    }
+    .control-key {
+      display: flex; align-items: center; gap: 6px;
+      font-family: 'Georgia', serif; font-size: 0.72rem;
+      color: rgba(220,200,160,0.75); letter-spacing: 0.04em;
+    }
+    .control-key kbd {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 2px 7px; border-radius: 4px;
+      font-size: 0.7rem; font-family: monospace; color: #e8d8a0;
+    }
+    #interaction-prompt {
+      position: absolute; top: 35%; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+      border: 1px solid rgba(220,160,60,0.4);
+      color: #f0d890; padding: 10px 28px; border-radius: 3px;
+      font-size: 0.9rem; letter-spacing: 0.12em; display: none;
+      animation: promptPulse 1.5s infinite;
+    }
+    @keyframes promptPulse { 0%,100%{opacity:.7} 50%{opacity:1} }
+    #player-name-display {
+      position: absolute; top: 20px; left: 20px;
+      color: rgba(220,200,160,0.6); font-size: 0.8rem; letter-spacing: 0.08em;
+    }
+    #net-status {
+      position: absolute; top: 20px; right: 20px;
+      font-size: 0.7rem; color: rgba(150,220,150,0.7); letter-spacing: 0.06em;
+    }
+    #net-status.offline { color: rgba(220,120,80,0.7); }
+    #net-status.solo    { color: rgba(220,180,80,0.6); }
+    #player-count {
+      position: absolute; top: 40px; right: 20px;
+      font-size: 0.65rem; color: rgba(200,180,140,0.45); letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+
+<div id="start-screen">
+  <div class="start-card">
+    <h1>禅の庭</h1>
+    <p class="subtitle">Zen Garden</p>
+    <div class="divider"></div>
+    <p style="color:rgba(200,180,140,0.5);font-size:0.8rem;letter-spacing:0.06em;">
+      Enter your name to join the garden
+    </p>
+    <input type="text" id="name-input" placeholder="Your name…" maxlength="18" autocomplete="off">
+    <button id="enter-btn">Enter the Garden</button>
+  </div>
+</div>
+
+<div id="hud" style="display:none;">
+  <div id="player-name-display"></div>
+  <div id="net-status">● CONNECTING…</div>
+  <div id="player-count"></div>
+  <div id="controls-hud">
+    <span class="control-key"><kbd>W A S D</kbd> Move</span>
+    <span class="control-key"><kbd>SPACE</kbd> Jump</span>
+    <span class="control-key"><kbd>Mouse</kbd> Orbit Camera</span>
+    <span class="control-key"><kbd>E</kbd> Interact</span>
+  </div>
+  <div id="interaction-prompt">Press <strong>E</strong> to Sit</div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<!-- ── Three.js Import Map ─────────────────────────────── -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.162.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.162.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls }   from 'three/addons/controls/OrbitControls.js';
+import { Sky }             from 'three/addons/objects/Sky.js';
+import { Water }           from 'three/addons/objects/Water.js';
+import { EffectComposer }  from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass }      from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+// ═══════════════════════════════════════════════════════════
+//  CONFIG  — change these to match your deployment
+// ═══════════════════════════════════════════════════════════
+const API_BASE = 'https://nikhilt8144.serv00.net/api/zengarden';
+const POLL_INTERVAL_MS = 100; // 10 Hz poll — low enough to stay within serv00 limits
+
+// ═══════════════════════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════════════════════
+const LAKE_RADIUS   = 12;
+const GARDEN_HALF   = 38;
+const WATER_Y       = 0.05;
+const WADE_DEPTH    = -0.42;
+const BRIDGE_HALF_W = 1.6;
+
+// ═══════════════════════════════════════════════════════════
+//  RENDERER
+// ═══════════════════════════════════════════════════════════
+const canvas   = document.getElementById('canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled  = true;
+renderer.shadowMap.type     = THREE.PCFSoftShadowMap;
+renderer.toneMapping        = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.3;
+renderer.outputColorSpace   = THREE.SRGBColorSpace;
+
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 2000);
+camera.position.set(0, 6, 12);
+
+// ═══════════════════════════════════════════════════════════
+//  POST-PROCESSING
+// ═══════════════════════════════════════════════════════════
+const composer  = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.35, 0.5, 0.92);
+composer.addPass(bloomPass);
+
+// ═══════════════════════════════════════════════════════════
+//  ORBIT CONTROLS
+// ═══════════════════════════════════════════════════════════
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.07;
+controls.minDistance   = 3;
+controls.maxDistance   = 18;
+controls.minPolarAngle = 0.15;
+controls.maxPolarAngle = Math.PI * 0.47;
+controls.enablePan     = false;
+controls.target.set(0, 1, 0);
+
+// ═══════════════════════════════════════════════════════════
+//  SKY
+// ═══════════════════════════════════════════════════════════
+const sky = new Sky();
+sky.scale.setScalar(8000);
+scene.add(sky);
+const skyU = sky.material.uniforms;
+skyU['turbidity'].value       = 1.8;
+skyU['rayleigh'].value        = 1.2;
+skyU['mieCoefficient'].value  = 0.003;
+skyU['mieDirectionalG'].value = 0.975;
+const sunVec = new THREE.Vector3();
+sunVec.setFromSphericalCoords(1, THREE.MathUtils.degToRad(90 - 14), THREE.MathUtils.degToRad(190));
+skyU['sunPosition'].value.copy(sunVec);
+
+// ─── Lighting ──────────────────────────────────────────────
+scene.add(new THREE.AmbientLight(0xffe8c0, 0.65));
+const sunLight = new THREE.DirectionalLight(0xffd070, 2.2);
+sunLight.position.copy(sunVec).multiplyScalar(150);
+sunLight.castShadow = true;
+sunLight.shadow.mapSize.set(2048, 2048);
+Object.assign(sunLight.shadow.camera, { near: 1, far: 300, left: -55, right: 55, top: 55, bottom: -55 });
+scene.add(sunLight);
+const fill = new THREE.DirectionalLight(0xc0d8ff, 0.3);
+fill.position.set(-50, 30, 30);
+scene.add(fill);
+
+// ═══════════════════════════════════════════════════════════
+//  TERRAIN
+// ═══════════════════════════════════════════════════════════
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(GARDEN_HALF * 2, GARDEN_HALF * 2),
+  new THREE.MeshLambertMaterial({ color: 0x3d6b2e })
+);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+const gravel = new THREE.Mesh(
+  new THREE.RingGeometry(LAKE_RADIUS + 0.05, LAKE_RADIUS + 3.5, 64),
+  new THREE.MeshLambertMaterial({ color: 0xc8b890, side: THREE.DoubleSide })
+);
+gravel.rotation.x = -Math.PI / 2;
+gravel.position.y = 0.01;
+scene.add(gravel);
+
+// ═══════════════════════════════════════════════════════════
+//  WATER LAKE
+// ═══════════════════════════════════════════════════════════
+const water = new Water(new THREE.CircleGeometry(LAKE_RADIUS, 80), {
+  textureWidth: 512, textureHeight: 512,
+  waterNormals: new THREE.TextureLoader().load(
+    'https://threejs.org/examples/textures/waternormals.jpg',
+    t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; }
+  ),
+  sunDirection: sunVec.clone().normalize(),
+  sunColor: 0xffd070, waterColor: 0x006890,
+  distortionScale: 2.5, fog: false, alpha: 0.92,
+});
+water.rotation.x = -Math.PI / 2;
+water.position.y = WATER_Y;
+scene.add(water);
+
+// ─── Ripple system ─────────────────────────────────────────
+const ripples = [];
+function spawnRipple(x, z) {
+  const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
+  const mesh = new THREE.Mesh(new THREE.RingGeometry(0.05, 0.12, 12), mat);
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.position.set(x, WATER_Y + 0.01, z);
+  scene.add(mesh);
+  ripples.push({ mesh, scale: 0.1, life: 1.0 });
+}
+function updateRipples(dt) {
+  for (let i = ripples.length - 1; i >= 0; i--) {
+    const r = ripples[i];
+    r.life -= dt * 1.2; r.scale += dt * 3.5;
+    r.mesh.scale.setScalar(r.scale);
+    r.mesh.material.opacity = r.life * 0.5;
+    if (r.life <= 0) { scene.remove(r.mesh); ripples.splice(i, 1); }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  GRASS — custom wind + player-bend shader
+// ═══════════════════════════════════════════════════════════
+const GRASS_COUNT = 18000;
+const bladeW = 0.09, bladeH = 0.52;
+const bladeVerts = new Float32Array([
+  -bladeW/2,0,0, bladeW/2,0,0, -bladeW/4,bladeH*0.55,0,
+   bladeW/4,bladeH*0.55,0, -bladeW/8,bladeH,0, bladeW/8,bladeH,0,
+]);
+const bladeUVs  = new Float32Array([0,0, 1,0, 0,0.55, 1,0.55, 0,1, 1,1]);
+const bladeGeo  = new THREE.BufferGeometry();
+bladeGeo.setAttribute('position', new THREE.BufferAttribute(bladeVerts, 3));
+bladeGeo.setAttribute('uv', new THREE.BufferAttribute(bladeUVs, 2));
+bladeGeo.setIndex([0,1,2, 1,3,2, 2,3,4, 3,5,4]);
+bladeGeo.computeVertexNormals();
+
+const grassUniforms = {
+  uTime: { value: 0 },
+  uPlayerPos0: { value: new THREE.Vector3(9999,0,9999) },
+  uPlayerPos1: { value: new THREE.Vector3(9999,0,9999) },
+  uPlayerPos2: { value: new THREE.Vector3(9999,0,9999) },
+  uPlayerPos3: { value: new THREE.Vector3(9999,0,9999) },
+  uPlayerCount: { value: 0 },
+};
+
+const grassMat = new THREE.ShaderMaterial({
+  uniforms: grassUniforms,
+  vertexShader: `
+    attribute mat4 instanceMatrix;
+    uniform float uTime;
+    uniform vec3 uPlayerPos0,uPlayerPos1,uPlayerPos2,uPlayerPos3;
+    uniform int uPlayerCount;
+    varying vec2 vUv;
+    void main(){
+      vUv = uv;
+      float tip = uv.y;
+      vec3 origin = vec3(instanceMatrix[3][0],instanceMatrix[3][1],instanceMatrix[3][2]);
+      float phase = origin.x*0.38 + origin.z*0.29 + uTime*1.6;
+      vec3 disp = vec3(sin(phase)*tip*0.18, 0.0, cos(phase*0.85)*tip*0.12);
+      vec3 pps[4];
+      pps[0]=uPlayerPos0; pps[1]=uPlayerPos1; pps[2]=uPlayerPos2; pps[3]=uPlayerPos3;
+      for(int i=0;i<4;i++){
+        if(i>=uPlayerCount) break;
+        vec2 delta = origin.xz - pps[i].xz;
+        float d = length(delta);
+        if(d<1.9&&d>0.01){
+          float amt=(1.0-d/1.9)*tip*0.65;
+          vec2 n=normalize(delta);
+          disp.x+=n.x*amt; disp.z+=n.y*amt;
+        }
+      }
+      vec4 worldPos = instanceMatrix * vec4(position+disp, 1.0);
+      gl_Position = projectionMatrix * viewMatrix * worldPos;
+    }
+  `,
+  fragmentShader: `
+    varying vec2 vUv;
+    void main(){
+      vec3 col = mix(vec3(0.13,0.42,0.10), vec3(0.42,0.72,0.22), vUv.y);
+      gl_FragColor = vec4(col, vUv.y>0.97?0.0:1.0);
+    }
+  `,
+  side: THREE.DoubleSide, transparent: true,
+});
+
+const grassMesh = new THREE.InstancedMesh(bladeGeo, grassMat, GRASS_COUNT);
+grassMesh.frustumCulled = false;
+{
+  const dummy = new THREE.Object3D();
+  const lakeR2 = (LAKE_RADIUS + 3.8) ** 2;
+  let placed = 0;
+  while (placed < GRASS_COUNT) {
+    const x = (Math.random()-0.5)*(GARDEN_HALF*2-4);
+    const z = (Math.random()-0.5)*(GARDEN_HALF*2-4);
+    if (x*x+z*z < lakeR2) continue;
+    if (Math.abs(x)<BRIDGE_HALF_W+0.5 && Math.abs(z)<LAKE_RADIUS+1) continue;
+    dummy.position.set(x, 0, z);
+    dummy.rotation.y = Math.random()*Math.PI*2;
+    dummy.scale.setScalar(0.75+Math.random()*0.5);
+    dummy.updateMatrix();
+    grassMesh.setMatrixAt(placed++, dummy.matrix);
+  }
+  grassMesh.instanceMatrix.needsUpdate = true;
+}
+scene.add(grassMesh);
+
+// ═══════════════════════════════════════════════════════════
+//  COLLIDERS
+// ═══════════════════════════════════════════════════════════
+const colliders = [];
+
+// ═══════════════════════════════════════════════════════════
+//  CHERRY BLOSSOM TREES
+// ═══════════════════════════════════════════════════════════
+function createTree(x, z) {
+  const g = new THREE.Group();
+  g.position.set(x, 0, z);
+  const trunkMat  = new THREE.MeshLambertMaterial({ color: 0x5a3018 });
+  const canopyMat = new THREE.MeshLambertMaterial({ color: 0xf4a0b8, transparent: true, opacity: 0.88 });
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.28,4.2,8), trunkMat);
+  trunk.position.y = 2.1; trunk.castShadow = true; g.add(trunk);
+  for (const [cx,cy,cz,r] of [[0,4.8,0,2.3],[1.4,4.2,0.6,1.6],[-1.1,4.4,-0.8,1.65],[0.4,5.4,-0.9,1.4],[-0.7,5.1,1,1.5],[0.8,4,1.2,1.3]]) {
+    const s = new THREE.Mesh(new THREE.SphereGeometry(r,8,6), canopyMat);
+    s.position.set(cx,cy,cz); s.castShadow=true; g.add(s);
+  }
+  scene.add(g);
+  colliders.push({ x, z, radius: 0.55 });
+}
+[
+  [18,14],[-17,12],[14,-17],[-15,-15],[20,-5],[-20,-6],
+  [7,24],[-8,-24],[24,20],[-22,18],
+].forEach(([x,z]) => createTree(x,z));
+
+// ─── Falling Petals ────────────────────────────────────────
+const PETAL_COUNT = 600;
+const petalGeo = new THREE.BufferGeometry();
+const petalPos = new Float32Array(PETAL_COUNT * 3);
+const petalVel = [];
+for (let i = 0; i < PETAL_COUNT; i++) {
+  petalPos[i*3]   = (Math.random()-0.5)*70;
+  petalPos[i*3+1] = Math.random()*16;
+  petalPos[i*3+2] = (Math.random()-0.5)*70;
+  petalVel.push({ vy: -(0.3+Math.random()*0.5), vx: (Math.random()-0.5)*0.3, vz: (Math.random()-0.5)*0.3 });
+}
+petalGeo.setAttribute('position', new THREE.BufferAttribute(petalPos, 3));
+const petals = new THREE.Points(petalGeo, new THREE.PointsMaterial({ color:0xf8c0d0, size:0.12, transparent:true, opacity:0.7, sizeAttenuation:true }));
+scene.add(petals);
+
+function updatePetals(dt) {
+  const pos = petalGeo.attributes.position.array;
+  const t = performance.now() * 0.001;
+  for (let i = 0; i < PETAL_COUNT; i++) {
+    const v = petalVel[i];
+    pos[i*3]   += (v.vx + Math.sin(t+i)*0.02)*dt;
+    pos[i*3+1] += v.vy*dt;
+    pos[i*3+2] += (v.vz + Math.cos(t*1.3+i)*0.02)*dt;
+    if (pos[i*3+1] < 0) {
+      pos[i*3+1]=15+Math.random()*5; pos[i*3]=(Math.random()-0.5)*70; pos[i*3+2]=(Math.random()-0.5)*70;
+    }
+  }
+  petalGeo.attributes.position.needsUpdate = true;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ARCHITECTURE
+// ═══════════════════════════════════════════════════════════
+// ─── Torii Gate ────────────────────────────────────────────
+function buildToriiGate(x, z, ry=0) {
+  const g = new THREE.Group();
+  const mat = new THREE.MeshLambertMaterial({ color: 0xcc2010 });
+  [-1.6,1.6].forEach(px => {
+    const p = new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.24,5.5,10), mat);
+    p.position.set(px,2.75,0); p.castShadow=true; g.add(p);
+  });
+  const kasagi = new THREE.Mesh(new THREE.BoxGeometry(5.2,0.3,0.5), mat);
+  kasagi.position.set(0,5.65,0); kasagi.rotation.z=0.03; g.add(kasagi);
+  [-2.5,2.5].forEach(ex => {
+    const cap = new THREE.Mesh(new THREE.BoxGeometry(0.4,0.35,0.6), mat);
+    cap.position.set(ex,5.78,0); g.add(cap);
+  });
+  const nuki = new THREE.Mesh(new THREE.BoxGeometry(3.6,0.2,0.32), mat);
+  nuki.position.set(0,4.4,0); g.add(nuki);
+  g.position.set(x,0,z); g.rotation.y=ry;
+  scene.add(g);
+  colliders.push({x:x-1.6,z,radius:0.4},{x:x+1.6,z,radius:0.4});
+}
+buildToriiGate(0, -GARDEN_HALF+4);
+
+// ─── Bridge ───────────────────────────────────────────────
+function getBridgeY(px, pz) {
+  if (Math.abs(px) > BRIDGE_HALF_W+0.3) return null;
+  if (Math.abs(pz) > LAKE_RADIUS+0.5) return null;
+  const t = (pz+LAKE_RADIUS)/(LAKE_RADIUS*2);
+  return WATER_Y + 0.18 + Math.sin(Math.PI*t)*0.8;
+}
+function buildBridge() {
+  const g = new THREE.Group();
+  const bMat = new THREE.MeshLambertMaterial({ color:0x7a5030 });
+  const hMat = new THREE.MeshLambertMaterial({ color:0x5a3818 });
+  const span = LAKE_RADIUS*2+1;
+  const pc   = 20;
+  for (let i=0;i<pc;i++){
+    const t=i/(pc-1);
+    const archY=Math.sin(Math.PI*t)*0.8;
+    const plank=new THREE.Mesh(new THREE.BoxGeometry(BRIDGE_HALF_W*2,0.12,span/pc+0.04),bMat);
+    plank.position.set(0,WATER_Y+0.06+archY,-LAKE_RADIUS+span/pc*i+span/pc/2);
+    plank.castShadow=true; plank.receiveShadow=true; g.add(plank);
+  }
+  [-BRIDGE_HALF_W,BRIDGE_HALF_W].forEach(rx=>{
+    const rail=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.7,span),hMat);
+    rail.position.set(rx,WATER_Y+0.75,0); g.add(rail);
+    for(let p=-LAKE_RADIUS;p<=LAKE_RADIUS;p+=3){
+      const post=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.7,0.08),hMat);
+      post.position.set(rx,WATER_Y+0.75,p); g.add(post);
+    }
+  });
+  scene.add(g);
+}
+buildBridge();
+
+// ─── Benches ──────────────────────────────────────────────
+const benches = [];
+function buildBench(x, z, ry) {
+  const g   = new THREE.Group();
+  const mat = new THREE.MeshLambertMaterial({ color:0x7a5530 });
+  const seat = new THREE.Mesh(new THREE.BoxGeometry(1.8,0.12,0.5),mat);
+  seat.position.y=0.42; seat.castShadow=true; g.add(seat);
+  const back = new THREE.Mesh(new THREE.BoxGeometry(1.8,0.5,0.08),mat);
+  back.position.set(0,0.72,0.22); g.add(back);
+  [-0.7,0.7].forEach(lx=>{
+    const leg=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.42,0.45),mat);
+    leg.position.set(lx,0.21,0); g.add(leg);
+  });
+  g.position.set(x,0,z); g.rotation.y=ry; scene.add(g);
+  const fwd = new THREE.Vector3(0,0,1).applyEuler(new THREE.Euler(0,ry,0));
+  benches.push({
+    seatPos: new THREE.Vector3(x,0.44,z),
+    facingY: ry+Math.PI,
+    interactCenter: new THREE.Vector3(x-fwd.x*2.5,0,z-fwd.z*2.5),
+    radius: 4.0,
+  });
+}
+buildBench(-8, LAKE_RADIUS+2.5, -0.2);
+buildBench( 0, LAKE_RADIUS+2.5,  0);
+buildBench( 8, LAKE_RADIUS+2.5,  0.2);
+
+// ─── Stones ───────────────────────────────────────────────
+const sMat = new THREE.MeshLambertMaterial({ color:0x909090 });
+[[LAKE_RADIUS-0.8,0,LAKE_RADIUS-0.8,0.5],[-LAKE_RADIUS+0.5,0,LAKE_RADIUS-1,0.4],
+ [LAKE_RADIUS-1,0,-LAKE_RADIUS+1.2,0.6],[-5,0,18,0.35],[12,0,-19,0.45]].forEach(([x,y,z,r])=>{
+  const s=new THREE.Mesh(new THREE.SphereGeometry(r,7,5),sMat);
+  s.position.set(x,r*0.4,z); s.scale.y=0.65; s.castShadow=true; scene.add(s);
+  colliders.push({x,z,radius:r+0.3});
+});
+
+// ─── Perimeter Fence + Bushes ─────────────────────────────
+const fMat=new THREE.MeshLambertMaterial({color:0x8b6040});
+const bMat=new THREE.MeshLambertMaterial({color:0x2d5a1e});
+const H=GARDEN_HALF;
+function buildFenceSegment(x1,z1,x2,z2){
+  const dx=x2-x1,dz=z2-z1,len=Math.sqrt(dx*dx+dz*dz);
+  const fence=new THREE.Mesh(new THREE.BoxGeometry(len,1.5,0.12),fMat);
+  fence.position.set((x1+x2)/2,0.75,(z1+z2)/2);
+  fence.rotation.y=Math.atan2(dx,dz); fence.castShadow=true; scene.add(fence);
+  for(let i=0;i<Math.floor(len/2.5);i++){
+    const t=(i+0.5)/Math.floor(len/2.5);
+    const bx=x1+dx*t+(Math.random()-0.5)*0.5;
+    const bz=z1+dz*t+(Math.random()-0.5)*0.5;
+    const r=0.7+Math.random()*0.5;
+    const bush=new THREE.Mesh(new THREE.SphereGeometry(r,7,5),bMat);
+    bush.position.set(bx,r*0.6,bz); bush.scale.y=0.7; bush.castShadow=true; scene.add(bush);
+    colliders.push({x:bx,z:bz,radius:r+0.3});
+  }
+}
+buildFenceSegment(-H,-H, H,-H); buildFenceSegment( H,-H, H, H);
+buildFenceSegment( H, H,-H, H); buildFenceSegment(-H, H,-H,-H);
+
+// ═══════════════════════════════════════════════════════════
+//  STICKMAN builder
+// ═══════════════════════════════════════════════════════════
+function buildStickman(color=0x2255cc){
+  const g=new THREE.Group();
+  const mat =new THREE.MeshLambertMaterial({color});
+  const skin=new THREE.MeshLambertMaterial({color:0xf4c680});
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.22,10,8),skin);
+  head.position.y=1.67; head.castShadow=true; g.add(head);
+  const torso=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.17,0.6,8),mat);
+  torso.position.y=1.1; torso.castShadow=true; g.add(torso);
+  const limbs={};
+  const aGeo=new THREE.CylinderGeometry(0.055,0.045,0.5,6);
+  [['leftArm',-0.24],['rightArm',0.24]].forEach(([k,ax])=>{
+    const piv=new THREE.Group(); piv.position.set(ax,1.38,0);
+    const arm=new THREE.Mesh(aGeo,mat); arm.position.y=-0.25; arm.castShadow=true;
+    piv.add(arm); g.add(piv); limbs[k]=piv;
+  });
+  const lGeo=new THREE.CylinderGeometry(0.065,0.055,0.58,6);
+  [['leftLeg',-0.1],['rightLeg',0.1]].forEach(([k,lx])=>{
+    const piv=new THREE.Group(); piv.position.set(lx,0.8,0);
+    const leg=new THREE.Mesh(lGeo,mat); leg.position.y=-0.29; leg.castShadow=true;
+    piv.add(leg); g.add(piv); limbs[k]=piv;
+  });
+  return { group:g, limbs };
+}
+
+// ═══════════════════════════════════════════════════════════
+//  LOCAL PLAYER
+// ═══════════════════════════════════════════════════════════
+class Player {
+  constructor() {
+    const {group,limbs} = buildStickman(0x2255cc);
+    this.group = group; this.limbs = limbs;
+    this.vel   = new THREE.Vector3();
+    this.onGround   = true;
+    this.isSitting  = false;
+    this.inWater    = false;
+    this.animTime   = 0;
+    this.activeBench= null;
+    this.rippleTimer= 0;
+    this.group.position.set(0, 0, -GARDEN_HALF+7);
+    scene.add(this.group);
+  }
+  get pos(){ return this.group.position; }
+
+  update(dt, input){
+    if (this.isSitting) return;
+    const GRAVITY=-16, JUMP_FORCE=9, SPEED=5;
+    const fwd=new THREE.Vector3();
+    camera.getWorldDirection(fwd); fwd.y=0; fwd.normalize();
+    const right=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0));
+    const moveDir=new THREE.Vector3();
+    if(input.w) moveDir.addScaledVector(fwd,1);
+    if(input.s) moveDir.addScaledVector(fwd,-1);
+    if(input.a) moveDir.addScaledVector(right,-1);
+    if(input.d) moveDir.addScaledVector(right,1);
+    const isMoving=moveDir.lengthSq()>0.01;
+    if(isMoving){
+      moveDir.normalize();
+      this.group.rotation.y=THREE.MathUtils.lerp(
+        this.group.rotation.y, Math.atan2(moveDir.x,moveDir.z), 0.15
+      );
+    }
+    const r2=this.pos.x**2+this.pos.z**2;
+    this.inWater=r2<LAKE_RADIUS**2 && this.pos.y<=WATER_Y+0.05;
+    const speed=this.inWater?SPEED*0.5:SPEED;
+    this.vel.x=moveDir.x*speed; this.vel.z=moveDir.z*speed;
+    if(!this.onGround) this.vel.y+=GRAVITY*dt;
+    if(input.space && this.onGround){ this.vel.y=JUMP_FORCE; this.onGround=false; }
+    const np=this.pos.clone().addScaledVector(this.vel,dt);
+    const bridgeY=getBridgeY(np.x,np.z);
+    let floorY=0;
+    if(bridgeY!==null) floorY=bridgeY;
+    else if(r2<LAKE_RADIUS**2) floorY=WADE_DEPTH;
+    if(np.y<=floorY){ np.y=floorY; this.vel.y=0; this.onGround=true; }
+    else this.onGround=false;
+    for(const col of colliders){
+      const dx=np.x-col.x,dz=np.z-col.z,d=Math.sqrt(dx*dx+dz*dz);
+      const minD=col.radius+0.42;
+      if(d<minD&&d>0.001){ const push=(minD-d)/d; np.x+=dx*push; np.z+=dz*push; }
+    }
+    np.x=THREE.MathUtils.clamp(np.x,-(H-1),H-1);
+    np.z=THREE.MathUtils.clamp(np.z,-(H-1),H-1);
+    this.pos.copy(np);
+    if(this.inWater&&isMoving){
+      this.rippleTimer-=dt;
+      if(this.rippleTimer<=0){
+        spawnRipple(this.pos.x+(Math.random()-0.5)*0.4, this.pos.z+(Math.random()-0.5)*0.4);
+        this.rippleTimer=0.28;
+      }
+    }
+    this.animateLimbs(dt,isMoving);
+    controls.target.copy(this.pos); controls.target.y+=1.1;
+  }
+
+  animateLimbs(dt,moving){
+    const spd=moving?(this.inWater?2.5:5.5):0;
+    this.animTime+=dt*spd;
+    const sw=moving?Math.sin(this.animTime)*0.55:0;
+    this.limbs.leftLeg.rotation.x=sw; this.limbs.rightLeg.rotation.x=-sw;
+    if(!this.onGround){
+      this.limbs.leftArm.rotation.x=THREE.MathUtils.lerp(this.limbs.leftArm.rotation.x,-1,0.2);
+      this.limbs.rightArm.rotation.x=THREE.MathUtils.lerp(this.limbs.rightArm.rotation.x,-1,0.2);
+    } else {
+      this.limbs.leftArm.rotation.x=THREE.MathUtils.lerp(this.limbs.leftArm.rotation.x,-sw,0.2);
+      this.limbs.rightArm.rotation.x=THREE.MathUtils.lerp(this.limbs.rightArm.rotation.x,sw,0.2);
+    }
+  }
+
+  sit(bench){
+    this.isSitting=true; this.activeBench=bench; this.vel.set(0,0,0);
+    const target=bench.seatPos.clone(), targetR=bench.facingY;
+    const lerp=()=>{
+      this.pos.lerp(target,0.12);
+      this.group.rotation.y=THREE.MathUtils.lerp(this.group.rotation.y,targetR,0.12);
+      if(this.pos.distanceTo(target)>0.06) requestAnimationFrame(lerp);
+      else {
+        this.pos.copy(target);
+        this.limbs.leftLeg.rotation.x=-1.3; this.limbs.rightLeg.rotation.x=-1.3;
+        this.limbs.leftArm.rotation.x=0.4;  this.limbs.rightArm.rotation.x=0.4;
+      }
+    };
+    lerp();
+  }
+  standUp(){
+    if(!this.isSitting) return;
+    this.isSitting=false; this.activeBench=null; this.vel.set(0,0,0);
+    Object.values(this.limbs).forEach(l=>{ l.rotation.x=0; });
+  }
+
+  get animState(){
+    if(this.isSitting) return 'sit';
+    if(!this.onGround) return 'jump';
+    const r2=this.pos.x**2+this.pos.z**2;
+    if(r2<LAKE_RADIUS**2) return 'wade';
+    return 'walk';
+  }
+  getState(id,name){ return { id,name,x:this.pos.x,y:this.pos.y,z:this.pos.z,rotY:this.group.rotation.y,anim:this.animState }; }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  REMOTE PLAYER
+// ═══════════════════════════════════════════════════════════
+const REMOTE_COLORS=[0x22aa55,0xaa5522,0x5522aa,0xaa2255,0x22aaaa,0xaaaa22,0xaa22aa];
+class RemotePlayer {
+  constructor(id,name,color=0x22aa55){
+    this.id=id; this.name=name;
+    const {group,limbs}=buildStickman(color);
+    this.group=group; this.limbs=limbs;
+    this.targetPos=new THREE.Vector3(); this.targetRotY=0;
+    this.animTime=0; this.anim='idle';
+    this._addNametag(name);
+    scene.add(this.group);
+  }
+  _addNametag(name){
+    const c=document.createElement('canvas'); c.width=280; c.height=60;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle='rgba(0,0,0,0.55)';
+    ctx.beginPath(); ctx.roundRect(4,4,272,52,8); ctx.fill();
+    ctx.fillStyle='#ffffff'; ctx.font='bold 26px sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(name.substring(0,16),140,30);
+    const tex=new THREE.CanvasTexture(c);
+    const mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false});
+    this.nametag=new THREE.Sprite(mat);
+    this.nametag.scale.set(2.2,0.47,1); this.nametag.position.y=2.3;
+    this.group.add(this.nametag);
+  }
+  updateFromState(state){
+    this.targetPos.set(state.x,state.y,state.z);
+    this.targetRotY=state.rotY; this.anim=state.anim||'walk';
+  }
+  update(dt){
+    this.group.position.lerp(this.targetPos,0.18);
+    this.group.rotation.y=THREE.MathUtils.lerp(this.group.rotation.y,this.targetRotY,0.18);
+    const moving=this.anim==='walk'||this.anim==='wade';
+    const spd=moving?(this.anim==='wade'?2.5:5):0;
+    this.animTime+=dt*spd;
+    const sw=moving?Math.sin(this.animTime)*0.5:0;
+    if(this.anim==='sit'){
+      this.limbs.leftLeg.rotation.x=-1.3; this.limbs.rightLeg.rotation.x=-1.3;
+      this.limbs.leftArm.rotation.x=0.4;  this.limbs.rightArm.rotation.x=0.4;
+    } else if(this.anim==='jump'){
+      this.limbs.leftArm.rotation.x=-1; this.limbs.rightArm.rotation.x=-1;
+    } else {
+      this.limbs.leftLeg.rotation.x=sw; this.limbs.rightLeg.rotation.x=-sw;
+      this.limbs.leftArm.rotation.x=-sw; this.limbs.rightArm.rotation.x=sw;
+    }
+  }
+  dispose(){ scene.remove(this.group); }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  HTTP POLLING MULTIPLAYER MANAGER
+// ═══════════════════════════════════════════════════════════
+class PollingMultiplayer {
+  constructor(playerId, playerName) {
+    this.playerId    = playerId;
+    this.playerName  = playerName;
+    this.remotePlayers = new Map();
+    this._colorIdx   = 0;
+    this._pollTimer  = null;
+    this._sendTimer  = null;
+    this._online     = false;
+    this._latestState = null;
+    this._statusEl   = document.getElementById('net-status');
+    this._countEl    = document.getElementById('player-count');
+    this._join();
+  }
+
+  async _apiCall(body) {
+    const res = await fetch(API_BASE, {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify(body),
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  }
+
+  async _join() {
+    try {
+      const state = this._latestState || {
+        id: this.playerId, name: this.playerName,
+        x:0, y:0, z:-GARDEN_HALF+7, rotY:0, anim:'idle'
+      };
+      await this._apiCall({ action: 'join', ...state, id: this.playerId, name: this.playerName });
+      this._online = true;
+      this._setStatus('online');
+      this._startPolling();
+      this._startSending();
+    } catch(e) {
+      this._setStatus('offline');
+      // Retry join after 4 s
+      setTimeout(() => this._join(), 4000);
+    }
+  }
+
+  _startPolling() {
+    if (this._pollTimer) return;
+    this._pollTimer = setInterval(() => this._poll(), POLL_INTERVAL_MS);
+  }
+
+  _startSending() {
+    if (this._sendTimer) return;
+    // Send at same rate as poll
+    this._sendTimer = setInterval(() => this._sendLatest(), POLL_INTERVAL_MS);
+  }
+
+  async _poll() {
+    try {
+      const data = await this._apiCall({ action: 'poll', id: this.playerId });
+      if (!data.ok) return;
+
+      const seen = new Set();
+      for (const state of (data.players || [])) {
+        seen.add(state.id);
+        if (!this.remotePlayers.has(state.id)) {
+          const color = REMOTE_COLORS[this._colorIdx++ % REMOTE_COLORS.length];
+          this.remotePlayers.set(state.id, new RemotePlayer(state.id, state.name, color));
+        }
+        this.remotePlayers.get(state.id).updateFromState(state);
+      }
+
+      // Remove players no longer in response
+      for (const [id, rp] of this.remotePlayers) {
+        if (!seen.has(id)) { rp.dispose(); this.remotePlayers.delete(id); }
+      }
+
+      const total = (data.count || 1);
+      this._countEl.textContent = total === 1 ? 'Only you here…' : `${total} in garden`;
+      if (!this._online) { this._online=true; this._setStatus('online'); }
+    } catch(e) {
+      this._online = false;
+      this._setStatus('offline');
+    }
+  }
+
+  async _sendLatest() {
+    if (!this._latestState || !this._online) return;
+    try {
+      await this._apiCall({ action: 'update', ...this._latestState });
+    } catch(_) { /* silent — poll loop will detect offline */ }
+  }
+
+  sendState(state) {
+    this._latestState = state;
+  }
+
+  update(dt) {
+    this.remotePlayers.forEach(rp => rp.update(dt));
+  }
+
+  getPlayerPositions() {
+    const out = [];
+    this.remotePlayers.forEach(rp => out.push(rp.group.position));
+    return out;
+  }
+
+  leave() {
+    clearInterval(this._pollTimer);
+    clearInterval(this._sendTimer);
+    this._apiCall({ action: 'leave', id: this.playerId }).catch(()=>{});
+  }
+
+  _setStatus(s) {
+    if (s==='online') {
+      this._statusEl.textContent='● ONLINE'; this._statusEl.className='';
+    } else {
+      this._statusEl.textContent='● RECONNECTING…'; this._statusEl.className='offline';
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INPUT
+// ═══════════════════════════════════════════════════════════
+const input = { w:false,a:false,s:false,d:false,space:false };
+let eJustPressed = false;
+document.addEventListener('keydown',e=>{
+  const k=e.key.toLowerCase();
+  if(k==='w'||k==='arrowup')   input.w=true;
+  if(k==='a'||k==='arrowleft') input.a=true;
+  if(k==='s'||k==='arrowdown') input.s=true;
+  if(k==='d'||k==='arrowright')input.d=true;
+  if(k===' '){ input.space=true; e.preventDefault(); }
+  if(k==='e') eJustPressed=true;
+});
+document.addEventListener('keyup',e=>{
+  const k=e.key.toLowerCase();
+  if(k==='w'||k==='arrowup')   input.w=false;
+  if(k==='a'||k==='arrowleft') input.a=false;
+  if(k==='s'||k==='arrowdown') input.s=false;
+  if(k==='d'||k==='arrowright')input.d=false;
+  if(k===' ') input.space=false;
+});
+
+// ═══════════════════════════════════════════════════════════
+//  GAME STATE
+// ═══════════════════════════════════════════════════════════
+let player=null, multiplayer=null;
+const promptEl=document.getElementById('interaction-prompt');
+
+function startGame(name){
+  const pid='p_'+Math.random().toString(36).substr(2,8);
+  player=new Player();
+  multiplayer=new PollingMultiplayer(pid, name);
+  document.getElementById('hud').style.display='block';
+  document.getElementById('player-name-display').textContent='✦ '+name;
+}
+
+function checkBenchInteraction(){
+  if(!player) return;
+  let nearBench=null;
+  for(const bench of benches){
+    const dx=player.pos.x-bench.interactCenter.x;
+    const dz=player.pos.z-bench.interactCenter.z;
+    if(Math.sqrt(dx*dx+dz*dz)<bench.radius){ nearBench=bench; break; }
+  }
+  if(player.isSitting){
+    promptEl.textContent='Press E to Stand'; promptEl.style.display='block';
+    if(eJustPressed) player.standUp();
+  } else if(nearBench){
+    promptEl.textContent='Press E to Sit'; promptEl.style.display='block';
+    if(eJustPressed) player.sit(nearBench);
+  } else {
+    promptEl.style.display='none';
+  }
+  eJustPressed=false;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  GAME LOOP
+// ═══════════════════════════════════════════════════════════
+let lastTime=performance.now();
+function animate(){
+  requestAnimationFrame(animate);
+  const now=performance.now();
+  const dt=Math.min((now-lastTime)/1000,0.05);
+  lastTime=now;
+
+  if(water.material.uniforms.time) water.material.uniforms.time.value+=dt*0.8;
+  grassUniforms.uTime.value=now*0.001;
+
+  if(player){
+    player.update(dt,input);
+    const allPos=[player.pos];
+    if(multiplayer) allPos.push(...multiplayer.getPlayerPositions());
+    ['uPlayerPos0','uPlayerPos1','uPlayerPos2','uPlayerPos3'].forEach((u,i)=>{
+      grassUniforms[u].value.copy(allPos[i]||new THREE.Vector3(9999,0,9999));
+    });
+    grassUniforms.uPlayerCount.value=Math.min(allPos.length,4);
+    checkBenchInteraction();
+    if(multiplayer){
+      multiplayer.sendState(player.getState(multiplayer.playerId,multiplayer.playerName));
+      multiplayer.update(dt);
+    }
+  }
+
+  updateRipples(dt);
+  updatePetals(dt);
+  controls.update();
+  composer.render();
+}
+animate();
+
+// ═══════════════════════════════════════════════════════════
+//  START SCREEN
+// ═══════════════════════════════════════════════════════════
+const enterBtn=document.getElementById('enter-btn');
+const nameInput=document.getElementById('name-input');
+const startScreen=document.getElementById('start-screen');
+
+function handleEnter(){
+  const name=nameInput.value.trim()||'Wanderer';
+  startScreen.classList.add('fade-out');
+  setTimeout(()=>{ startScreen.style.display='none'; startGame(name); }, 800);
+}
+enterBtn.addEventListener('click',handleEnter);
+nameInput.addEventListener('keydown',e=>{ if(e.key==='Enter') handleEnter(); });
+
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+  composer.setSize(innerWidth,innerHeight);
+});
+
+window.addEventListener('beforeunload',()=>{ if(multiplayer) multiplayer.leave(); });
+</script>
+</body>
+</html>
