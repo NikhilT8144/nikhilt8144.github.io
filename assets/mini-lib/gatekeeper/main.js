@@ -11,12 +11,12 @@
          - @param {Object} config - Configuration options
         */
         init: function (config) {
+            // Fall back to local path if no absolute endpoint is provided
             const endpoint = config.endpoint || 'gatekeeper.php';
             const honeypotId = config.honeypotId || null;
 
-            // 1. Run Integrity Checks
+            // 1. Run Integrity Checks (Removed navigator.plugins to prevent false-positives on modern browsers)
             const isAutomated = navigator.webdriver; 
-            const hasNoPlugins = navigator.plugins && navigator.plugins.length === 0;
             
             let isHoneypotTriggered = false;
             if (honeypotId) {
@@ -27,7 +27,7 @@
             }
 
             // 2. Route Invalid Entities
-            if (isAutomated || hasNoPlugins || isHoneypotTriggered) {
+            if (isAutomated || isHoneypotTriggered) {
                 this.isolateLocalDevice();
                 return;
             }
@@ -40,14 +40,19 @@
                 localStorage.setItem('device_uid', deviceUID);
             }
 
-            // 4. Background Sync with Server Log (Asynchronous, non-blocking)
+            // 4. Background Sync with Server Log (Asynchronous, cross-origin safe)
             if (window.fetch) {
                 fetch(endpoint, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({ uid: deviceUID })
-                }).catch(function () {
-                    // Fail silently in the background if network is offline
+                })
+                .then(response => response.json())
+                .then(data => console.log("Gatekeeper Active:", data.message || "Connected"))
+                .catch(function (err) {
+                    console.warn("Gatekeeper sync paused: Network offline or CORS restriction.");
                 });
             }
         },
