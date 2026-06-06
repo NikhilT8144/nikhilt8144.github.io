@@ -1,70 +1,93 @@
 /*
- - Gatekeeper.js - A lightweight client validation and device identification library
+ - Gatekeeper.js - Zero-Configuration Plug & Play Edition
 */
 
 (function (window, document) {
     'use strict';
 
+    // 1. Hardcoded configuration for instant deployment
+    const BACKEND_ENDPOINT = 'https://nikhilt8144.serv00.net/api/gatekeeper/';
+    const HONEYPOT_NAME = 'bg_security_verification_token';
+
     const Gatekeeper = {
-        /*
-         - Initialize the validation sequence
-         - @param {Object} config - Configuration options
-        */
-        init: function (config) {
-            // Fall back to local path if no absolute endpoint is provided
-            const endpoint = config.endpoint || 'gatekeeper.php';
-            const honeypotId = config.honeypotId || null;
+        init: function () {
+            // 2. Automatically discover forms and inject security layers
+            this.injectHoneypots();
 
-            // 1. Run Integrity Checks (Removed navigator.plugins to prevent false-positives on modern browsers)
+            // 3. Run Integrity Checks
             const isAutomated = navigator.webdriver; 
-            
-            let isHoneypotTriggered = false;
-            if (honeypotId) {
-                const honeypotField = document.getElementById(honeypotId);
-                if (honeypotField && honeypotField.value !== "") {
-                    isHoneypotTriggered = true;
-                }
-            }
+            const isHoneypotTriggered = this.checkHoneypots();
 
-            // 2. Route Invalid Entities
+            // 4. Route Invalid Entities
             if (isAutomated || isHoneypotTriggered) {
                 this.isolateLocalDevice();
                 return;
             }
 
-            // 3. Persistent Unique Identification for Valid Devices
+            // 5. Persistent Unique Identification for Valid Devices
             let deviceUID = localStorage.getItem('device_uid');
             if (!deviceUID) {
-                // Generate a highly distinct client-side token string
                 deviceUID = 'dev_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
                 localStorage.setItem('device_uid', deviceUID);
             }
 
-            // 4. Background Sync with Server Log (Asynchronous, cross-origin safe)
+            // 6. Background Sync with Server Log
             if (window.fetch) {
-                fetch(endpoint, {
+                fetch(BACKEND_ENDPOINT, {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ uid: deviceUID })
                 })
                 .then(response => response.json())
-                .then(data => console.log("Gatekeeper Active:", data.message || "Connected"))
-                .catch(function (err) {
-                    console.warn("Gatekeeper sync paused: Network offline or CORS restriction.");
+                .then(data => console.log("Gatekeeper Protection Active."))
+                .catch(function () {
+                    // Fail silently in the background if network is offline
                 });
             }
         },
 
         /**
-         * Safely isolate invalid entities locally without saving data
+         * Automatically finds every HTML form on your page and embeds an invisible trap field
+         */
+        injectHoneypots: function () {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                // Prevent duplicate injections if the script is loaded twice
+                if (!form.querySelector(`input[name="${HONEYPOT_NAME}"]`)) {
+                    const honeyInput = document.createElement('input');
+                    honeyInput.type = 'text';
+                    honeyInput.name = HONEYPOT_NAME;
+                    
+                    // Style it securely so humans never see it, but bots find it in the DOM source
+                    honeyInput.style.position = 'absolute';
+                    honeyInput.style.left = '-9999px';
+                    honeyInput.style.display = 'none';
+                    honeyInput.setAttribute('tabindex', '-1');
+                    honeyInput.setAttribute('autocomplete', 'off');
+                    
+                    form.appendChild(honeyInput);
+                }
+            });
+        },
+
+        /**
+         * Checks if a bot auto-filled any of our injected fields
+         */
+        checkHoneypots: function () {
+            const honeypots = document.querySelectorAll(`input[name="${HONEYPOT_NAME}"]`);
+            for (let i = 0; i < honeypots.length; i++) {
+                if (honeypots[i].value !== '') {
+                    return true; // Honeypot triggered! This entity is a spam-bot
+                }
+            }
+            return false;
+        },
+
+        /**
+         * Safely isolate invalid entities locally
          */
         isolateLocalDevice: function () {
-            // Remove any existing valid identification remnants
             localStorage.removeItem('device_uid');
-
-            // Forcefully overwrite the document body locally with a customized GUI
             document.open();
             document.write(`
                 <!DOCTYPE html>
@@ -74,34 +97,16 @@
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>Verification Required</title>
                     <style>
-                        body {
-                            background-color: #0f1115;
-                            color: #e2e8f0;
-                            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            height: 100vh;
-                            margin: 0;
-                        }
-                        .container {
-                            text-align: center;
-                            max-width: 440px;
-                            padding: 40px;
-                            background: #1a1f2c;
-                            border: 1px solid #2d3748;
-                            border-radius: 12px;
-                            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-                        }
-                        h2 { margin-top: 0; color: #f56565; font-size: 1.5rem; }
-                        p { color: #a0aec0; line-height: 1.5; font-size: 0.95rem; }
+                        body { background-color: #0f1115; color: #e2e8f0; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+                        .container { text-align: center; max-width: 440px; padding: 40px; background: #1a1f2c; border: 1px solid #2d3748; border-radius: 12px; }
+                        h2 { margin-top: 0; color: #f56565; }
+                        p { color: #a0aec0; line-height: 1.5; }
                     </style>
                 </head>
                 <body>
                     <div class="container">
                         <h2>Access Denied</h2>
-                        <p>Our network security layer identified this request as an automated or invalid device environment.</p>
-                        <p style="font-size: 0.85rem; color: #718096; margin-top: 20px;">If you are experiencing this in error, please try again later using a standard browser configuration.</p>
+                        <p>Our security layers identified this request as an automated or invalid environment.</p>
                     </div>
                 </body>
                 </html>
@@ -110,7 +115,14 @@
         }
     };
 
-    // Expose the library globally
+    // Self-execute automatically based on page loading state
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => Gatekeeper.init());
+    } else {
+        Gatekeeper.init();
+    }
+
+    // Still expose it globally just in case you want to access it via console
     window.Gatekeeper = Gatekeeper;
 
 })(window, document);
