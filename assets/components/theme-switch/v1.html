@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Switch</title>
+    <style>
+        /* Page styling for presentation */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #0b111a; 
+            transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: sans-serif;
+        }
+
+        /* 1. Pure CSS Background Toggle using :has() */
+        body:has(#theme-checkbox:checked) {
+            background-color: #eaf8ff; 
+        }
+
+        /* Container & Base Styles */
+        .theme-switch {
+          font-size: 18px; 
+          position: relative;
+          display: inline-block;
+          width: 4.5em;
+          height: 2.4em;
+          border-radius: 2em;
+          box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.15), 0 4px 10px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); 
+          -webkit-tap-highlight-color: transparent;
+          transition: box-shadow 0.8s ease;
+        }
+
+        .theme-switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        /* The Slider Background */
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg, #131b26 0%, #06080d 100%);
+          transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+          border-radius: 2em;
+          overflow: hidden;
+          box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6), inset 0 -2px 4px rgba(255, 255, 255, 0.05); 
+        }
+
+        /* The Moon (Unchecked State) */
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 1.6em;
+          width: 1.6em;
+          border-radius: 50%;
+          left: 0.4em;
+          bottom: 0.4em;
+          background-color: transparent;
+          box-shadow: inset 8px -4px 0px 0px #f4f4f5; 
+          filter: drop-shadow(0 0 6px rgba(244, 244, 245, 0.4)); 
+          transition: transform 0.8s cubic-bezier(0.68, -0.15, 0.265, 1.35),
+                      box-shadow 0.8s cubic-bezier(0.68, -0.15, 0.265, 1.35),
+                      background-color 0.8s ease,
+                      filter 0.8s ease;
+          z-index: 2;
+        }
+
+        /* Focus State for Accessibility */
+        .theme-switch input:focus-visible + .slider {
+          outline: 2px solid #00a6ff;
+          outline-offset: 2px;
+        }
+
+        /* Checked State (Day Mode Background & Outline) */
+        .theme-switch input:checked + .slider {
+          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+        }
+        
+        .theme-switch:has(input:checked) {
+            box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* The Sun (Checked State) */
+        .theme-switch input:checked + .slider:before {
+          transform: translateX(2.1em) rotate(360deg);
+          background-color: #ffcf48;
+          box-shadow: inset 0px 0px 0px 15px #ffcf48, 0 0 12px 2px rgba(255, 207, 72, 0.6); 
+          filter: drop-shadow(0 0 0px transparent); 
+        }
+
+        /* Stars Base */
+        .star {
+          background-color: #fff;
+          border-radius: 50%;
+          position: absolute;
+          transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.8);
+        }
+
+        .star-1 { width: 4px; height: 4px; left: 2.8em; top: 0.6em; animation: twinkle 3s infinite alternate; }
+        .star-2 { width: 3px; height: 3px; left: 2.2em; top: 1.4em; animation: twinkle 2s infinite alternate; }
+        .star-3 { width: 5px; height: 5px; left: 3.4em; top: 1.1em; animation: twinkle 4s infinite alternate; }
+
+        @keyframes twinkle {
+          0% { opacity: 0.3; transform: scale(0.7); }
+          100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* 2. Pure CSS "Random" Shooting Stars */
+        .shooting-star {
+          position: absolute;
+          width: 1.5em;
+          height: 1px;
+          background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));
+          opacity: 0;
+          border-radius: 50%;
+        }
+
+        /* Using prime number timings (5s, 7s, 11s) creates an unpredictable, aperiodic feel */
+        .comet-a { top: 15%; left: 20%; animation: shooting 5s linear infinite 2s; }
+        .comet-b { top: 45%; left: 10%; animation: shooting 11s linear infinite 1s; }
+        .comet-c { top: 25%; left: 50%; animation: shooting 7s linear infinite 4s; }
+
+        @keyframes shooting {
+          0% { transform: rotate(-35deg) translateX(-2em); opacity: 0; }
+          5% { opacity: 1; }
+          10% { transform: rotate(-35deg) translateX(4em); opacity: 0; }
+          100% { opacity: 0; transform: rotate(-35deg) translateX(4em); }
+        }
+
+        /* Hide all stars & shooting stars in day mode */
+        .theme-switch input:checked ~ .slider .star,
+        .theme-switch input:checked ~ .slider .shooting-star {
+          opacity: 0;
+          transform: translateY(-1em); 
+          animation-play-state: paused;
+        }
+
+        /* Clouds Wrapper */
+        .clouds-wrapper {
+          position: absolute;
+          bottom: -2.5em;
+          left: 0.2em;
+          opacity: 0;
+          transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); 
+          z-index: 1;
+          pointer-events: none;
+        }
+
+        /* Primary Cloud */
+        .cloud {
+          width: 3.5em;
+          filter: drop-shadow(0px 3px 4px rgba(0,0,0,0.15)) drop-shadow(0px -1px 2px rgba(255,255,255,0.6));
+          animation: floatCloud 3.5s ease-in-out infinite;
+          transform-origin: center bottom;
+        }
+
+        /* Secondary Smaller Cloud */
+        .cloud-2 {
+          width: 2em;
+          position: absolute;
+          bottom: -0.2em;
+          left: 2em;
+          filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.1)) drop-shadow(0px -1px 1px rgba(255,255,255,0.6));
+          animation: floatCloud 4s ease-in-out infinite reverse;
+          opacity: 0.85;
+        }
+
+        /* Floating Animation */
+        @keyframes floatCloud {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-4px) scale(1.03); }
+        }
+
+        /* Show clouds in day mode */
+        .theme-switch input:checked ~ .slider .clouds-wrapper {
+          opacity: 1;
+          bottom: -0.5em;
+          left: -0.5em;
+        }
+    </style>
+</head>
+<body>
+
+    <label class="theme-switch" aria-label="Toggle Theme">
+      <input type="checkbox" id="theme-checkbox" />
+      <span class="slider">
+        <div class="star star-1"></div>
+        <div class="star star-2"></div>
+        <div class="star star-3"></div>
+        
+        <div class="shooting-star comet-a"></div>
+        <div class="shooting-star comet-b"></div>
+        <div class="shooting-star comet-c"></div>
+        
+        <div class="clouds-wrapper">
+          <svg viewBox="0 0 16 16" class="cloud">
+            <path
+              fill="#ffffff"
+              d="m391.84 540.91c-.421-.329-.949-.524-1.523-.524-1.351 0-2.451 1.084-2.485 2.435-1.395.526-2.388 1.88-2.388 3.466 0 1.874 1.385 3.423 3.182 3.667v.034h12.73v-.006c1.775-.104 3.182-1.584 3.182-3.395 0-1.747-1.309-3.186-2.994-3.379.007-.106.011-.214.011-.322 0-2.707-2.271-4.901-5.072-4.901-2.073 0-3.856 1.202-4.643 2.925"
+              transform="matrix(.77976 0 0 .78395-299.99-418.63)"
+            ></path>
+          </svg>
+          <svg viewBox="0 0 16 16" class="cloud cloud-2">
+            <path
+              fill="#ffffff"
+              d="m391.84 540.91c-.421-.329-.949-.524-1.523-.524-1.351 0-2.451 1.084-2.485 2.435-1.395.526-2.388 1.88-2.388 3.466 0 1.874 1.385 3.423 3.182 3.667v.034h12.73v-.006c1.775-.104 3.182-1.584 3.182-3.395 0-1.747-1.309-3.186-2.994-3.379.007-.106.011-.214.011-.322 0-2.707-2.271-4.901-5.072-4.901-2.073 0-3.856 1.202-4.643 2.925"
+              transform="matrix(.77976 0 0 .78395-299.99-418.63)"
+            ></path>
+          </svg>
+        </div>
+      </span>
+    </label>
+
+</body>
+</html>
