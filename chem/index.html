@@ -2,495 +2,326 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Molecular Symmetry Visualizer</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>3D Optical Isomerism Visualizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <style>
-        :root {
-            --bg-color: #121214;
-            --panel-bg: #1a1a1e;
-            --accent-color: #6366f1;
-            --text-color: #e4e4e7;
-            --text-muted: #a1a1aa;
-            --pos-color: #06b6d4;
-            --cos-color: #d946ef;
-            --aos-color: #eab308;
-            --aaos-color: #f97316;
+        body { margin: 0; overflow: hidden; background-color: #0f172a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Layout Structure - Row on Desktop, Column on Mobile */
-        #app-container {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            height: 100%;
-        }
-
-        #viewer-container {
-            flex: 1;
-            position: relative;
-            background-color: #09090b;
-            height: 100%;
-        }
-
-        #gldiv {
-            width: 100%;
-            height: 100%;
-        }
-
-        #sidebar {
-            width: 420px;
-            background-color: var(--panel-bg);
-            border-left: 1px solid #27272a;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            height: 100%;
-        }
-
-        h1 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-
-        p.subtitle {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-
-        .section {
-            background: #222227;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #2e2e35;
-        }
-
-        .section-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Form styling */
-        label {
-            display: block;
-            font-size: 0.85rem;
-            margin-bottom: 6px;
-            color: var(--text-color);
-        }
-
-        select, textarea, input[type="number"] {
-            width: 100%;
-            background-color: #121214;
-            border: 1px solid #3f3f46;
-            color: #fff;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-        }
-
-        textarea {
-            font-family: monospace;
-            resize: vertical;
-            height: 100px;
-        }
-
-        .vector-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        /* Checkbox & Symmetry Toggles */
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 4px 0;
-        }
-
-        .toggle-container input {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--accent-color);
-        }
-
-        .pos-header { color: var(--pos-color); }
-        .cos-header { color: var(--cos-color); }
-        .aos-header { color: var(--aos-color); }
-        .aaos-header { color: var(--aaos-color); }
-
-        .control-group {
-            margin-left: 28px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        button {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            width: 100%;
-            font-size: 0.9rem;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        /* Help Legend Overlay */
-        #canvas-overlay {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            right: 15px;
-            background: rgba(26, 26, 30, 0.9);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #27272a;
-            pointer-events: none;
-            font-size: 0.75rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            z-index: 10;
-        }
-        .legend-item { display: flex; align-items: center; gap: 6px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
-
-        /* Responsive Breakpoint for Mobile Devices */
-        @media (max-width: 768px) {
-            body {
-                overflow: auto;
-            }
-            #app-container {
-                flex-direction: column;
-                height: auto;
-            }
-            #viewer-container {
-                height: 50vh; /* Takes half the screen height on mobile */
-                width: 100%;
-                position: sticky;
-                top: 0;
-                z-index: 100;
-                border-bottom: 1px solid #27272a;
-            }
-            #sidebar {
-                width: 100%;
-                height: auto;
-                overflow-y: visible;
-                border-left: none;
-                padding: 15px;
-            }
-            #canvas-overlay {
-                grid-template-columns: 1fr;
-                bottom: 10px;
-                left: 10px;
-                right: auto;
-                max-width: 280px;
-                font-size: 0.7rem;
-            }
-        }
+        /* Hide scrollbar for clean UI */
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body>
+<body class="text-slate-200">
 
-<div id="app-container">
-    <div id="viewer-container">
-        <div id="gldiv"></div>
-        <div id="canvas-overlay">
-            <div class="legend-item"><span class="dot" style="background: var(--pos-color)"></span> POS: Plane (Cyan)</div>
-            <div class="legend-item"><span class="dot" style="background: var(--cos-color)"></span> COS: Center (Magenta)</div>
-            <div class="legend-item"><span class="dot" style="background: var(--aos-color)"></span> AOS: Axis (Yellow)</div>
-            <div class="legend-item"><span class="dot" style="background: var(--aaos-color)"></span> AAOS: Alt Axis (Orange)</div>
-        </div>
-    </div>
+    <div id="canvas-container"></div>
 
-    <div id="sidebar">
-        <div>
-            <h1>Symmetry Visualizer</h1>
-            <p class="subtitle">Drag to rotate. Pinch/Scroll to zoom.</p>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Select or Input Compound</div>
-            <label for="presetSelect">Preloaded Configurations</label>
-            <select id="presetSelect" onchange="loadPreset()">
-                <option value="trans_dichloro">trans-1,2-dichloroethene (POS, COS, AOS)</option>
-                <option value="allene">Allene (POS, AOS, AAOS / S4)</option>
-                <option value="methane">Methane (POS, AOS, AAOS / S4)</option>
-                <option value="custom">-- Custom 3D Coordinates (.XYZ) --</option>
-            </select>
-
-            <div id="customInputBlock" style="display: none;">
-                <label for="xyzData">Paste XYZ Data Format</label>
-                <textarea id="xyzData" placeholder="Paste standard .xyz coordinates here..."></textarea>
-                <button onclick="loadCustomCoordinates()">Render Custom Molecule</button>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Symmetry Overlays</div>
-            
-            <label class="toggle-container pos-header">
-                <input type="checkbox" id="enablePOS" onchange="applySymmetryElements()" checked> Plane of Symmetry (POS)
-            </label>
-            <div class="control-group">
-                <div class="vector-row">
-                    <div>Nx<input type="number" id="posNx" value="0" step="0.1" oninput="applySymmetryElements()"></div>
-                    <div>Ny<input type="number" id="posNy" value="0" step="0.1" oninput="applySymmetryElements()"></div>
-                    <div>Nz<input type="number" id="posNz" value="1" step="0.1" oninput="applySymmetryElements()"></div>
-                </div>
-                <div style="margin-bottom: 12px;">
-                    Offset Distance
-                    <input type="number" id="posOffset" value="0" step="0.1" oninput="applySymmetryElements()">
-                </div>
-            </div>
-
-            <label class="toggle-container cos-header">
-                <input type="checkbox" id="enableCOS" onchange="applySymmetryElements()" checked> Center of Symmetry (COS)
-            </label>
-            <div class="control-group">
-                <div class="vector-row" style="margin-bottom: 12px;">
-                    <div>X<input type="number" id="cosX" value="0" step="0.1" oninput="applySymmetryElements()"></div>
-                    <div>Y<input type="number" id="cosY" value="0" step="0.1" oninput="applySymmetryElements()"></div>
-                    <div>Z<input type="number" id="cosZ" value="0" step="0.1" oninput="applySymmetryElements()"></div>
-                </div>
-            </div>
-
-            <label class="toggle-container aos-header">
-                <input type="checkbox" id="enableAOS" onchange="applySymmetryElements()" checked> Axis of Symmetry (AOS)
-            </label>
-            <div class="control-group">
-                <div class="vector-row" style="margin-bottom: 12px;">
-                    <div>Vx<input type="number" id="aosDx" value="0" step="0.1" oninput="applySymmetryElements()"></div>
-                    <div>Vy<input type="number" id="aosDy" value="0" step="0.1" oninput="applySymmetryElements()"></div>
-                    <div>Vz<input type="number" id="aosDz" value="1" step="0.1" oninput="applySymmetryElements()"></div>
-                </div>
-            </div>
-
-            <label class="toggle-container aaos-header">
-                <input type="checkbox" id="enableAAOS" onchange="applySymmetryElements()" checked> Alternating Axis (AAOS)
-            </label>
-            <div class="control-group">
-                <div class="vector-row">
-                    <div>Vx<input type="number" id="aaosDx" value="0" step="0.1" oninput="applySymmetryElements()"></div>
-                    <div>Vy<input type="number" id="aaosDy" value="0" step="0.1" oninput="applySymmetryElements()"></div>
-                    <div>Vz<input type="number" id="aaosDz" value="1" step="0.1" oninput="applySymmetryElements()"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Molecular Preset Database (.XYZ Format)
-    const presets = {
-        trans_dichloro: {
-            xyz: `6\ntrans-1,2-dichloroethene\nC  -0.665  0.565  0.000\nC   0.665 -0.565  0.000\nH  -0.491  1.633  0.000\nH   0.491 -1.633  0.000\nCl -2.270  0.045  0.000\nCl  2.270 -0.045  0.000`,
-            pos: { enable: true, nx: 0, ny: 0, nz: 1, offset: 0 },
-            cos: { enable: true, x: 0, y: 0, z: 0 },
-            aos: { enable: true, dx: 0, dy: 0, dz: 1 },
-            aaos: { enable: false, dx: 0, dy: 0, dz: 0 }
-        },
-        allene: {
-            xyz: `7\nAllene\nC   0.0000   0.0000   1.3000\nC   0.0000   0.0000   0.0000\nC   0.0000   0.0000  -1.3000\nH   0.9220   0.0000   1.8500\nH  -0.9220   0.0000   1.8500\nH   0.0000   0.9220  -1.8500\nH   0.0000  -0.9220  -1.8500`,
-            pos: { enable: true, nx: 1, ny: 0, nz: 0, offset: 0 },
-            cos: { enable: false, x: 0, y: 0, z: 0 },
-            aos: { enable: true, dx: 0, dy: 0, dz: 1 },
-            aaos: { enable: true, dx: 0, dy: 0, dz: 1 }
-        },
-        methane: {
-            xyz: `5\nMethane\nC  0.0000  0.0000  0.0000\nH  0.6291  0.6291  0.6291\nH -0.6291 -0.6291  0.6291\nH -0.6291  0.6291 -0.6291\nH  0.6291 -0.6291 -0.6291`,
-            pos: { enable: true, nx: 1, ny: -1, nz: 0, offset: 0 },
-            cos: { enable: false, x: 0, y: 0, z: 0 },
-            aos: { enable: true, dx: 0, dy: 0, dz: 1 },
-            aaos: { enable: true, dx: 0, dy: 0, dz: 1 }
-        }
-    };
-
-    let glviewer = null;
-
-    // Initialize 3D Canvas
-    window.onload = function() {
-        glviewer = $3Dmol.createViewer("gldiv", { defaultcolors: $3Dmol.rasmolElementColors });
-        glviewer.setBackgroundColor(0x0e0e11);
-        loadPreset();
-
-        // Handle structural resizing changes for orientation shifts
-        window.addEventListener('resize', () => {
-            if(glviewer) glviewer.resize();
-        });
-    };
-
-    function loadPreset() {
-        const key = document.getElementById("presetSelect").value;
-        const customBlock = document.getElementById("customInputBlock");
-
-        if (key === "custom") {
-            customBlock.style.display = "block";
-            return;
-        } else {
-            customBlock.style.display = "none";
-        }
-
-        const data = presets[key];
+    <div class="relative z-10 flex flex-col h-full w-full pointer-events-none p-4 md:p-6 justify-between max-w-7xl mx-auto">
         
-        document.getElementById("enablePOS").checked = data.pos.enable;
-        document.getElementById("posNx").value = data.pos.nx;
-        document.getElementById("posNy").value = data.pos.ny;
-        document.getElementById("posNz").value = data.pos.nz;
-        document.getElementById("posOffset").value = data.pos.offset;
+        <div class="flex flex-col md:flex-row gap-4 justify-between items-start">
+            <div class="glass-panel p-4 rounded-2xl pointer-events-auto w-full md:w-96 shadow-2xl">
+                <h1 class="text-xl font-bold text-white mb-1 tracking-tight">StereoChem Engine</h1>
+                <p class="text-xs text-blue-400 font-semibold uppercase tracking-wider mb-4">Symmetry & Chirality</p>
+                
+                <label class="block text-xs font-bold text-slate-400 mb-1">Select Molecular System</label>
+                <select id="molecule-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none mb-4 transition-all">
+                    <option value="meso_tartaric">Meso-Tartaric Acid (Achiral)</option>
+                    <option value="lactic_acid">D-Lactic Acid (Chiral)</option>
+                    <option value="allene_even">1,3-Dichloroallene (Even double bonds - Chiral)</option>
+                    <option value="allene_odd">1,4-Dichlorobutatriene (Odd double bonds - Achiral)</option>
+                </select>
 
-        document.getElementById("enableCOS").checked = data.cos.enable;
-        document.getElementById("cosX").value = data.cos.x;
-        document.getElementById("cosY").value = data.cos.y;
-        document.getElementById("cosZ").value = data.cos.z;
+                <div class="space-y-2 text-sm bg-slate-900/50 p-3 rounded-lg border border-slate-700/50">
+                    <div class="flex justify-between"><span class="text-slate-400">Optically Active:</span> <span id="status-activity" class="font-bold text-red-400">No</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Plane of Symmetry (σ):</span> <span id="status-pos" class="font-bold text-emerald-400">Present</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Chiral Centers:</span> <span id="status-chiral" class="font-bold text-white">2</span></div>
+                </div>
+            </div>
 
-        document.getElementById("enableAOS").checked = data.aos.enable;
-        document.getElementById("aosDx").value = data.aos.dx;
-        document.getElementById("aosDy").value = data.aos.dy;
-        document.getElementById("aosDz").value = data.aos.dz;
+            <div class="glass-panel p-4 rounded-2xl pointer-events-auto w-full md:w-64 flex flex-col gap-3 shadow-2xl mt-4 md:mt-0">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Visualization Tools</span>
+                
+                <button id="toggle-pos" class="w-full py-2 px-4 rounded-lg bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600/40 transition-colors text-sm font-semibold flex items-center justify-between">
+                    Show Plane of Symmetry <span id="pos-indicator" class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]"></span>
+                </button>
+                
+                <button id="toggle-cos" class="w-full py-2 px-4 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition-colors text-sm font-semibold flex items-center justify-between hidden">
+                    Show Center of Symmetry <span id="cos-indicator" class="w-2 h-2 rounded-full bg-slate-600"></span>
+                </button>
 
-        document.getElementById("enableAAOS").checked = data.aaos.enable;
-        document.getElementById("aaosDx").value = data.aaos.dx;
-        document.getElementById("aaosDy").value = data.aaos.dy;
-        document.getElementById("aaosDz").value = data.aaos.dz;
+                <button id="toggle-autorotate" class="w-full py-2 px-4 rounded-lg bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/40 transition-colors text-sm font-semibold mt-2">
+                    Toggle Auto-Rotation
+                </button>
+            </div>
+        </div>
 
-        renderMolecule(data.xyz);
-    }
+        <div class="glass-panel p-4 rounded-2xl pointer-events-auto w-full max-w-2xl mx-auto shadow-2xl mt-auto">
+            <h3 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Stereochemical Analysis
+            </h3>
+            <p id="coach-text" class="text-sm text-slate-300 leading-relaxed">
+                Meso-tartaric acid contains two chiral centers, but because the upper and lower halves are mirror images of each other, it possesses an internal Plane of Symmetry (σ). This internal compensation renders the molecule achiral and optically inactive.
+            </p>
+        </div>
+    </div>
 
-    function loadCustomCoordinates() {
-        const customXYZ = document.getElementById("xyzData").value;
-        if(!customXYZ.trim()) {
-            alert("Please paste valid XYZ dataset format.");
-            return;
-        }
-        renderMolecule(customXYZ);
-    }
+    <script>
+        // --- 1. Three.js Scene Setup ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x0f172a, 0.02);
 
-    function renderMolecule(xyzString) {
-        glviewer.clear();
-        glviewer.addModel(xyzString, "xyz");
-        glviewer.setStyle({}, { stick: { radius: 0.12 }, sphere: { radius: 0.35 } });
-        glviewer.zoomTo();
-        applySymmetryElements();
-    }
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 5, 12);
 
-    function applySymmetryElements() {
-        if (!glviewer) return;
-        glviewer.removeAllShapes();
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
 
-        // 1. PLANE OF SYMMETRY (POS)
-        if (document.getElementById("enablePOS").checked) {
-            let nx = parseFloat(document.getElementById("posNx").value) || 0;
-            let ny = parseFloat(document.getElementById("posNy").value) || 0;
-            let nz = parseFloat(document.getElementById("posNz").value) || 0;
-            let offset = parseFloat(document.getElementById("posOffset").value) || 0;
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enablePan = false;
 
-            let magnitude = Math.sqrt(nx*nx + ny*ny + nz*nz);
-            if (magnitude > 0) {
-                nx /= magnitude; ny /= magnitude; nz /= magnitude;
-                let cx = nx * offset; let cy = ny * offset; let cz = nz * offset;
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(10, 20, 10);
+        scene.add(dirLight);
+        const backLight = new THREE.DirectionalLight(0xaabbff, 0.4);
+        backLight.position.set(-10, -10, -10);
+        scene.add(backLight);
 
-                glviewer.addCylinder({
-                    start: {x: cx - (0.01 * nx), y: cy - (0.01 * ny), z: cz - (0.01 * nz)},
-                    end: {x: cx + (0.01 * nx), y: cy + (0.01 * ny), z: cz + (0.01 * nz)},
-                    radius: 3.2,
-                    color: '#06b6d4',
-                    opacity: 0.4,
-                    fromCap: true, toCap: true
-                });
+        // --- 2. Molecular Data Definitions ---
+        // Colors: C=Grey, H=White, O=Red, Cl=Green
+        const colors = { C: 0x444444, H: 0xffffff, O: 0xff3333, Cl: 0x33ff33 };
+        const sizes = { C: 0.4, H: 0.25, O: 0.35, Cl: 0.45 };
+
+        const molecules = {
+            meso_tartaric: {
+                name: "Meso-Tartaric Acid", active: false, pos: true, chiral: 2,
+                desc: "Despite having two chiral centers, this eclipsed conformation clearly shows a Plane of Symmetry (σ) bisecting the C2-C3 bond. This internal compensation makes it an optically inactive Meso compound.",
+                atoms: [
+                    { id: 'c1', elem: 'C', pos: [0, 1.2, 0] },
+                    { id: 'c2', elem: 'C', pos: [0, -1.2, 0] },
+                    { id: 'o1', elem: 'O', pos: [1.2, 1.2, 1] },
+                    { id: 'h1', elem: 'H', pos: [-1.2, 1.2, 1] },
+                    { id: 'cooh1', elem: 'C', pos: [0, 2.5, -0.5] }, // Simplified COOH group
+                    { id: 'o2', elem: 'O', pos: [1.2, -1.2, 1] },
+                    { id: 'h2', elem: 'H', pos: [-1.2, -1.2, 1] },
+                    { id: 'cooh2', elem: 'C', pos: [0, -2.5, -0.5] }
+                ],
+                bonds: [ ['c1','c2'], ['c1','o1'], ['c1','h1'], ['c1','cooh1'], ['c2','o2'], ['c2','h2'], ['c2','cooh2'] ],
+                symmetryPlane: { pos: [0, 0, 0], rot: [Math.PI/2, 0, 0], size: [8, 8] } // Horizontal plane
+            },
+            lactic_acid: {
+                name: "D-Lactic Acid", active: true, pos: false, chiral: 1,
+                desc: "Contains a single asymmetric carbon atom attached to four different groups (-H, -OH, -CH3, -COOH). It lacks any plane or center of symmetry, making it chiral and optically active.",
+                atoms: [
+                    { id: 'c1', elem: 'C', pos: [0, 0, 0] }, // Chiral Center
+                    { id: 'o1', elem: 'O', pos: [1.2, 1.2, 0] }, // OH
+                    { id: 'h1', elem: 'H', pos: [-1.2, 1.2, 0] }, // H
+                    { id: 'c2', elem: 'C', pos: [0, -1.2, 1.2] }, // CH3
+                    { id: 'c3', elem: 'C', pos: [0, -1.2, -1.2] }  // COOH
+                ],
+                bonds: [ ['c1','o1'], ['c1','h1'], ['c1','c2'], ['c1','c3'] ],
+                symmetryPlane: null
+            },
+            allene_even: {
+                name: "1,3-Dichloroallene", active: true, pos: false, chiral: 0,
+                desc: "An Allene with an EVEN number of double bonds (C=C=C). The terminal groups lie in mutually perpendicular planes. Since the ends are unsymmetrically substituted, it lacks a POS and is optically active despite having NO chiral centers.",
+                atoms: [
+                    { id: 'c1', elem: 'C', pos: [0, 0, 0] }, // Center C
+                    { id: 'c2', elem: 'C', pos: [1.5, 0, 0] }, // Right C
+                    { id: 'c3', elem: 'C', pos: [-1.5, 0, 0] }, // Left C
+                    // Right subs in XY plane
+                    { id: 'cl1', elem: 'Cl', pos: [2.5, 1.2, 0] },
+                    { id: 'h1', elem: 'H', pos: [2.5, -1.2, 0] },
+                    // Left subs in XZ plane (perpendicular)
+                    { id: 'cl2', elem: 'Cl', pos: [-2.5, 0, 1.2] },
+                    { id: 'h2', elem: 'H', pos: [-2.5, 0, -1.2] }
+                ],
+                bonds: [ ['c1','c2'], ['c1','c3'], ['c2','cl1'], ['c2','h1'], ['c3','cl2'], ['c3','h2'] ],
+                symmetryPlane: null
+            },
+            allene_odd: {
+                name: "1,4-Dichlorobutatriene", active: false, pos: true, chiral: 0,
+                desc: "An Allene with an ODD number of double bonds (C=C=C=C). The terminal groups lie in the SAME plane. The entire molecule is planar, meaning the plane of the screen itself acts as a Plane of Symmetry (σ), making it optically inactive.",
+                atoms: [
+                    { id: 'c1', elem: 'C', pos: [0.75, 0, 0] },
+                    { id: 'c2', elem: 'C', pos: [-0.75, 0, 0] },
+                    { id: 'c3', elem: 'C', pos: [2.25, 0, 0] },
+                    { id: 'c4', elem: 'C', pos: [-2.25, 0, 0] },
+                    // ALL subs in XY plane
+                    { id: 'cl1', elem: 'Cl', pos: [3.25, 1.2, 0] },
+                    { id: 'h1', elem: 'H', pos: [3.25, -1.2, 0] },
+                    { id: 'cl2', elem: 'Cl', pos: [-3.25, 1.2, 0] },
+                    { id: 'h2', elem: 'H', pos: [-3.25, -1.2, 0] }
+                ],
+                bonds: [ ['c1','c2'], ['c1','c3'], ['c2','c4'], ['c3','cl1'], ['c3','h1'], ['c4','cl2'], ['c4','h2'] ],
+                symmetryPlane: { pos: [0, 0, 0], rot: [0, 0, 0], size: [10, 6] } // XY Plane
             }
-        }
+        };
 
-        // 2. CENTER OF SYMMETRY (COS)
-        if (document.getElementById("enableCOS").checked) {
-            let cx = parseFloat(document.getElementById("cosX").value) || 0;
-            let cy = parseFloat(document.getElementById("cosY").value) || 0;
-            let cz = parseFloat(document.getElementById("cosZ").value) || 0;
+        // --- 3. Rendering Engine ---
+        let mainGroup = new THREE.Group();
+        let posMesh = null;
+        let isAutoRotating = true;
+        let isPosVisible = true;
+        scene.add(mainGroup);
 
-            glviewer.addSphere({
-                center: {x: cx, y: cy, z: cz},
-                radius: 0.22,
-                color: '#d946ef',
-                opacity: 0.85
+        function buildMolecule(key) {
+            // Clean up previous
+            scene.remove(mainGroup);
+            mainGroup = new THREE.Group();
+            posMesh = null;
+
+            const data = molecules[key];
+            const atomMeshes = {};
+
+            // Render Atoms
+            data.atoms.forEach(atom => {
+                const geo = new THREE.SphereGeometry(sizes[atom.elem], 32, 32);
+                const mat = new THREE.MeshPhysicalMaterial({ 
+                    color: colors[atom.elem], metalness: 0.2, roughness: 0.3, clearcoat: 0.8
+                });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set(...atom.pos);
+                mainGroup.add(mesh);
+                atomMeshes[atom.id] = mesh;
             });
+
+            // Render Bonds
+            data.bonds.forEach(bond => {
+                const start = atomMeshes[bond[0]].position;
+                const end = atomMeshes[bond[1]].position;
+                const distance = start.distanceTo(end);
+                
+                const geo = new THREE.CylinderGeometry(0.1, 0.1, distance, 16);
+                const mat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.5 });
+                const mesh = new THREE.Mesh(geo, mat);
+                
+                // Align cylinder between atoms
+                const position = end.clone().add(start).divideScalar(2);
+                mesh.position.copy(position);
+                mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), end.clone().sub(start).normalize());
+                
+                mainGroup.add(mesh);
+            });
+
+            // Build Plane of Symmetry (grouped WITH the molecule so it rotates together)
+            if (data.symmetryPlane) {
+                const planeGeo = new THREE.PlaneGeometry(...data.symmetryPlane.size);
+                // Glass-like material
+                const planeMat = new THREE.MeshPhysicalMaterial({
+                    color: 0x3b82f6, transparent: true, opacity: 0.35, 
+                    side: THREE.DoubleSide, depthWrite: false, roughness: 0.1, metalness: 0.1
+                });
+                posMesh = new THREE.Mesh(planeGeo, planeMat);
+                posMesh.position.set(...data.symmetryPlane.pos);
+                posMesh.rotation.set(...data.symmetryPlane.rot);
+                posMesh.visible = isPosVisible;
+                
+                // Add grid helper to plane for better visual tracking
+                const grid = new THREE.GridHelper(Math.max(...data.symmetryPlane.size), 10, 0xffffff, 0xffffff);
+                grid.rotation.x = Math.PI / 2;
+                grid.material.opacity = 0.2;
+                grid.material.transparent = true;
+                posMesh.add(grid);
+
+                mainGroup.add(posMesh);
+            }
+
+            scene.add(mainGroup);
+            updateTelemetry(data);
         }
 
-        // 3. AXIS OF SYMMETRY (AOS)
-        if (document.getElementById("enableAOS").checked) {
-            let ax = parseFloat(document.getElementById("aosDx").value) || 0;
-            let ay = parseFloat(document.getElementById("aosDy").value) || 0;
-            let az = parseFloat(document.getElementById("aosDz").value) || 0;
+        // --- 4. UI & Telemetry Sync ---
+        function updateTelemetry(data) {
+            document.getElementById('status-activity').innerText = data.active ? "Yes" : "No";
+            document.getElementById('status-activity').className = data.active ? "font-bold text-emerald-400" : "font-bold text-red-400";
+            
+            document.getElementById('status-pos').innerText = data.pos ? "Present" : "Absent";
+            document.getElementById('status-pos').className = data.pos ? "font-bold text-blue-400" : "font-bold text-red-400";
+            
+            document.getElementById('status-chiral').innerText = data.chiral;
+            document.getElementById('coach-text').innerText = data.desc;
 
-            let magnitude = Math.sqrt(ax*ax + ay*ay + az*az);
-            if (magnitude > 0) {
-                ax /= magnitude; ay /= magnitude; az /= magnitude;
-                glviewer.addCylinder({
-                    start: {x: ax * -4.5, y: ay * -4.5, z: az * -4.5},
-                    end: {x: ax * 4.5, y: ay * 4.5, z: az * 4.5},
-                    radius: 0.06,
-                    color: '#eab308',
-                    opacity: 0.85
-                });
+            // Manage POS Button state
+            const posBtn = document.getElementById('toggle-pos');
+            if (!data.symmetryPlane) {
+                posBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('pos-indicator').style.backgroundColor = 'transparent';
+                posBtn.innerText = "No Plane of Symmetry Exists";
+            } else {
+                posBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                posBtn.innerHTML = `Show Plane of Symmetry <span id="pos-indicator" class="w-2 h-2 rounded-full ${isPosVisible ? 'bg-blue-500 shadow-[0_0_8px_#3b82f6]' : 'bg-slate-600'}"></span>`;
             }
         }
 
-        // 4. ALTERNATING AXIS OF SYMMETRY (AAOS)
-        if (document.getElementById("enableAAOS").checked) {
-            let dax = parseFloat(document.getElementById("aaosDx").value) || 0;
-            let day = parseFloat(document.getElementById("aaosDy").value) || 0;
-            let daz = parseFloat(document.getElementById("aaosDz").value) || 0;
+        // Event Listeners
+        document.getElementById('molecule-select').addEventListener('change', (e) => {
+            buildMolecule(e.target.value);
+            // Reset rotations for nice entry
+            mainGroup.rotation.set(0,0,0);
+            camera.position.set(0, 5, 12);
+            controls.target.set(0,0,0);
+        });
 
-            let magnitude = Math.sqrt(dax*dax + day*day + daz*daz);
-            if (magnitude > 0) {
-                dax /= magnitude; day /= magnitude; daz /= magnitude;
-                glviewer.addCylinder({
-                    start: {x: dax * -4.5, y: day * -4.5, z: daz * -4.5},
-                    end: {x: dax * 4.5, y: day * 4.5, z: daz * 4.5},
-                    radius: 0.06,
-                    color: '#f97316',
-                    opacity: 0.85
-                });
+        document.getElementById('toggle-pos').addEventListener('click', () => {
+            const data = molecules[document.getElementById('molecule-select').value];
+            if (!data.symmetryPlane) return;
+            
+            isPosVisible = !isPosVisible;
+            if (posMesh) posMesh.visible = isPosVisible;
+            
+            const indicator = document.getElementById('pos-indicator');
+            if(isPosVisible) {
+                indicator.className = "w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]";
+            } else {
+                indicator.className = "w-2 h-2 rounded-full bg-slate-600";
             }
+        });
+
+        document.getElementById('toggle-autorotate').addEventListener('click', () => {
+            isAutoRotating = !isAutoRotating;
+        });
+
+        // Window Resizing Fallback
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- 5. Animation Loop ---
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            // Rotate the entire group (Atoms + POS mesh together)
+            if (isAutoRotating && mainGroup) {
+                mainGroup.rotation.y += 0.003;
+                mainGroup.rotation.x += 0.001;
+            }
+
+            renderer.render(scene, camera);
         }
 
-        glviewer.render();
-    }
-</script>
+        // Initialize First Molecule
+        buildMolecule('meso_tartaric');
+        animate();
+    </script>
 </body>
 </html>
