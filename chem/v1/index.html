@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Advanced Optical Isomerism Visualizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #0f172a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        /* Custom scrollbar for the info panel */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        
+        /* Eliminate canvas outline */
+        canvas { outline: none; }
+    </style>
+</head>
+<body class="text-slate-200 h-screen w-screen flex flex-col md:flex-row">
+
+    <div id="canvas-container" class="relative flex-1 min-h-[50vh] md:min-h-full bg-[#0B101E] cursor-move">
+        <div class="absolute top-4 left-4 pointer-events-none z-10">
+            <h1 class="text-xl md:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                <span class="text-blue-500">Stereo</span>Chem
+            </h1>
+            <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest mt-1">Interactive 3D Engine</p>
+        </div>
+        
+        <button id="toggle-autorotate" class="absolute bottom-4 left-4 bg-slate-800/80 hover:bg-slate-700 text-white border border-slate-600 backdrop-blur-sm px-3 py-1.5 rounded-lg text-xs font-semibold shadow-lg transition-colors z-10">
+            Pause Auto-Rotation
+        </button>
+    </div>
+
+    <div class="w-full md:w-[420px] h-[50vh] md:h-full bg-slate-900 border-t md:border-t-0 md:border-l border-slate-700 flex flex-col z-20 shadow-2xl">
+        
+        <div class="p-5 border-b border-slate-800 bg-slate-900/95 sticky top-0 z-30">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Molecular Configuration</label>
+            <select id="molecule-select" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-inner">
+                <optgroup label="Classical Chiral Centers">
+                    <option value="meso_tartaric">Meso-Tartaric Acid (Inactive)</option>
+                    <option value="d_tartaric">D-Tartaric Acid (Active)</option>
+                    <option value="lactic_acid">D-Lactic Acid (Active)</option>
+                </optgroup>
+                <optgroup label="Special Cases (No Chiral Centers)">
+                    <option value="allene_even">1,3-Dichloroallene (Even C=C - Active)</option>
+                    <option value="allene_odd">1,4-Dichlorobutatriene (Odd C=C - Inactive)</option>
+                    <option value="biphenyl">Ortho-Substituted Biphenyl (Atropisomerism)</option>
+                </optgroup>
+                <optgroup label="Cycloalkanes">
+                    <option value="cis_cyclopropane">cis-1,2-Dimethylcyclopropane (Meso)</option>
+                    <option value="trans_cyclopropane">trans-1,2-Dimethylcyclopropane (Active)</option>
+                </optgroup>
+            </select>
+            
+            <button id="toggle-pos" class="w-full mt-4 py-2.5 px-4 rounded-lg bg-blue-600/10 text-blue-400 border border-blue-500/30 hover:bg-blue-600/20 transition-all text-sm font-bold flex items-center justify-between shadow-sm">
+                Show Plane of Symmetry (σ)
+                <span id="pos-indicator" class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]"></span>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-5 custom-scrollbar bg-slate-900">
+            
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Optically Active</span>
+                    <span id="status-activity" class="text-base font-bold text-red-400">No</span>
+                </div>
+                <div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Symmetry Plane</span>
+                    <span id="status-pos" class="text-base font-bold text-emerald-400">Present</span>
+                </div>
+                <div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Chiral Centers</span>
+                    <span id="status-chiral" class="text-base font-bold text-white">2</span>
+                </div>
+                <div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Stereoisomers</span>
+                    <span id="status-total" class="text-base font-bold text-blue-400">3</span>
+                </div>
+            </div>
+
+            <div class="relative bg-[#162032] p-4 rounded-xl border border-slate-700 shadow-inner">
+                <div class="absolute -top-3 left-4 bg-blue-500 text-white text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded shadow">
+                    Stereochemical Breakdown
+                </div>
+                <h3 id="molecule-name" class="text-lg font-bold text-white mt-1 mb-2">Meso-Tartaric Acid</h3>
+                <p id="coach-text" class="text-sm text-slate-300 leading-relaxed">
+                    Despite having two chiral centers, this eclipsed conformation clearly shows a Plane of Symmetry (σ) bisecting the C2-C3 bond. This internal compensation makes it an optically inactive Meso compound.
+                </p>
+                
+                <div class="mt-4 pt-4 border-t border-slate-700/50">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Key Concepts to Note:</h4>
+                    <ul id="concept-bullets" class="text-sm text-slate-300 space-y-1.5 list-disc pl-4 marker:text-blue-500">
+                        <li>Identical ends (symmetrical molecule).</li>
+                        <li>Internal compensation zeroes out rotation.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="h-8"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Three.js Scene Setup ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x0B101E, 0.015);
+
+        // Adjust camera aspect ratio for the split pane layout
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+        camera.position.set(0, 4, 14);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enablePan = false;
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        dirLight.position.set(10, 20, 10);
+        scene.add(dirLight);
+        const backLight = new THREE.DirectionalLight(0xaabbff, 0.5);
+        backLight.position.set(-10, -10, -10);
+        scene.add(backLight);
+
+        // --- 2. Molecular Data Definitions ---
+        const colors = { C: 0x555555, H: 0xffffff, O: 0xff3333, Cl: 0x33ff33, N: 0x3333ff, Dummy: 0xaaaaaa };
+        const sizes = { C: 0.4, H: 0.22, O: 0.35, Cl: 0.45, N: 0.4, Dummy: 0.3 };
+
+        const molecules = {
+            meso_tartaric: {
+                name: "Meso-Tartaric Acid", active: false, pos: true, chiral: 2, total: 3,
+                desc: "An eclipsed conformation showing a horizontal Plane of Symmetry (σ) bisecting the C2-C3 bond. The upper half is a perfect mirror image of the lower half. The optical rotation of one chiral center is exactly cancelled by the other (internal compensation).",
+                bullets: ["Has 2 chiral centers but is Achiral.", "Cannot rotate plane-polarized light.", "Forms a set of 3 stereoisomers: d, l, and meso."],
+                atoms: [
+                    { id: 'c1', elem: 'C', pos: [0, 1.2, 0] }, { id: 'c2', elem: 'C', pos: [0, -1.2, 0] },
+                    { id: 'o1', elem: 'O', pos: [1.2, 1.2, 1] }, { id: 'h1', elem: 'H', pos: [-1.2, 1.2, 1] },
+                    { id: 'cooh1', elem: 'C', pos: [0, 2.5, -0.5] },
+                    { id: 'o2', elem: 'O', pos: [1.2, -1.2, 1] }, { id: 'h2', elem: 'H', pos: [-1.2, -1.2, 1] },
+                    { id: 'cooh2', elem: 'C', pos: [0, -2.5, -0.5] }
+                ],
+                bonds: [ ['c1','c2'], ['c1','o1'], ['c1','h1'], ['c1','cooh1'], ['c2','o2'], ['c2','h2'], ['c2','cooh2'] ],
+                symmetryPlane: { pos: [0, 0, 0], rot: [Math.PI/2, 0, 0], size: [8, 8] }
+            },
+            d_tartaric: {
+                name: "D-Tartaric Acid", active: true, pos: false, chiral: 2, total: 3,
+                desc: "Unlike the meso form, this arrangement lacks any plane or center of symmetry. If you look closely, flipping the bottom OH and H groups breaks the mirror symmetry. It is optically active.",
+                bullets: ["Molecule is chiral (lacks POS/COS).", "Has a non-superimposable mirror image (L-Tartaric acid)."],
+                atoms: [
+                    { id: 'c1', elem: 'C', pos: [0, 1.2, 0] }, { id: 'c2', elem: 'C', pos: [0, -1.2, 0] },
+                    { id: 'o1', elem: 'O', pos: [1.2, 1.2, 1] }, { id: 'h1', elem: 'H', pos: [-1.2, 1.2, 1] },
+                    { id: 'cooh1', elem: 'C', pos: [0, 2.5, -0.5] },
+                    // Flipped OH and H on the bottom carbon
+                    { id: 'h2', elem: 'H', pos: [1.2, -1.2, 1] }, { id: 'o2', elem: 'O', pos: [-1.2, -1.2, 1] },
+                    { id: 'cooh2', elem: 'C', pos: [0, -2.5, -0.5] }
+                ],
+                bonds: [ ['c1','c2'], ['c1','o1'], ['c1','h1'], ['c1','cooh1'], ['c2','h2'], ['c2','o2'], ['c2','cooh2'] ],
+                symmetryPlane: null
+            },
+            lactic_acid: {
+                name: "D-Lactic Acid", active: true, pos: false, chiral: 1, total: 2,
+                desc: "Contains a single asymmetric carbon atom attached to four different groups (-H, -OH, -CH3, -COOH). Any molecule with exactly one chiral center is strictly chiral and optically active.",
+                bullets: ["Single chiral carbon guarantees chirality.", "No POS or COS possible."],
+                atoms: [
+                    { id: 'c1', elem: 'C', pos: [0, 0, 0] }, { id: 'o1', elem: 'O', pos: [1.2, 1.2, 0] }, 
+                    { id: 'h1', elem: 'H', pos: [-1.2, 1.2, 0] }, { id: 'c2', elem: 'C', pos: [0, -1.2, 1.2] }, 
+                    { id: 'c3', elem: 'C', pos: [0, -1.2, -1.2] }
+                ],
+                bonds: [ ['c1','o1'], ['c1','h1'], ['c1','c2'], ['c1','c3'] ],
+                symmetryPlane: null
+            },
+            allene_even: {
+                name: "1,3-Dichloroallene", active: true, pos: false, chiral: 0, total: 2,
+                desc: "An Allene with an EVEN number of adjacent double bonds (C=C=C). Due to the sp orbital hybridization of the central carbon, the terminal pi-bonds are perpendicular. This forces the terminal groups into mutually perpendicular planes. Since the ends are unsymmetrically substituted, it lacks a POS.",
+                bullets: ["Zero chiral centers, but exhibits Molecular Chirality.", "Terminal groups are in perpendicular planes."],
+                atoms: [
+                    { id: 'c1', elem: 'C', pos: [0, 0, 0] }, { id: 'c2', elem: 'C', pos: [1.5, 0, 0] }, { id: 'c3', elem: 'C', pos: [-1.5, 0, 0] },
+                    { id: 'cl1', elem: 'Cl', pos: [2.5, 1.2, 0] }, { id: 'h1', elem: 'H', pos: [2.5, -1.2, 0] },
+                    { id: 'cl2', elem: 'Cl', pos: [-2.5, 0, 1.2] }, { id: 'h2', elem: 'H', pos: [-2.5, 0, -1.2] }
+                ],
+                bonds: [ ['c1','c2'], ['c1','c3'], ['c2','cl1'], ['c2','h1'], ['c3','cl2'], ['c3','h2'] ],
+                symmetryPlane: null
+            },
+            allene_odd: {
+                name: "1,4-Dichlorobutatriene", active: false, pos: true, chiral: 0, total: 2,
+                desc: "An Allene with an ODD number of double bonds (C=C=C=C). The terminal groups lie in the SAME plane. The entire molecule is planar, meaning the plane of the screen itself acts as a Plane of Symmetry (σ), making it optically inactive.",
+                bullets: ["Planar geometry.", "Exhibits Geometrical (cis/trans) isomerism, not Optical isomerism."],
+                atoms: [
+                    { id: 'c1', elem: 'C', pos: [0.75, 0, 0] }, { id: 'c2', elem: 'C', pos: [-0.75, 0, 0] },
+                    { id: 'c3', elem: 'C', pos: [2.25, 0, 0] }, { id: 'c4', elem: 'C', pos: [-2.25, 0, 0] },
+                    { id: 'cl1', elem: 'Cl', pos: [3.25, 1.2, 0] }, { id: 'h1', elem: 'H', pos: [3.25, -1.2, 0] },
+                    { id: 'cl2', elem: 'Cl', pos: [-3.25, 1.2, 0] }, { id: 'h2', elem: 'H', pos: [-3.25, -1.2, 0] }
+                ],
+                bonds: [ ['c1','c2'], ['c1','c3'], ['c2','c4'], ['c3','cl1'], ['c3','h1'], ['c4','cl2'], ['c4','h2'] ],
+                symmetryPlane: { pos: [0, 0, 0], rot: [0, 0, 0], size: [10, 6] }
+            },
+            biphenyl: {
+                name: "Ortho-Substituted Biphenyl", active: true, pos: false, chiral: 0, total: 2,
+                desc: "Atropisomerism: Heavy groups (-NO2, -COOH) at the ortho positions create severe steric clash, preventing the rings from lying flat. The rings twist at exactly 90 degrees to each other. Because each ring is unsymmetrically substituted, the molecule is chiral.",
+                bullets: ["Chirality arises from restricted rotation (Atropisomerism).", "Rings are locked in perpendicular planes."],
+                atoms: [
+                    // Connector carbons
+                    { id: 'c1', elem: 'C', pos: [-0.75, 0, 0] }, { id: 'c1p', elem: 'C', pos: [0.75, 0, 0] },
+                    // Ring 1 (XY Plane)
+                    { id: 'c2', elem: 'C', pos: [-1.4, 1.2, 0] }, { id: 'c3', elem: 'C', pos: [-2.8, 1.2, 0] }, 
+                    { id: 'c4', elem: 'C', pos: [-3.5, 0, 0] }, { id: 'c5', elem: 'C', pos: [-2.8, -1.2, 0] }, 
+                    { id: 'c6', elem: 'C', pos: [-1.4, -1.2, 0] },
+                    // Ring 2 (XZ Plane - Perpendicular)
+                    { id: 'c2p', elem: 'C', pos: [1.4, 0, 1.2] }, { id: 'c3p', elem: 'C', pos: [2.8, 0, 1.2] },
+                    { id: 'c4p', elem: 'C', pos: [3.5, 0, 0] }, { id: 'c5p', elem: 'C', pos: [2.8, 0, -1.2] },
+                    { id: 'c6p', elem: 'C', pos: [1.4, 0, -1.2] },
+                    // Ortho Substituents
+                    { id: 'no2_1', elem: 'N', pos: [-0.7, 2.3, 0] }, { id: 'cooh_1', elem: 'O', pos: [-0.7, -2.3, 0] },
+                    { id: 'no2_2', elem: 'N', pos: [0.7, 0, 2.3] }, { id: 'cooh_2', elem: 'O', pos: [0.7, 0, -2.3] }
+                ],
+                bonds: [ 
+                    ['c1','c1p'], ['c1','c2'], ['c2','c3'], ['c3','c4'], ['c4','c5'], ['c5','c6'], ['c6','c1'],
+                    ['c1p','c2p'], ['c2p','c3p'], ['c3p','c4p'], ['c4p','c5p'], ['c5p','c6p'], ['c6p','c1p'],
+                    ['c2','no2_1'], ['c6','cooh_1'], ['c2p','no2_2'], ['c6p','cooh_2']
+                ],
+                symmetryPlane: null
+            },
+            cis_cyclopropane: {
+                name: "cis-1,2-Dimethylcyclopropane", active: false, pos: true, chiral: 2, total: 3,
+                desc: "Both methyl groups point in the same direction (UP) relative to the ring. A Plane of Symmetry bisects the C3 carbon and cuts straight through the middle of the C1-C2 bond, rendering it a meso compound.",
+                bullets: ["Meso compound due to the Plane of Symmetry.", "Optically inactive despite having 2 chiral centers."],
+                atoms: [
+                    { id: 'c1', elem: 'C', pos: [-0.8, 0, 0.5] }, { id: 'c2', elem: 'C', pos: [0.8, 0, 0.5] },
+                    { id: 'c3', elem: 'C', pos: [0, 0, -0.9] },
+                    // Methyl groups pointing UP
+                    { id: 'me1', elem: 'C', pos: [-1.4, 1.2, 1] }, { id: 'me2', elem: 'C', pos: [1.4, 1.2, 1] }
+                ],
+                bonds: [ ['c1','c2'], ['c2','c3'], ['c3','c1'], ['c1','me1'], ['c2','me2'] ],
+                symmetryPlane: { pos: [0, 0, 0], rot: [0, Math.PI/2, 0], size: [6, 6] } // YZ plane
+            },
+            trans_cyclopropane: {
+                name: "trans-1,2-Dimethylcyclopropane", active: true, pos: false, chiral: 2, total: 3,
+                desc: "One methyl group points UP, the other points DOWN. This destroys the Plane of Symmetry present in the cis-isomer. It possesses a C2 axis of symmetry, but lacks alternating axes, making it chiral.",
+                bullets: ["Lacks a Plane of Symmetry.", "Optically active (exists as a pair of enantiomers)."],
+                atoms: [
+                    { id: 'c1', elem: 'C', pos: [-0.8, 0, 0.5] }, { id: 'c2', elem: 'C', pos: [0.8, 0, 0.5] },
+                    { id: 'c3', elem: 'C', pos: [0, 0, -0.9] },
+                    // Methyl groups UP and DOWN
+                    { id: 'me1', elem: 'C', pos: [-1.4, 1.2, 1] }, { id: 'me2', elem: 'C', pos: [1.4, -1.2, 1] }
+                ],
+                bonds: [ ['c1','c2'], ['c2','c3'], ['c3','c1'], ['c1','me1'], ['c2','me2'] ],
+                symmetryPlane: null
+            }
+        };
+
+        // --- 3. Rendering Engine ---
+        let mainGroup = new THREE.Group();
+        let posMesh = null;
+        let isAutoRotating = true;
+        let isPosVisible = true;
+        scene.add(mainGroup);
+
+        function buildMolecule(key) {
+            scene.remove(mainGroup);
+            mainGroup = new THREE.Group();
+            posMesh = null;
+
+            const data = molecules[key];
+            const atomMeshes = {};
+
+            // Render Atoms
+            data.atoms.forEach(atom => {
+                const geo = new THREE.SphereGeometry(sizes[atom.elem], 32, 32);
+                const mat = new THREE.MeshPhysicalMaterial({ 
+                    color: colors[atom.elem], metalness: 0.1, roughness: 0.4, clearcoat: 0.5
+                });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set(...atom.pos);
+                mainGroup.add(mesh);
+                atomMeshes[atom.id] = mesh;
+            });
+
+            // Render Bonds
+            data.bonds.forEach(bond => {
+                const start = atomMeshes[bond[0]].position;
+                const end = atomMeshes[bond[1]].position;
+                const distance = start.distanceTo(end);
+                
+                const geo = new THREE.CylinderGeometry(0.08, 0.08, distance, 16);
+                const mat = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.4 });
+                const mesh = new THREE.Mesh(geo, mat);
+                
+                const position = end.clone().add(start).divideScalar(2);
+                mesh.position.copy(position);
+                mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), end.clone().sub(start).normalize());
+                
+                mainGroup.add(mesh);
+            });
+
+            // Build Plane of Symmetry
+            if (data.symmetryPlane) {
+                const planeGeo = new THREE.PlaneGeometry(...data.symmetryPlane.size);
+                const planeMat = new THREE.MeshPhysicalMaterial({
+                    color: 0x3b82f6, transparent: true, opacity: 0.35, 
+                    side: THREE.DoubleSide, depthWrite: false, roughness: 0.1, metalness: 0.1
+                });
+                posMesh = new THREE.Mesh(planeGeo, planeMat);
+                posMesh.position.set(...data.symmetryPlane.pos);
+                posMesh.rotation.set(...data.symmetryPlane.rot);
+                posMesh.visible = isPosVisible;
+                
+                const grid = new THREE.GridHelper(Math.max(...data.symmetryPlane.size), 10, 0xffffff, 0xffffff);
+                grid.rotation.x = Math.PI / 2;
+                grid.material.opacity = 0.2;
+                grid.material.transparent = true;
+                posMesh.add(grid);
+
+                mainGroup.add(posMesh);
+            }
+
+            scene.add(mainGroup);
+            updateTelemetry(data);
+        }
+
+        // --- 4. UI & Telemetry Sync ---
+        function updateTelemetry(data) {
+            document.getElementById('molecule-name').innerText = data.name;
+            
+            const actNode = document.getElementById('status-activity');
+            actNode.innerText = data.active ? "Yes" : "No";
+            actNode.className = data.active ? "text-base font-bold text-emerald-400" : "text-base font-bold text-red-400";
+            
+            const posNode = document.getElementById('status-pos');
+            posNode.innerText = data.pos ? "Present" : "Absent";
+            posNode.className = data.pos ? "text-base font-bold text-blue-400" : "text-base font-bold text-red-400";
+            
+            document.getElementById('status-chiral').innerText = data.chiral;
+            document.getElementById('status-total').innerText = data.total;
+            document.getElementById('coach-text').innerText = data.desc;
+
+            // Bullets injection
+            const bulletsNode = document.getElementById('concept-bullets');
+            bulletsNode.innerHTML = '';
+            data.bullets.forEach(b => {
+                const li = document.createElement('li');
+                li.innerText = b;
+                bulletsNode.appendChild(li);
+            });
+
+            // Handle POS Button State
+            const posBtn = document.getElementById('toggle-pos');
+            if (!data.symmetryPlane) {
+                posBtn.classList.add('opacity-40', 'cursor-not-allowed');
+                document.getElementById('pos-indicator').style.backgroundColor = 'transparent';
+                document.getElementById('pos-indicator').style.boxShadow = 'none';
+                posBtn.innerHTML = `No Plane of Symmetry (σ) <span id="pos-indicator" class="w-2.5 h-2.5 rounded-full bg-transparent"></span>`;
+            } else {
+                posBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+                posBtn.innerHTML = `Show Plane of Symmetry (σ) <span id="pos-indicator" class="w-2.5 h-2.5 rounded-full ${isPosVisible ? 'bg-blue-500 shadow-[0_0_8px_#3b82f6]' : 'bg-slate-700'}"></span>`;
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('molecule-select').addEventListener('change', (e) => {
+            buildMolecule(e.target.value);
+            mainGroup.rotation.set(0,0,0); // Reset for nice entry
+            controls.target.set(0,0,0);
+        });
+
+        document.getElementById('toggle-pos').addEventListener('click', () => {
+            const data = molecules[document.getElementById('molecule-select').value];
+            if (!data.symmetryPlane) return;
+            
+            isPosVisible = !isPosVisible;
+            if (posMesh) posMesh.visible = isPosVisible;
+            
+            const indicator = document.getElementById('pos-indicator');
+            if(isPosVisible) {
+                indicator.className = "w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]";
+            } else {
+                indicator.className = "w-2.5 h-2.5 rounded-full bg-slate-700";
+            }
+        });
+
+        const btnAuto = document.getElementById('toggle-autorotate');
+        btnAuto.addEventListener('click', () => {
+            isAutoRotating = !isAutoRotating;
+            btnAuto.innerText = isAutoRotating ? "Pause Auto-Rotation" : "Resume Auto-Rotation";
+            btnAuto.className = isAutoRotating 
+                ? "absolute bottom-4 left-4 bg-slate-800/80 hover:bg-slate-700 text-white border border-slate-600 backdrop-blur-sm px-3 py-1.5 rounded-lg text-xs font-semibold shadow-lg transition-colors z-10"
+                : "absolute bottom-4 left-4 bg-blue-600/80 hover:bg-blue-500 text-white border border-blue-500 backdrop-blur-sm px-3 py-1.5 rounded-lg text-xs font-semibold shadow-lg transition-colors z-10";
+        });
+
+        // Window Resizing for Split Pane
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+        // --- 5. Animation Loop ---
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            if (isAutoRotating && mainGroup) {
+                mainGroup.rotation.y += 0.003;
+                mainGroup.rotation.x += 0.001;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        buildMolecule('meso_tartaric');
+        animate();
+    </script>
+</body>
+</html>
