@@ -1,0 +1,88 @@
+body {
+    background-color: #000000;
+    color: #F5F5F7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ambient Background Orbs */
+.ambient-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    z-index: -1;
+    animation: breathe 15s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+}
+
+.orb-1 { width: 40vw; height: 40vw; background: rgba(0, 122, 255, 0.35); top: -10%; left: -10%; }
+.orb-2 { width: 50vw; height: 50vw; background: rgba(213, 63, 140, 0.25); bottom: -20%; right: -10%; animation-delay: -5s; }
+.orb-3 { width: 30vw; height: 30vw; background: rgba(52, 199, 89, 0.15); top: 40%; left: 40%; animation-delay: -10s; }
+
+@keyframes breathe {
+    0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+    100% { transform: scale(1.2) translate(5%, 5%); opacity: 0.8; }
+}
+
+/* Glass Utilities */
+.glass-panel {
+    background: rgba(30, 30, 30, 0.4);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.glass-nav {
+    background: rgba(30, 30, 30, 0.35);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-overlay {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+}
+
+/* TWO-LINE DeepSeek Style Hamburger Animation */
+.menu-open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+.menu-open span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+
+/* Responsive Initial States (Prevents FOUC before JS takes over) */
+@media (min-width: 768px) {
+    #hamburger-btn.init-state { display: none; }
+    #desktop-links.init-state { display: flex; }
+}
+@media (max-width: 767px) {
+    #hamburger-btn.init-state { display: flex; }
+    #desktop-links.init-state { display: none; }
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #FFFFFF 0%, #A1A1A6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 3D Tilt */
+.tilt-card-wrapper { perspective: 1500px; }
+.tilt-card {
+    transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.15s ease;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transform-origin: center center;
+}
+
+.shimmer {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 60%);
+    opacity: 0; transition: opacity 0.3s ease;
+    pointer-events: none; border-radius: inherit; z-index: 10;
+}
+
+.fade-up { visibility: hidden; opacity: 0; }
