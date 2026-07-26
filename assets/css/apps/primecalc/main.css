@@ -8,13 +8,13 @@ body {
 }
 
 .main-box {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     background-color: white;
 }
 
 #result-box {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     background-color: white;
     text-align: left;
@@ -57,13 +57,15 @@ body {
 
 #result {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Responsive columns */
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    /* Responsive columns */
     gap: 10px;
 }
 
 .result-item {
     background-color: #e9ecef;
-    padding: 20px; /* Increased padding for height */
+    padding: 20px;
+    /* Increased padding for height */
     border-radius: 5px;
     animation-duration: 0.5s;
     animation-fill-mode: both;
@@ -72,8 +74,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 35px; /* Set fixed height for uniformity */
-    width: 85%; /* Full width of grid cell */
+    height: 35px;
+    /* Set fixed height for uniformity */
+    width: 85%;
+    /* Full width of grid cell */
 }
 
 .error-message {
@@ -93,8 +97,13 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 #primeCount {
@@ -104,7 +113,9 @@ body {
 
 /* Responsive Design */
 @media (max-width: 767px) {
-    .main-box, #result-box {
+
+    .main-box,
+    #result-box {
         margin-bottom: 20px;
         min-width: 100%;
     }

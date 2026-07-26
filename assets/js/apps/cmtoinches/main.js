@@ -34,7 +34,7 @@ function convert() {
 
     // Try to parse the input as a float
     const cmValue = parseFloat(input);
-    
+
     if (isNaN(cmValue)) {
         error.textContent = "Error: Invalid number!";
         return;

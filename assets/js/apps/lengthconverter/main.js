@@ -160,7 +160,7 @@ function convert() {
 
     // Try to parse the input as a float
     const value = parseFloat(inputValue);
-    
+
     if (isNaN(value) || value < 0) {
         error.textContent = "Error: Invalid number or negative value!";
         return;
@@ -168,7 +168,7 @@ function convert() {
 
     // Calculate the converted value
     const convertedValue = value * conversionFactors[fromUnit][toUnit];
-    
+
     // Display the result with animation
     result.textContent = `${value} ${fromUnit} is equal to ${convertedValue.toFixed(2)} ${toUnit}`;
     result.classList.add('animate__animated', 'animate__fadeInUp');

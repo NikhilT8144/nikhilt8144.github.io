@@ -1,10 +1,10 @@
-$(document).ready(function() {
+$(document).ready(function () {
     gsap.registerPlugin(ScrollTrigger);
 
     // --- 1. JS Nav Initialization (Prevents FOUC) ---
     $('#hamburger-btn, #desktop-links').removeClass('init-state');
     let isDesktop = window.innerWidth >= 768;
-    
+
     if (isDesktop) {
         $('#desktop-links').css({ display: 'flex' });
         $('#hamburger-btn').hide();
@@ -12,7 +12,7 @@ $(document).ready(function() {
         $('#desktop-links').hide();
         $('#hamburger-btn').css({ display: 'flex' });
     }
-    
+
     // --- 2. Sequence-Driven Mobile Menu Timeline ---
     const menuTl = gsap.timeline({ paused: true, reversed: true });
 
@@ -20,23 +20,23 @@ $(document).ready(function() {
         y: 0, autoAlpha: 1, duration: 0.7,
         ease: "cubic-bezier(0.16, 1, 0.3, 1)" // Ookla-style drop
     })
-    .to('.mobile-link-wrapper', {
-        y: 0, autoAlpha: 1, stagger: 0.1, duration: 0.5,
-        ease: "power3.out"
-    }, "-=0.35");
+        .to('.mobile-link-wrapper', {
+            y: 0, autoAlpha: 1, stagger: 0.1, duration: 0.5,
+            ease: "power3.out"
+        }, "-=0.35");
 
-    $('#hamburger-btn').on('click', function() {
+    $('#hamburger-btn').on('click', function () {
         $(this).toggleClass('menu-open');
         if ($(this).hasClass('menu-open')) {
-            $('body').css('overflow', 'hidden'); 
-            menuTl.play(); 
+            $('body').css('overflow', 'hidden');
+            menuTl.play();
         } else {
             $('body').css('overflow', '');
-            menuTl.reverse(); 
+            menuTl.reverse();
         }
     });
 
-    $('.mobile-link').on('click', function() {
+    $('.mobile-link').on('click', function () {
         $('#hamburger-btn').removeClass('menu-open');
         $('body').css('overflow', '');
         menuTl.reverse();
@@ -44,15 +44,15 @@ $(document).ready(function() {
 
     // --- 3. Custom Responsive Breakpoint Choreography ---
     let resizeTimer;
-    $(window).on('resize', function() {
+    $(window).on('resize', function () {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
+        resizeTimer = setTimeout(function () {
             const currentlyDesktop = window.innerWidth >= 768;
-            
+
             if (currentlyDesktop && !isDesktop) {
                 // MOBILE -> DESKTOP
                 isDesktop = true;
-                
+
                 // Close mobile menu smoothly if open
                 if ($('#hamburger-btn').hasClass('menu-open')) {
                     $('#hamburger-btn').removeClass('menu-open');
@@ -61,38 +61,38 @@ $(document).ready(function() {
                 }
 
                 // Fade out Hamburger
-                gsap.to('#hamburger-btn', { 
-                    opacity: 0, scale: 0.8, duration: 0.3, 
-                    onComplete: () => $('#hamburger-btn').hide() 
+                gsap.to('#hamburger-btn', {
+                    opacity: 0, scale: 0.8, duration: 0.3,
+                    onComplete: () => $('#hamburger-btn').hide()
                 });
 
                 // Stagger Desktop Links in from right to left
                 $('#desktop-links').css('display', 'flex');
-                gsap.fromTo('.desktop-link', 
-                    { x: 30, opacity: 0 }, 
+                gsap.fromTo('.desktop-link',
+                    { x: 30, opacity: 0 },
                     { x: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: "power3.out", delay: 0.1, overwrite: true }
                 );
 
             } else if (!currentlyDesktop && isDesktop) {
                 // DESKTOP -> MOBILE
                 isDesktop = false;
-                
+
                 // Stagger Desktop Links out to the right
                 gsap.to('.desktop-link', {
                     x: 30, opacity: 0, duration: 0.3, stagger: 0.05, ease: "power2.in", overwrite: true,
                     onComplete: () => {
                         $('#desktop-links').hide();
-                        
+
                         // Pop Hamburger in
                         $('#hamburger-btn').css('display', 'flex');
-                        gsap.fromTo('#hamburger-btn', 
-                            { opacity: 0, scale: 0.5 }, 
+                        gsap.fromTo('#hamburger-btn',
+                            { opacity: 0, scale: 0.5 },
                             { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.5)" }
                         );
                     }
                 });
             }
-        }, 50); 
+        }, 50);
     });
 
     // --- 4. Optimized Staggered Section Entrances ---
@@ -132,39 +132,39 @@ $(document).ready(function() {
     const $hapticCard = $('#haptic-card');
     const $hapticIcon = $('#haptic-icon');
 
-    $hapticTrigger.on('pointerdown', function(e) {
+    $hapticTrigger.on('pointerdown', function (e) {
         e.stopPropagation();
         triggerHapticSound();
-        
+
         gsap.to($hapticCard[0], { scale: 0.94, duration: 0.05, ease: "power1.out", boxShadow: "0 2px 10px 0 rgba(0,0,0,0.5)" });
         gsap.to($hapticIcon[0], { scale: 0.8, backgroundColor: "rgba(255,255,255,0.3)", duration: 0.05 });
     });
 
-    $hapticTrigger.on('pointerup pointerleave', function() {
+    $hapticTrigger.on('pointerup pointerleave', function () {
         gsap.to($hapticCard[0], { scale: 1, duration: 0.6, ease: "elastic.out(1, 0.4)", boxShadow: "0 8px 32px 0 rgba(0,0,0,0.3)" });
         gsap.to($hapticIcon[0], { scale: 1, backgroundColor: "rgba(255,255,255,0.1)", duration: 0.4, ease: "back.out(1.5)" });
     });
 
     // --- 6. 3D Tilt Logic ---
     const $wrappers = $('.tilt-card-wrapper');
-    $wrappers.on('mousemove', function(e) {
+    $wrappers.on('mousemove', function (e) {
         if (window.matchMedia("(max-width: 768px)").matches) return;
         if ($(this).attr('id') === 'haptic-trigger' && e.buttons === 1) return;
-        
+
         const $card = $(this).find('.tilt-card');
         const rect = this.getBoundingClientRect();
         const x = e.clientX - rect.left, y = e.clientY - rect.top;
         const centerX = rect.width / 2, centerY = rect.height / 2;
-        
+
         gsap.to($card[0], {
             rotateX: -((y - centerY) / centerY) * 8, rotateY: ((x - centerX) / centerX) * 8,
             scale: 1.02, duration: 0.5, ease: "power2.out", overwrite: "auto"
         });
-        
-        $card.find('.shimmer').css({'opacity': '1', 'background': `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 60%)`});
+
+        $card.find('.shimmer').css({ 'opacity': '1', 'background': `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 60%)` });
     });
-    
-    $wrappers.on('mouseleave', function() {
+
+    $wrappers.on('mouseleave', function () {
         if (window.matchMedia("(max-width: 768px)").matches) return;
         const $card = $(this).find('.tilt-card');
         gsap.to($card[0], { rotateX: 0, rotateY: 0, scale: 1, duration: 0.7, ease: "power2.out" });
@@ -173,9 +173,9 @@ $(document).ready(function() {
 
     // --- 7. Dynamic Nav Scroll State ---
     let ticking = false;
-    $(window).on('scroll', function() {
+    $(window).on('scroll', function () {
         if (!ticking) {
-            window.requestAnimationFrame(function() {
+            window.requestAnimationFrame(function () {
                 if ($(window).scrollTop() > 50) {
                     $('#navbar').css({
                         'background': 'rgba(20, 20, 20, 0.7)',

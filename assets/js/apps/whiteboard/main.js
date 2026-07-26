@@ -34,14 +34,14 @@ $(document).ready(function () {
         penSizeInput.on('input', updatePenOptions);
         eraserSizeInput.on('input', updateEraserOptions);
         penColorInput.on('input', updatePenColor);
-        
+
         canvas.on('mouse:down', addToHistory);
         canvas.on('mouse:move', handleMouseMove);
         canvas.on('mouse:out', hideEraserPreview);
-        
+
         $('.btn-tool').click(handleToolClick);
         $('#confirmAction').on('click', handleConfirmClearCanvas);
-        
+
         $(document).keydown(handleKeyboardShortcuts);
     }
 
@@ -162,7 +162,7 @@ $(document).ready(function () {
         if (history.length > 0) {
             redoStack.push(canvas.toDataURL());
             const lastState = history.pop();
-            fabric.Image.fromURL(lastState, function(img) {
+            fabric.Image.fromURL(lastState, function (img) {
                 canvas.clear();
                 canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
             });
@@ -173,7 +173,7 @@ $(document).ready(function () {
         if (redoStack.length > 0) {
             const lastRedo = redoStack.pop();
             history.push(canvas.toDataURL());
-            fabric.Image.fromURL(lastRedo, function(img) {
+            fabric.Image.fromURL(lastRedo, function (img) {
                 canvas.clear();
                 canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
             });

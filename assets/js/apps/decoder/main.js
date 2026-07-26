@@ -1,4 +1,4 @@
-document.getElementById('hashForm').addEventListener('submit', function(e) {
+document.getElementById('hashForm').addEventListener('submit', function (e) {
     e.preventDefault();  // Prevent form from submitting and reloading the page
 
     const hashInput = document.getElementById('hashInput').value;
@@ -22,26 +22,26 @@ document.getElementById('hashForm').addEventListener('submit', function(e) {
         body: JSON.stringify(data),
         credentials: 'include'
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(result => {
-        if (result.success) {
-            document.getElementById('result').innerHTML = `<p class="animate__animated animate__fadeIn">Decoded Result: ${result.decodedResult}</p>`;
-            // Do not clear the input field unless you want to manually
-        } else {
-            document.getElementById('result').innerHTML = `<p class="animate__animated animate__fadeIn">Error: ${result.error}</p>`;
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('result').innerHTML = `<p class="animate__animated animate__fadeIn">Error: ${error.message}</p>`;
-    })
-    .finally(() => {
-        // Re-enable the submit button after processing is done
-        submitButton.disabled = false;
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(result => {
+            if (result.success) {
+                document.getElementById('result').innerHTML = `<p class="animate__animated animate__fadeIn">Decoded Result: ${result.decodedResult}</p>`;
+                // Do not clear the input field unless you want to manually
+            } else {
+                document.getElementById('result').innerHTML = `<p class="animate__animated animate__fadeIn">Error: ${result.error}</p>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('result').innerHTML = `<p class="animate__animated animate__fadeIn">Error: ${error.message}</p>`;
+        })
+        .finally(() => {
+            // Re-enable the submit button after processing is done
+            submitButton.disabled = false;
+        });
 });

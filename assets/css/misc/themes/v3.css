@@ -16,13 +16,42 @@ body {
     will-change: transform, opacity;
 }
 
-.orb-1 { width: 40vw; height: 40vw; background: rgba(0, 122, 255, 0.35); top: -10%; left: -10%; }
-.orb-2 { width: 50vw; height: 50vw; background: rgba(213, 63, 140, 0.25); bottom: -20%; right: -10%; animation-delay: -5s; }
-.orb-3 { width: 30vw; height: 30vw; background: rgba(52, 199, 89, 0.15); top: 40%; left: 40%; animation-delay: -10s; }
+.orb-1 {
+    width: 40vw;
+    height: 40vw;
+    background: rgba(0, 122, 255, 0.35);
+    top: -10%;
+    left: -10%;
+}
+
+.orb-2 {
+    width: 50vw;
+    height: 50vw;
+    background: rgba(213, 63, 140, 0.25);
+    bottom: -20%;
+    right: -10%;
+    animation-delay: -5s;
+}
+
+.orb-3 {
+    width: 30vw;
+    height: 30vw;
+    background: rgba(52, 199, 89, 0.15);
+    top: 40%;
+    left: 40%;
+    animation-delay: -10s;
+}
 
 @keyframes breathe {
-    0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
-    100% { transform: scale(1.2) translate(5%, 5%); opacity: 0.8; }
+    0% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1.2) translate(5%, 5%);
+        opacity: 0.8;
+    }
 }
 
 /* Glass Utilities */
@@ -49,17 +78,33 @@ body {
 }
 
 /* TWO-LINE DeepSeek Style Hamburger Animation */
-.menu-open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
-.menu-open span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+.menu-open span:nth-child(1) {
+    transform: translateY(4px) rotate(45deg);
+}
+
+.menu-open span:nth-child(2) {
+    transform: translateY(-4px) rotate(-45deg);
+}
 
 /* Responsive Initial States (Prevents FOUC before JS takes over) */
 @media (min-width: 768px) {
-    #hamburger-btn.init-state { display: none; }
-    #desktop-links.init-state { display: flex; }
+    #hamburger-btn.init-state {
+        display: none;
+    }
+
+    #desktop-links.init-state {
+        display: flex;
+    }
 }
+
 @media (max-width: 767px) {
-    #hamburger-btn.init-state { display: flex; }
-    #desktop-links.init-state { display: none; }
+    #hamburger-btn.init-state {
+        display: flex;
+    }
+
+    #desktop-links.init-state {
+        display: none;
+    }
 }
 
 .text-gradient {
@@ -70,7 +115,10 @@ body {
 }
 
 /* 3D Tilt */
-.tilt-card-wrapper { perspective: 1500px; }
+.tilt-card-wrapper {
+    perspective: 1500px;
+}
+
 .tilt-card {
     transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.15s ease;
     transform-style: preserve-3d;
@@ -79,10 +127,20 @@ body {
 }
 
 .shimmer {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 60%);
-    opacity: 0; transition: opacity 0.3s ease;
-    pointer-events: none; border-radius: inherit; z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 10;
 }
 
-.fade-up { visibility: hidden; opacity: 0; }
+.fade-up {
+    visibility: hidden;
+    opacity: 0;
+}

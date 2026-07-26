@@ -131,10 +131,14 @@ body {
 
 #eraser-preview {
     position: absolute;
-    border: 2px dotted black; /* Dotted border for visibility */
-    pointer-events: none; /* So it does not block canvas interactions */
-    display: none; /* Start as hidden */
-    border-radius: 10px; /* Rounded corners */
+    border: 2px dotted black;
+    /* Dotted border for visibility */
+    pointer-events: none;
+    /* So it does not block canvas interactions */
+    display: none;
+    /* Start as hidden */
+    border-radius: 10px;
+    /* Rounded corners */
 }
 
 .size-preview::after {
@@ -185,4 +189,3 @@ body {
         min-width: 200px;
     }
 }
- 
