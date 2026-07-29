@@ -37,6 +37,7 @@
         :root {
             --blueprint: #00f0ff;
             --coral: #ff3366;
+            --amber: #ffaa00;
             --void: #05070a;
         }
 
@@ -221,7 +222,7 @@
             </section>
 
             <section id="misc-section" class="space-y-6">
-                <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-inkBorder pb-4 gap-4">
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between border-b border-inkBorder pb-4 gap-4">
                     <div>
                         <div class="text-xs text-coral font-mono flex items-center gap-2">
                             <span class="w-1.5 h-1.5 bg-coral"></span> OPEN SOURCE ASSET VAULT
@@ -231,12 +232,15 @@
                         </h2>
                     </div>
 
-                    <div class="flex border border-inkBorder bg-void p-1 font-tech text-xs">
-                        <button id="tab-themes-btn" onclick="switchMiscTab('themes'); playBeep()" class="px-5 py-2 bg-coral text-white font-bold transition">
+                    <div class="flex flex-wrap border border-inkBorder bg-void p-1 font-tech text-xs gap-1">
+                        <button id="tab-themes-btn" onclick="switchMiscTab('themes'); playBeep()" class="px-4 py-2 bg-coral text-white font-bold transition flex-1 sm:flex-initial">
                             THEMES / v{i}
                         </button>
-                        <button id="tab-loaders-btn" onclick="switchMiscTab('loaders'); playBeep()" class="px-5 py-2 text-gray-400 hover:text-white transition">
+                        <button id="tab-loaders-btn" onclick="switchMiscTab('loaders'); playBeep()" class="px-4 py-2 text-gray-400 hover:text-white transition flex-1 sm:flex-initial">
                             LOADERS / v{i}
+                        </button>
+                        <button id="tab-theme-switch-btn" onclick="switchMiscTab('theme-switch'); playBeep()" class="px-4 py-2 text-gray-400 hover:text-white transition flex-1 sm:flex-initial">
+                            THEME-SWITCH / v{i}
                         </button>
                     </div>
                 </div>
@@ -465,7 +469,7 @@
         }
 
         // -------------------------------------------------------------
-        // 2. DYNAMIC /assets/misc/{themes|loaders}/v{I} DISCOVERY
+        // 2. DYNAMIC /assets/misc/{themes|loaders|theme-switch}/v{I} DISCOVERY
         // -------------------------------------------------------------
         async function loadMiscStuff(type) {
             const container = document.getElementById('misc-container');
@@ -490,9 +494,9 @@
                 console.warn('Misc API fetch failed', e);
             }
 
-            // Fallback probing (v1 through v15)
+            // Fallback probing (v1 through v20)
             if (versions.length === 0) {
-                for (let i = 1; i <= 15; i++) {
+                for (let i = 1; i <= 20; i++) {
                     const v = `v${i}`;
                     try {
                         const check = await fetch(`/assets/misc/${type}/${v}/`, { method: 'HEAD' });
@@ -506,7 +510,7 @@
                     <div class="schematic-box p-8 text-center text-gray-500 font-mono text-xs col-span-full">
                         <i class="fa-solid fa-box-open text-3xl text-gray-600 mb-3"></i>
                         <p class="text-white font-tech text-base">NO ${type.toUpperCase()} FOUND</p>
-                        <p class="mt-1">Add folders like <code class="text-coral">v1</code>, <code class="text-coral">v2</code> inside <code class="text-coral">/assets/misc/${type}/</code></p>
+                        <p class="mt-1">Add version folders like <code class="text-coral">v1</code>, <code class="text-coral">v2</code> inside <code class="text-coral">/assets/misc/${type}/</code></p>
                     </div>`;
                 return;
             }
@@ -518,9 +522,9 @@
                         <div class="space-y-3">
                             <div class="flex items-center justify-between text-xs font-mono">
                                 <span class="px-2 py-0.5 bg-coral/20 text-coral border border-coral/30 font-bold uppercase">${v}</span>
-                                <span class="text-gray-500">${type}</span>
+                                <span class="text-gray-500 uppercase">${type}</span>
                             </div>
-                            <h4 class="font-tech font-bold text-white text-base uppercase">${type.slice(0, -1)} ${v}</h4>
+                            <h4 class="font-tech font-bold text-white text-base uppercase">${type.replace(/-/g, ' ')} ${v}</h4>
                             <p class="text-[11px] text-gray-400 font-mono break-all">${itemPath}</p>
                         </div>
 
@@ -541,14 +545,14 @@
             currentMiscTab = type;
             const themesBtn = document.getElementById('tab-themes-btn');
             const loadersBtn = document.getElementById('tab-loaders-btn');
+            const themeSwitchBtn = document.getElementById('tab-theme-switch-btn');
 
-            if (type === 'themes') {
-                themesBtn.className = "px-5 py-2 bg-coral text-white font-bold transition";
-                loadersBtn.className = "px-5 py-2 text-gray-400 hover:text-white transition";
-            } else {
-                loadersBtn.className = "px-5 py-2 bg-coral text-white font-bold transition";
-                themesBtn.className = "px-5 py-2 text-gray-400 hover:text-white transition";
-            }
+            const activeClass = "px-4 py-2 bg-coral text-white font-bold transition flex-1 sm:flex-initial";
+            const inactiveClass = "px-4 py-2 text-gray-400 hover:text-white transition flex-1 sm:flex-initial";
+
+            themesBtn.className = (type === 'themes') ? activeClass : inactiveClass;
+            loadersBtn.className = (type === 'loaders') ? activeClass : inactiveClass;
+            themeSwitchBtn.className = (type === 'theme-switch') ? activeClass : inactiveClass;
 
             loadMiscStuff(type);
         }
