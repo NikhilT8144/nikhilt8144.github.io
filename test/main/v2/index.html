@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nikhil Tiwari — Developer & Systems Explorer</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        surface: {
+                            DEFAULT: '#0a0c10',
+                            card: '#12151e',
+                            border: '#1f2430',
+                            hover: '#2a3142'
+                        },
+                        accent: {
+                            emerald: '#10b981',
+                            cyan: '#06b6d4',
+                            violet: '#8b5cf6'
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Syne', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #060709;
+            color: #d1d5db;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .font-heading { font-family: 'Syne', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .bento-card {
+            background: #0d0f17;
+            border: 1px solid #1c202d;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .bento-card:hover {
+            border-color: #333b50;
+            transform: translateY(-2px);
+        }
+
+        /* Custom subtle scanline effect */
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.3));
+            background-size: 100% 4px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #060709; }
+        ::-webkit-scrollbar-thumb { background: #1f2430; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #333b50; }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-black min-h-screen flex flex-col justify-between">
+
+    <header class="sticky top-0 z-40 bg-[#060709]/90 backdrop-blur-md border-b border-[#1c202d]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-7 h-7 bg-white text-black font-mono font-bold flex items-center justify-center text-xs rounded group-hover:bg-cyan-400 transition">
+                    NT
+                </div>
+                <span class="font-heading font-extrabold text-white tracking-wide text-lg">nikhil.dev</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Class 12th Student / Building Apps</span>
+            </div>
+
+            <nav class="flex items-center gap-6 text-xs font-mono text-gray-400">
+                <a href="#projects" class="hover:text-cyan-400 transition">/apps</a>
+                <a href="#components" class="hover:text-cyan-400 transition">/misc</a>
+                <a href="#about" class="hover:text-cyan-400 transition">/about</a>
+                <a href="#contact" class="hover:text-cyan-400 transition">/contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12 flex-grow w-full">
+
+        <section class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            
+            <div class="md:col-span-8 bento-card rounded-2xl p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden group">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-cyan-500/20 transition"></div>
+                
+                <div class="space-y-6">
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono text-xs px-2.5 py-1 rounded bg-[#1f2430] text-cyan-400 border border-[#2a3142]">WEB DEVELOPER & SCIENCE ENTHUSIAST</span>
+                    </div>
+                    <h1 class="text-4xl sm:text-6xl font-heading font-extrabold text-white tracking-tight leading-none">
+                        Nikhil Tiwari<span class="text-cyan-400">.</span>
+                    </h1>
+                    <p class="text-gray-400 text-base sm:text-lg max-w-2xl leading-relaxed">
+                        I explore web technology, physics, and modern algorithms. Focused on building clean applications, experimental web components, and dynamic utilities.
+                    </p>
+                </div>
+
+                <div class="pt-8 flex flex-wrap gap-3">
+                    <a href="#projects" class="px-5 py-2.5 rounded-lg bg-white text-black font-semibold text-xs uppercase tracking-wider hover:bg-cyan-400 transition flex items-center gap-2">
+                        View Apps <i class="fa-solid fa-arrow-down text-xs"></i>
+                    </a>
+                    <a href="https://github.com/nikhilt8144" target="_blank" class="px-5 py-2.5 rounded-lg bg-[#1a1e2b] text-gray-300 hover:text-white font-mono text-xs border border-[#2a3142] hover:border-gray-500 transition flex items-center gap-2">
+                        <i class="fa-brands fa-github"></i> GitHub Profile
+                    </a>
+                </div>
+            </div>
+
+            <div class="md:col-span-4 bento-card rounded-2xl p-6 font-mono text-xs flex flex-col justify-between bg-[#090b10] relative">
+                <div class="flex items-center justify-between border-b border-[#1c202d] pb-3 text-gray-500">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-green-500/80"></span>
+                    </div>
+                    <span>system.config.js</span>
+                </div>
+
+                <div class="space-y-3 py-4 text-gray-300">
+                    <div><span class="text-purple-400">const</span> <span class="text-cyan-300">developer</span> = {</div>
+                    <div class="pl-4"><span class="text-gray-500">name:</span> <span class="text-emerald-400">'Nikhil Tiwari'</span>,</div>
+                    <div class="pl-4"><span class="text-gray-500">status:</span> <span class="text-emerald-400">'Class 12th Student'</span>,</div>
+                    <div class="pl-4"><span class="text-gray-500">interests:</span> [<span class="text-amber-300">'Web Apps'</span>, <span class="text-amber-300">'Physics'</span>, <span class="text-amber-300">'Math'</span>],</div>
+                    <div class="pl-4"><span class="text-gray-500">dynamicLoader:</span> <span class="text-cyan-400">true</span></div>
+                    <div>};</div>
+                </div>
+
+                <div class="pt-3 border-t border-[#1c202d] text-gray-500 flex items-center justify-between">
+                    <span class="text-[10px]">AUTO-DISCOVERY READY</span>
+                    <i class="fa-solid fa-terminal text-cyan-500"></i>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="projects" class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#1c202d] pb-4">
+                <div>
+                    <div class="flex items-center gap-2 text-cyan-400 font-mono text-xs uppercase tracking-widest">
+                        <i class="fa-solid fa-folder-tree"></i> /apps directory
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-extrabold text-white mt-1">
+                        Dynamic Projects Engine
+                    </h2>
+                </div>
+                <button onclick="loadApps()" class="text-xs font-mono px-3 py-1.5 rounded bg-[#1a1e2b] border border-[#2a3142] text-gray-300 hover:text-cyan-400 transition flex items-center gap-2 self-start">
+                    <i class="fa-solid fa-rotate-right"></i> Rescan /apps
+                </button>
+            </div>
+
+            <div id="apps-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bento-card rounded-xl p-6 space-y-4 animate-pulse">
+                    <div class="h-4 bg-[#1f2430] rounded w-1/3"></div>
+                    <div class="h-8 bg-[#1f2430] rounded w-2/3"></div>
+                    <div class="h-10 bg-[#1f2430] rounded w-full"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="components" class="space-y-6">
+            <div class="border-b border-[#1c202d] pb-4 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2 text-purple-400 font-mono text-xs uppercase tracking-widest">
+                        <i class="fa-solid fa-cubes"></i> /assets/misc/
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-extrabold text-white mt-1">
+                        Open Source Themes & Loaders
+                    </h2>
+                </div>
+
+                <div class="flex bg-[#0d0f17] p-1 rounded-lg border border-[#1c202d] font-mono text-xs">
+                    <button id="btn-tab-themes" onclick="switchMiscTab('themes')" class="px-4 py-1.5 rounded bg-[#1f2430] text-white transition">
+                        themes/v{i}
+                    </button>
+                    <button id="btn-tab-loaders" onclick="switchMiscTab('loaders')" class="px-4 py-1.5 rounded text-gray-400 hover:text-white transition">
+                        loaders/v{i}
+                    </button>
+                </div>
+            </div>
+
+            <div id="misc-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                </div>
+        </section>
+
+        <section id="about" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            
+            <div class="md:col-span-6 bento-card rounded-2xl p-8 space-y-4">
+                <span class="font-mono text-xs text-amber-400 uppercase tracking-wider">/background</span>
+                <h3 class="text-2xl font-heading font-bold text-white">Class 12th Student & Science Mind</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Combining foundational concepts in physics and mathematics with modern front-end web development. I focus on modular architectures, dynamic component generation, and lightweight web tools.
+                </p>
+            </div>
+
+            <div class="md:col-span-6 bento-card rounded-2xl p-8 space-y-4">
+                <span class="font-mono text-xs text-emerald-400 uppercase tracking-wider">/skills</span>
+                <h3 class="text-2xl font-heading font-bold text-white">Stack & Competencies</h3>
+                <div class="grid grid-cols-2 gap-3 pt-2 font-mono text-xs">
+                    <div class="p-3 bg-[#08090d] rounded-lg border border-[#1c202d] flex items-center gap-2">
+                        <i class="fa-brands fa-html5 text-orange-500"></i> HTML5 / Dynamic DOM
+                    </div>
+                    <div class="p-3 bg-[#08090d] rounded-lg border border-[#1c202d] flex items-center gap-2">
+                        <i class="fa-brands fa-css3-alt text-blue-500"></i> Modern CSS / Tailwind
+                    </div>
+                    <div class="p-3 bg-[#08090d] rounded-lg border border-[#1c202d] flex items-center gap-2">
+                        <i class="fa-brands fa-js text-yellow-400"></i> Vanilla JavaScript ES6+
+                    </div>
+                    <div class="p-3 bg-[#08090d] rounded-lg border border-[#1c202d] flex items-center gap-2">
+                        <i class="fa-brands fa-bootstrap text-purple-400"></i> Responsive Frameworks
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="contact" class="bento-card rounded-2xl p-8 sm:p-10 max-w-3xl mx-auto">
+            <div class="text-center space-y-3 mb-8">
+                <span class="font-mono text-xs text-cyan-400 uppercase tracking-widest">// GET IN TOUCH</span>
+                <h2 class="text-3xl font-heading font-extrabold text-white">Send A Direct Message</h2>
+            </div>
+
+            <form action="https://formspree.io/f/your-form-id" method="POST" class="space-y-4 font-mono text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-400 mb-2">NAME</label>
+                        <input type="text" required class="w-full px-4 py-3 rounded bg-[#08090d] border border-[#1c202d] text-white focus:border-cyan-400 outline-none transition" placeholder="John Doe">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-2">EMAIL</label>
+                        <input type="email" required class="w-full px-4 py-3 rounded bg-[#08090d] border border-[#1c202d] text-white focus:border-cyan-400 outline-none transition" placeholder="john@example.com">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-2">MESSAGE</label>
+                    <textarea rows="4" required class="w-full px-4 py-3 rounded bg-[#08090d] border border-[#1c202d] text-white focus:border-cyan-400 outline-none transition" placeholder="Write your thoughts..."></textarea>
+                </div>
+                <button type="submit" class="w-full py-3.5 rounded bg-cyan-400 hover:bg-cyan-300 text-black font-bold uppercase tracking-wider font-sans transition">
+                    Dispatch Message
+                </button>
+            </form>
+        </section>
+
+    </main>
+
+    <div id="preview-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex-col">
+        <div class="p-3 bg-[#0d0f17] border-b border-[#1c202d] flex items-center justify-between font-mono text-xs">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                <span id="modal-title" class="text-white font-bold">Preview</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a id="modal-external-link" href="#" target="_blank" class="text-gray-400 hover:text-cyan-400 flex items-center gap-1">
+                    Full Screen <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white px-2">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+        </div>
+        <iframe id="modal-iframe" class="w-full flex-grow border-none bg-white"></iframe>
+    </div>
+
+    <footer class="border-t border-[#1c202d] py-6 px-4 font-mono text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>© <span id="current-year"></span> Nikhil Tiwari</div>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/nikhilt8144" target="_blank" class="hover:text-cyan-400 transition"><i class="fa-brands fa-github text-base"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const REPO_OWNER = 'nikhilt8144';
+        const REPO_NAME = 'nikhilt8144.github.io';
+        let currentMiscTab = 'themes';
+
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // 1. Dynamic /apps directory scanner
+        async function loadApps() {
+            const container = document.getElementById('apps-container');
+            container.innerHTML = `
+                <div class="col-span-full p-8 text-center font-mono text-xs text-gray-500 bento-card rounded-xl">
+                    <i class="fa-solid fa-spinner animate-spin text-cyan-400 mr-2"></i> Querying /apps folder contents...
+                </div>`;
+
+            let appFolders = [];
+
+            try {
+                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/apps`);
+                if (response.ok) {
+                    const data = await response.json();
+                    appFolders = data
+                        .filter(item => item.type === 'dir')
+                        .map(item => ({ name: item.name, path: `/apps/${item.name}/` }));
+                }
+            } catch (err) {
+                console.warn('API fetch failed, falling back to direct check', err);
+            }
+
+            if (appFolders.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bento-card p-8 rounded-xl text-center font-mono text-xs text-gray-500">
+                        <i class="fa-solid fa-folder-open text-2xl text-gray-600 mb-2"></i>
+                        <p>No directories found under <span class="text-cyan-400">/apps/</span>.</p>
+                        <p class="mt-1 text-[10px]">Add subfolders inside /apps/ on GitHub to display them here automatically.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = appFolders.map(app => `
+                <div class="bento-card rounded-xl p-6 flex flex-col justify-between group">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono text-gray-500">
+                            <span>/apps/${app.name}</span>
+                            <i class="fa-solid fa-microchip text-cyan-500"></i>
+                        </div>
+                        <h3 class="text-xl font-heading font-extrabold text-white capitalize group-hover:text-cyan-400 transition">
+                            ${app.name.replace(/[-_]/g, ' ')}
+                        </h3>
+                    </div>
+
+                    <div class="pt-6 flex items-center gap-2 font-mono text-xs">
+                        <a href="${app.path}" target="_blank" class="flex-1 py-2 rounded bg-[#1f2430] hover:bg-cyan-400 hover:text-black text-white text-center font-bold transition">
+                            Launch App
+                        </a>
+                        <button onclick="openModal('${app.path}', '${app.name}')" class="px-3 py-2 rounded bg-[#1f2430] text-gray-300 hover:text-white transition">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 2. Dynamic /assets/misc/ loader (themes & loaders)
+        async function loadMiscStuff(type) {
+            const container = document.getElementById('misc-container');
+            container.innerHTML = `
+                <div class="col-span-full p-8 text-center font-mono text-xs text-gray-500 bento-card rounded-xl">
+                    <i class="fa-solid fa-spinner animate-spin text-purple-400 mr-2"></i> Scanning /assets/misc/${type}...
+                </div>`;
+
+            let versions = [];
+
+            try {
+                const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/assets/misc/${type}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    versions = data
+                        .filter(item => item.type === 'dir' && /^v\d+$/i.test(item.name))
+                        .map(item => item.name);
+                }
+            } catch (e) {
+                console.warn('Misc API fetch failed', e);
+            }
+
+            // Fallback probe
+            if (versions.length === 0) {
+                for (let i = 1; i <= 15; i++) {
+                    const v = `v${i}`;
+                    try {
+                        const check = await fetch(`/assets/misc/${type}/${v}/`, { method: 'HEAD' });
+                        if (check.ok) versions.push(v);
+                    } catch (e) { break; }
+                }
+            }
+
+            if (versions.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bento-card p-8 rounded-xl text-center font-mono text-xs text-gray-500">
+                        <i class="fa-solid fa-box-open text-2xl text-gray-600 mb-2"></i>
+                        <p>No ${type} found in <span class="text-purple-400">/assets/misc/${type}/</span></p>
+                        <p class="mt-1 text-[10px]">Create subfolders like v1, v2, v3 containing index.html files.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = versions.map(v => {
+                const itemPath = `/assets/misc/${type}/${v}/`;
+                return `
+                    <div class="bento-card rounded-xl p-5 flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between font-mono text-xs">
+                                <span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 font-bold uppercase">${v}</span>
+                                <span class="text-gray-500 text-[10px]">${type}</span>
+                            </div>
+                            <h4 class="font-heading font-bold text-white text-base capitalize">${type.slice(0, -1)} ${v}</h4>
+                        </div>
+                        <div class="pt-4 flex items-center gap-2 font-mono text-xs">
+                            <button onclick="openModal('${itemPath}', '${type} ${v}')" class="flex-1 py-1.5 rounded bg-[#1f2430] hover:bg-purple-500 hover:text-white text-gray-300 font-medium transition">
+                                Live Preview
+                            </button>
+                            <a href="${itemPath}" target="_blank" class="px-2.5 py-1.5 rounded bg-[#1f2430] text-gray-400 hover:text-white transition">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchMiscTab(type) {
+            currentMiscTab = type;
+            const themesBtn = document.getElementById('btn-tab-themes');
+            const loadersBtn = document.getElementById('btn-tab-loaders');
+
+            if (type === 'themes') {
+                themesBtn.className = "px-4 py-1.5 rounded bg-[#1f2430] text-white transition";
+                loadersBtn.className = "px-4 py-1.5 rounded text-gray-400 hover:text-white transition";
+            } else {
+                loadersBtn.className = "px-4 py-1.5 rounded bg-[#1f2430] text-white transition";
+                themesBtn.className = "px-4 py-1.5 rounded text-gray-400 hover:text-white transition";
+            }
+
+            loadMiscStuff(type);
+        }
+
+        // Preview Modal Controls
+        function openModal(url, title) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-external-link').href = url;
+            document.getElementById('modal-iframe').src = url;
+            document.getElementById('preview-modal').classList.remove('hidden');
+            document.getElementById('preview-modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('preview-modal').classList.add('hidden');
+            document.getElementById('preview-modal').classList.remove('flex');
+            document.getElementById('modal-iframe').src = '';
+        }
+
+        // Load content on ready
+        window.addEventListener('DOMContentLoaded', () => {
+            loadApps();
+            loadMiscStuff('themes');
+        });
+    </script>
+</body>
+</html>
