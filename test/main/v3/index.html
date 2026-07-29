@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIKHIL TIWARI // QUANTUM PORTFOLIO & APPS</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#05070a',
+                        surface: '#0d1117',
+                        blueprint: '#00f0ff',
+                        coral: '#ff3366',
+                        amber: '#ffaa00',
+                        inkBorder: '#1c2636'
+                    },
+                    fontFamily: {
+                        tech: ['Chakra Petch', 'sans-serif'],
+                        serif: ['Instrument Serif', 'serif'],
+                        mono: ['Share Tech Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,700;1,700&family=Instrument+Serif:ital@0;1&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --blueprint: #00f0ff;
+            --coral: #ff3366;
+            --void: #05070a;
+        }
+
+        body {
+            background-color: var(--void);
+            color: #c9d1d9;
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+        }
+
+        /* Interactive Grid Overlay */
+        .blueprint-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+        }
+
+        /* Schematic Corner Markers */
+        .schematic-box {
+            position: relative;
+            background: rgba(13, 17, 23, 0.85);
+            border: 1px solid #1c2636;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .schematic-box::before, .schematic-box::after {
+            content: '+';
+            position: absolute;
+            color: var(--blueprint);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            line-height: 1;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .schematic-box::before { top: -6px; left: -5px; }
+        .schematic-box::after { bottom: -6px; right: -5px; }
+
+        .schematic-box:hover {
+            border-color: var(--blueprint);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.12);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #05070a; }
+        ::-webkit-scrollbar-thumb { background: #00f0ff; }
+
+        /* Scanning Line Animation */
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(1000%); }
+        }
+        .scan-effect {
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--blueprint), transparent);
+            animation: scanline 8s linear infinite;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="blueprint-grid min-h-screen flex flex-col justify-between selection:bg-cyan-400 selection:text-black">
+
+    <canvas id="physics-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <header class="border-b border-inkBorder bg-void/90 backdrop-blur-md sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+                <a href="#" class="flex items-center gap-3 group" onclick="playBeep()">
+                    <div class="w-8 h-8 bg-blueprint text-black font-tech font-bold flex items-center justify-center text-sm shadow-[0_0_15px_rgba(0,240,255,0.4)] group-hover:rotate-12 transition-transform">
+                        NT
+                    </div>
+                    <div>
+                        <span class="font-tech font-extrabold text-white text-lg tracking-wider block leading-none">NIKHIL.TIWARI</span>
+                        <span class="text-[10px] text-cyan-400 font-mono tracking-widest uppercase">CLASS_12 // SCIENCE & DEV</span>
+                    </div>
+                </a>
+
+                <div class="hidden md:flex items-center gap-6 text-xs text-gray-400 font-mono">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span class="text-emerald-400">STATUS: ONLINE</span>
+                    </div>
+                    <div class="text-gray-600">|</div>
+                    <div>LATENCY: <span id="ping-time" class="text-cyan-400">14ms</span></div>
+                    <div class="text-gray-600">|</div>
+                    <button id="sound-toggle" onclick="toggleAudio()" class="text-cyan-400 hover:text-white transition flex items-center gap-1">
+                        <i class="fa-solid fa-volume-high text-xs"></i> <span id="sound-label">AUDIO ON</span>
+                    </button>
+                </div>
+
+                <nav class="flex items-center gap-4 text-xs font-tech">
+                    <a href="#apps-section" onclick="playBeep()" class="px-3 py-1.5 border border-inkBorder hover:border-blueprint text-gray-300 hover:text-blueprint transition">/APPS</a>
+                    <a href="#misc-section" onclick="playBeep()" class="px-3 py-1.5 border border-inkBorder hover:border-coral text-gray-300 hover:text-coral transition">/MISC</a>
+                    <a href="#contact-section" onclick="playBeep()" class="px-3 py-1.5 bg-blueprint text-black font-bold hover:bg-white transition">CONTACT</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-16 flex-grow w-full">
+
+            <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4">
+                
+                <div class="lg:col-span-8 schematic-box p-8 sm:p-12 flex flex-col justify-between overflow-hidden relative">
+                    <div class="scan-effect"></div>
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center gap-2 text-xs text-blueprint border border-blueprint/30 px-3 py-1 bg-blueprint/5">
+                            <i class="fa-solid fa-atom animate-spin"></i> PHYSICS & FRONTEND COMPUTING
+                        </div>
+                        <h1 class="text-4xl sm:text-6xl font-tech font-bold text-white tracking-tight leading-none uppercase">
+                            Architecting <span class="font-serif italic font-normal text-cyan-400 text-5xl sm:text-7xl lowercase">digital</span> Systems
+                        </h1>
+                        <p class="text-gray-400 text-sm sm:text-base leading-relaxed max-w-2xl font-mono">
+                            I am Nikhil Tiwari, a Class 12th student developer exploring the intersection of modern web UI, physics principles, and algorithmic thinking. Building responsive web applications and dynamic open-source components.
+                        </p>
+                    </div>
+
+                    <div class="pt-8 flex flex-wrap gap-4 items-center border-t border-inkBorder mt-8">
+                        <a href="#apps-section" onclick="playBeep()" class="px-6 py-3 bg-blueprint text-black font-tech font-bold hover:bg-white transition flex items-center gap-2">
+                            EXPLORE /APPS <i class="fa-solid fa-arrow-down-long"></i>
+                        </a>
+                        <a href="https://github.com/nikhilt8144" target="_blank" onclick="playBeep()" class="px-6 py-3 border border-inkBorder text-gray-300 hover:border-blueprint hover:text-blueprint transition font-mono text-xs flex items-center gap-2">
+                            <i class="fa-brands fa-github text-sm"></i> GITHUB REPOSITORY
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 schematic-box p-6 flex flex-col justify-between bg-surface/90">
+                    <div class="border-b border-inkBorder pb-3 flex items-center justify-between text-xs text-gray-500 font-mono">
+                        <span>// TELEMETRY_MATRIX</span>
+                        <span class="text-cyan-400">v2.0.26</span>
+                    </div>
+
+                    <div class="space-y-4 py-4 font-mono text-xs">
+                        <div class="p-3 border border-inkBorder bg-void/60">
+                            <div class="text-gray-500 text-[10px]">CURRENT FOCUS</div>
+                            <div class="text-white font-tech font-bold mt-1 text-sm">Physics Simulation & Frontend UI</div>
+                        </div>
+                        <div class="p-3 border border-inkBorder bg-void/60">
+                            <div class="text-gray-500 text-[10px]">CORE STACK</div>
+                            <div class="text-cyan-400 mt-1">HTML5 / CSS3 / ES6+ JS / Tailwind</div>
+                        </div>
+                        <div class="p-3 border border-inkBorder bg-void/60">
+                            <div class="text-gray-500 text-[10px]">DYNAMIC DISCOVERY ENGINE</div>
+                            <div class="text-emerald-400 mt-1">GitHub API REST + Fallback Scan</div>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-inkBorder text-[11px] text-gray-500 flex justify-between items-center">
+                        <span>SYSTEM ID: NT-8144</span>
+                        <i class="fa-solid fa-terminal text-blueprint"></i>
+                    </div>
+                </div>
+
+            </section>
+
+            <section id="apps-section" class="space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-inkBorder pb-4 gap-4">
+                    <div>
+                        <div class="text-xs text-blueprint font-mono flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 bg-blueprint"></span> DYNAMIC REPOSITORY ENGINE
+                        </div>
+                        <h2 class="text-2xl sm:text-4xl font-tech font-bold text-white uppercase mt-1">
+                            Projects Directory <span class="font-serif italic font-normal text-cyan-400">(/apps)</span>
+                        </h2>
+                    </div>
+                    <button onclick="loadApps(); playBeep()" class="self-start px-4 py-2 border border-inkBorder hover:border-blueprint text-xs font-mono text-cyan-400 hover:text-white transition flex items-center gap-2">
+                        <i class="fa-solid fa-arrows-rotate text-xs"></i> RESCAN /APPS FOLDERS
+                    </button>
+                </div>
+
+                <div id="apps-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="schematic-box p-8 text-center text-gray-500 font-mono text-xs col-span-full">
+                        <i class="fa-solid fa-spinner animate-spin text-blueprint text-xl mb-2"></i>
+                        <p>Scanning repository root `/apps/` via REST API...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="misc-section" class="space-y-6">
+                <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-inkBorder pb-4 gap-4">
+                    <div>
+                        <div class="text-xs text-coral font-mono flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 bg-coral"></span> OPEN SOURCE ASSET VAULT
+                        </div>
+                        <h2 class="text-2xl sm:text-4xl font-tech font-bold text-white uppercase mt-1">
+                            Components & Stuff <span class="font-serif italic font-normal text-coral">(/assets/misc)</span>
+                        </h2>
+                    </div>
+
+                    <div class="flex border border-inkBorder bg-void p-1 font-tech text-xs">
+                        <button id="tab-themes-btn" onclick="switchMiscTab('themes'); playBeep()" class="px-5 py-2 bg-coral text-white font-bold transition">
+                            THEMES / v{i}
+                        </button>
+                        <button id="tab-loaders-btn" onclick="switchMiscTab('loaders'); playBeep()" class="px-5 py-2 text-gray-400 hover:text-white transition">
+                            LOADERS / v{i}
+                        </button>
+                    </div>
+                </div>
+
+                <div id="misc-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    </div>
+            </section>
+
+            <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <div class="lg:col-span-7 schematic-box p-8 space-y-4">
+                    <div class="text-xs text-amber font-mono">// ACADEMICS & PHILOSOPHY</div>
+                    <h3 class="text-2xl font-tech font-bold text-white uppercase">Bridging Science & Code</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed font-mono">
+                        As a Class 12th student, I am fascinated by how fundamental physical laws and mathematical concepts translate into computational structures. Whether analyzing mechanics or styling interactive frontends, I prioritize clarity, modular design, and continuous learning.
+                    </p>
+                    <div class="grid grid-cols-2 gap-3 pt-4 font-mono text-xs">
+                        <div class="p-3 border border-inkBorder bg-void/50">
+                            <span class="text-blueprint font-bold block">PHYSICS</span>
+                            <span class="text-gray-500 text-[11px]">Mechanics & Wave Optics</span>
+                        </div>
+                        <div class="p-3 border border-inkBorder bg-void/50">
+                            <span class="text-amber font-bold block">MATHEMATICS</span>
+                            <span class="text-gray-500 text-[11px]">Calculus & Logic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 schematic-box p-8 space-y-4 bg-surface/90">
+                    <div class="text-xs text-blueprint font-mono">// TECHNICAL_CAPABILITIES</div>
+                    <h3 class="text-2xl font-tech font-bold text-white uppercase">Web Stack</h3>
+                    <div class="space-y-3 font-mono text-xs pt-2">
+                        <div>
+                            <div class="flex justify-between text-gray-400 mb-1">
+                                <span>HTML5 / Semantic Markup</span>
+                                <span class="text-blueprint">95%</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-void border border-inkBorder">
+                                <div class="h-full bg-blueprint w-[95%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-gray-400 mb-1">
+                                <span>CSS3 / Tailwind / Responsive</span>
+                                <span class="text-coral">90%</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-void border border-inkBorder">
+                                <div class="h-full bg-coral w-[90%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-gray-400 mb-1">
+                                <span>JavaScript ES6+ / Dynamic DOM</span>
+                                <span class="text-amber">85%</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-void border border-inkBorder">
+                                <div class="h-full bg-amber w-[85%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <section id="contact-section" class="schematic-box p-8 sm:p-12 max-w-3xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="text-xs text-blueprint font-mono">// DISPATCH TRANSMISSION</div>
+                    <h2 class="text-3xl font-tech font-bold text-white uppercase">Get In Touch</h2>
+                    <p class="text-xs text-gray-400 font-mono">Send a message directly for collaboration or technical inquiries.</p>
+                </div>
+
+                <form action="https://formspree.io/f/your-form-id" method="POST" class="space-y-4 font-mono text-xs">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-400 mb-1">SENDER NAME</label>
+                            <input type="text" required class="w-full px-4 py-3 bg-void border border-inkBorder text-white focus:border-blueprint outline-none transition" placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1">SENDER EMAIL</label>
+                            <input type="email" required class="w-full px-4 py-3 bg-void border border-inkBorder text-white focus:border-blueprint outline-none transition" placeholder="john@domain.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">TRANSMISSION SUBJECT</label>
+                        <input type="text" required class="w-full px-4 py-3 bg-void border border-inkBorder text-white focus:border-blueprint outline-none transition" placeholder="Project Inquiry">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">MESSAGE CONTENT</label>
+                        <textarea rows="4" required class="w-full px-4 py-3 bg-void border border-inkBorder text-white focus:border-blueprint outline-none transition" placeholder="Write your message..."></textarea>
+                    </div>
+                    <button type="submit" onclick="playBeep()" class="w-full py-4 bg-blueprint text-black font-tech font-bold uppercase tracking-wider hover:bg-white transition text-sm">
+                        TRANSMIT MESSAGE <i class="fa-solid fa-paper-plane ml-2"></i>
+                    </button>
+                </form>
+            </section>
+
+        </main>
+
+        <div id="preview-modal" class="fixed inset-0 bg-void/95 z-50 hidden flex-col border-4 border-inkBorder">
+            <div class="p-3 bg-surface border-b border-inkBorder flex items-center justify-between font-mono text-xs">
+                <div class="flex items-center gap-3">
+                    <span class="w-3 h-3 bg-blueprint"></span>
+                    <span id="modal-title" class="text-white font-tech font-bold text-sm">SANDBOX PREVIEW</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a id="modal-external-link" href="#" target="_blank" class="text-blueprint hover:underline flex items-center gap-1">
+                        OPEN FULLSCREEN <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </a>
+                    <button onclick="closeModal(); playBeep()" class="px-3 py-1 bg-coral text-white font-bold hover:bg-white hover:text-black transition">
+                        CLOSE [X]
+                    </button>
+                </div>
+            </div>
+            <iframe id="modal-iframe" class="w-full flex-grow border-none bg-white"></iframe>
+        </div>
+
+        <footer class="border-t border-inkBorder py-6 px-4 font-mono text-xs text-gray-500 bg-void">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>© <span id="current-year"></span> NIKHIL TIWARI // ALL RIGHTS RESERVED</div>
+                <div class="flex items-center gap-6">
+                    <a href="https://github.com/nikhilt8144" target="_blank" class="hover:text-blueprint transition"><i class="fa-brands fa-github text-base"></i></a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        const REPO_OWNER = 'nikhilt8144';
+        const REPO_NAME = 'nikhilt8144.github.io';
+        let currentMiscTab = 'themes';
+        let audioEnabled = true;
+
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // -------------------------------------------------------------
+        // WEB AUDIO API CLICK FEEDBACK
+        // -------------------------------------------------------------
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep(freq = 600, duration = 0.04) {
+            if (!audioEnabled) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {}
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            document.getElementById('sound-label').textContent = audioEnabled ? 'AUDIO ON' : 'AUDIO OFF';
+            playBeep( audioEnabled ? 800 : 300 );
+        }
+
+        // Simulating Latency
+        setInterval(() => {
+            const ping = Math.floor(Math.random() * 8) + 12;
+            document.getElementById('ping-time').textContent = `${ping}ms`;
+        }, 3000);
+
+        // -------------------------------------------------------------
+        // 1. DYNAMIC /APPS DIRECTORY DISCOVERY
+        // -------------------------------------------------------------
+        async function loadApps() {
+            const container = document.getElementById('apps-container');
+            container.innerHTML = `
+                <div class="schematic-box p-8 text-center text-gray-500 font-mono text-xs col-span-full">
+                    <i class="fa-solid fa-spinner animate-spin text-blueprint text-xl mb-2"></i>
+                    <p>Fetching dynamic app modules from GitHub REST API...</p>
+                </div>`;
+
+            let appFolders = [];
+
+            try {
+                const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/apps`);
+                if (res.ok) {
+                    const data = await res.json();
+                    appFolders = data
+                        .filter(item => item.type === 'dir')
+                        .map(item => ({ name: item.name, path: `/apps/${item.name}/` }));
+                }
+            } catch (err) {
+                console.warn('GitHub API rate limited, checking local fallback paths', err);
+            }
+
+            if (appFolders.length === 0) {
+                container.innerHTML = `
+                    <div class="schematic-box p-8 text-center text-gray-500 font-mono text-xs col-span-full">
+                        <i class="fa-solid fa-folder-open text-3xl text-gray-600 mb-3"></i>
+                        <p class="text-white font-tech text-base">NO APP DIRECTORIES FOUND</p>
+                        <p class="mt-1">Add folders inside <code class="text-blueprint">/apps/</code> on GitHub to populate them here automatically.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = appFolders.map(app => `
+                <div class="schematic-box p-6 flex flex-col justify-between group">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between text-xs font-mono text-gray-500 border-b border-inkBorder pb-2">
+                            <span>LOCATION: /apps/${app.name}</span>
+                            <span class="w-2 h-2 bg-blueprint"></span>
+                        </div>
+                        <h3 class="text-xl font-tech font-bold text-white uppercase group-hover:text-blueprint transition">
+                            ${app.name.replace(/[-_]/g, ' ')}
+                        </h3>
+                        <p class="text-xs text-gray-400 font-mono">Dynamic web application module.</p>
+                    </div>
+
+                    <div class="pt-6 flex gap-2 font-mono text-xs">
+                        <a href="${app.path}" target="_blank" onclick="playBeep()" class="flex-1 py-2.5 bg-blueprint text-black font-tech font-bold text-center hover:bg-white transition">
+                            LAUNCH APP
+                        </a>
+                        <button onclick="openModal('${app.path}', '${app.name}'); playBeep()" class="px-3 py-2.5 border border-inkBorder hover:border-blueprint text-gray-300 hover:text-white transition">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // -------------------------------------------------------------
+        // 2. DYNAMIC /assets/misc/{themes|loaders}/v{I} DISCOVERY
+        // -------------------------------------------------------------
+        async function loadMiscStuff(type) {
+            const container = document.getElementById('misc-container');
+            container.innerHTML = `
+                <div class="schematic-box p-8 text-center text-gray-500 font-mono text-xs col-span-full">
+                    <i class="fa-solid fa-spinner animate-spin text-coral text-xl mb-2"></i>
+                    <p>Scanning /assets/misc/${type}/ for version subdirectories...</p>
+                </div>`;
+
+            let versions = [];
+
+            // Attempt 1: REST API
+            try {
+                const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/assets/misc/${type}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    versions = data
+                        .filter(item => item.type === 'dir' && /^v\d+$/i.test(item.name))
+                        .map(item => item.name);
+                }
+            } catch (e) {
+                console.warn('Misc API fetch failed', e);
+            }
+
+            // Fallback probing (v1 through v15)
+            if (versions.length === 0) {
+                for (let i = 1; i <= 15; i++) {
+                    const v = `v${i}`;
+                    try {
+                        const check = await fetch(`/assets/misc/${type}/${v}/`, { method: 'HEAD' });
+                        if (check.ok) versions.push(v);
+                    } catch (e) { break; }
+                }
+            }
+
+            if (versions.length === 0) {
+                container.innerHTML = `
+                    <div class="schematic-box p-8 text-center text-gray-500 font-mono text-xs col-span-full">
+                        <i class="fa-solid fa-box-open text-3xl text-gray-600 mb-3"></i>
+                        <p class="text-white font-tech text-base">NO ${type.toUpperCase()} FOUND</p>
+                        <p class="mt-1">Add folders like <code class="text-coral">v1</code>, <code class="text-coral">v2</code> inside <code class="text-coral">/assets/misc/${type}/</code></p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = versions.map(v => {
+                const itemPath = `/assets/misc/${type}/${v}/`;
+                return `
+                    <div class="schematic-box p-5 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between text-xs font-mono">
+                                <span class="px-2 py-0.5 bg-coral/20 text-coral border border-coral/30 font-bold uppercase">${v}</span>
+                                <span class="text-gray-500">${type}</span>
+                            </div>
+                            <h4 class="font-tech font-bold text-white text-base uppercase">${type.slice(0, -1)} ${v}</h4>
+                            <p class="text-[11px] text-gray-400 font-mono break-all">${itemPath}</p>
+                        </div>
+
+                        <div class="pt-4 flex gap-2 font-mono text-xs">
+                            <button onclick="openModal('${itemPath}', '${type} ${v}'); playBeep()" class="flex-1 py-2 border border-inkBorder bg-void hover:border-coral text-gray-300 hover:text-white transition">
+                                PREVIEW
+                            </button>
+                            <a href="${itemPath}" target="_blank" onclick="playBeep()" class="px-3 py-2 border border-inkBorder text-gray-400 hover:text-coral transition">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchMiscTab(type) {
+            currentMiscTab = type;
+            const themesBtn = document.getElementById('tab-themes-btn');
+            const loadersBtn = document.getElementById('tab-loaders-btn');
+
+            if (type === 'themes') {
+                themesBtn.className = "px-5 py-2 bg-coral text-white font-bold transition";
+                loadersBtn.className = "px-5 py-2 text-gray-400 hover:text-white transition";
+            } else {
+                loadersBtn.className = "px-5 py-2 bg-coral text-white font-bold transition";
+                themesBtn.className = "px-5 py-2 text-gray-400 hover:text-white transition";
+            }
+
+            loadMiscStuff(type);
+        }
+
+        // Modal Handlers
+        function openModal(url, title) {
+            document.getElementById('modal-title').textContent = `SANDBOX // ${title.toUpperCase()}`;
+            document.getElementById('modal-external-link').href = url;
+            document.getElementById('modal-iframe').src = url;
+            const modal = document.getElementById('preview-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('preview-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.getElementById('modal-iframe').src = '';
+        }
+
+        // -------------------------------------------------------------
+        // BACKGROUND PHYSICS CANVAS SIMULATION (Gravitational Particles)
+        // -------------------------------------------------------------
+        const canvas = document.getElementById('physics-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 150 };
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = 1.5;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                // Mouse interaction
+                if (mouse.x && mouse.y) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < mouse.radius) {
+                        const force = (mouse.radius - dist) / mouse.radius;
+                        this.x -= (dx / dist) * force * 2;
+                        this.y -= (dy / dist) * force * 2;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = '#00f0ff';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.floor((width * height) / 18000);
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                // Connect nearby particles with blueprint lines
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 100) {
+                        ctx.strokeStyle = `rgba(0, 240, 255, ${1 - dist / 100})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+
+        // Initialize Everything
+        window.addEventListener('DOMContentLoaded', () => {
+            resizeCanvas();
+            animateCanvas();
+            loadApps();
+            loadMiscStuff('themes');
+        });
+    </script>
+</body>
+</html>
